@@ -42,13 +42,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
-import kmp_searchable_dropdown.composeapp.generated.resources.Res
-import kmp_searchable_dropdown.composeapp.generated.resources.expand_less
+import kmp_searchable_dropdown.searchabledropdown.generated.resources.Res
+import kmp_searchable_dropdown.searchabledropdown.generated.resources.expand_less
 import org.example.project.DropdownItem
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-internal fun SelectYourSkill() {
+ fun SelectYourSkill() {
     var expanded by remember { mutableStateOf(false) }
     val rotationAngle by animateDpAsState(targetValue = if (expanded) 180.dp else 0.dp)
 
