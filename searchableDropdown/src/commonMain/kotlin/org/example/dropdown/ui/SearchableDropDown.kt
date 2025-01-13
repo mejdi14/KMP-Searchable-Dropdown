@@ -53,6 +53,7 @@ import org.jetbrains.compose.resources.painterResource
  fun SelectYourSkill() {
     var expanded by remember { mutableStateOf(false) }
     val rotationAngle by animateDpAsState(targetValue = if (expanded) 180.dp else 0.dp)
+    val separationSpace = 20
 
     // Reference to measure the position of the button
     val buttonRef = remember { mutableStateOf<LayoutCoordinates?>(null) }
@@ -93,7 +94,7 @@ import org.jetbrains.compose.resources.painterResource
             offset = IntOffset(
                 x =  0,
                 y = (buttonRef.value?.positionInRoot()?.y?.toInt() ?: 0) +
-                        (buttonRef.value?.size?.height ?: 0)
+                        (buttonRef.value?.size?.height ?: 0) + separationSpace
             ),
             onDismissRequest = { expanded = false },
             properties = PopupProperties(focusable = true)

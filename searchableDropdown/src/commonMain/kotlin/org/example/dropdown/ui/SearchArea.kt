@@ -38,7 +38,7 @@ Row(
         .height(56.dp),
     value = text,
         onValueChange = { text = it },
-        placeholder = { Text("Enter your search query") },
+        placeholder = { Text("Searching...") },
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
