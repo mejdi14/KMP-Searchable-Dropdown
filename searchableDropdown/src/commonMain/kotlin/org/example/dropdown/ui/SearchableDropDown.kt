@@ -42,8 +42,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
 import kmp_searchable_dropdown.searchabledropdown.generated.resources.Res
 import kmp_searchable_dropdown.searchabledropdown.generated.resources.expand_less
+import org.example.dropdown.ui.SearchArea
 import org.example.project.DropdownItem
 import org.jetbrains.compose.resources.painterResource
 
@@ -93,7 +95,8 @@ import org.jetbrains.compose.resources.painterResource
                 y = (buttonRef.value?.positionInRoot()?.y?.toInt() ?: 0) +
                         (buttonRef.value?.size?.height ?: 0)
             ),
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
+            properties = PopupProperties(focusable = true)
         ) {
             AnimatedContent(
                 targetState = expanded,
@@ -113,8 +116,10 @@ import org.jetbrains.compose.resources.painterResource
                             .background(Color.White, RoundedCornerShape(20.dp))
                             .animateContentSize()
                     ) {
+                        SearchArea()
                         DropdownItem("Skill 1")
                         DropdownItem("Skill 2")
+                        SearchArea()
                         DropdownItem("Skill 3")
                         DropdownItem("Skill 4")
                     }
