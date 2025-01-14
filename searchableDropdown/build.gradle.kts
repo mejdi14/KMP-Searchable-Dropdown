@@ -1,6 +1,4 @@
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.implementation
-import org.gradle.kotlin.dsl.jvm
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
