@@ -10,9 +10,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-internal fun DropdownItem(skill: String) {
+ fun DropdownItem(student: Student) {
     Text(
-        text = skill,
+        text = student.name,
         modifier = Modifier
             .fillMaxWidth()
             .clickable { /* Handle item click */ }

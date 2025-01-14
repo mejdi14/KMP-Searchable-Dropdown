@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -23,21 +23,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SearchArea() {
+fun SearchArea(searchQuery: MutableState<String>) {
 Row(
     modifier = Modifier.fillMaxWidth(),
     verticalAlignment = Alignment.CenterVertically
 
 ){
-    var text by remember { mutableStateOf("") }
+
     Icon(painterResource(Res.drawable.search_icon), "",
         modifier = Modifier.width(50.dp))
     OutlinedTextField(
         modifier = Modifier
         .fillMaxWidth()
         .height(56.dp),
-    value = text,
-        onValueChange = { text = it },
+    value = searchQuery.value,
+        onValueChange = { searchQuery.value = it },
         placeholder = { Text("Searching...") },
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = Color.Transparent,

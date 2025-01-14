@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -46,11 +48,16 @@ import androidx.compose.ui.window.PopupProperties
 import kmp_searchable_dropdown.searchabledropdown.generated.resources.Res
 import kmp_searchable_dropdown.searchabledropdown.generated.resources.expand_less
 import org.example.dropdown.ui.SearchArea
-import org.example.project.DropdownItem
 import org.jetbrains.compose.resources.painterResource
+import kotlin.reflect.KProperty1
+
 
 @Composable
- fun SelectYourSkill() {
+fun <T : Any> SearchableDropdown(
+    items: List<T>,
+    properties: List<KProperty1<T, *>>,
+    itemContent: @Composable (T) -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
     val rotationAngle by animateDpAsState(targetValue = if (expanded) 180.dp else 0.dp)
     val separationSpace = 20
@@ -87,12 +94,11 @@ import org.jetbrains.compose.resources.painterResource
         }
     }
 
-    // Popup will be positioned relative to the button's exact position
     if (expanded) {
         Popup(
             alignment = Alignment.TopStart,
             offset = IntOffset(
-                x =  0,
+                x = 0,
                 y = (buttonRef.value?.positionInRoot()?.y?.toInt() ?: 0) +
                         (buttonRef.value?.size?.height ?: 0) + separationSpace
             ),
@@ -109,6 +115,7 @@ import org.jetbrains.compose.resources.painterResource
                 }
             ) { isExpanded ->
                 if (isExpanded) {
+                    var searchQuery = remember { mutableStateOf("") }
                     Column(
                         Modifier
                             .width(with(LocalDensity.current) {
@@ -117,13 +124,29 @@ import org.jetbrains.compose.resources.painterResource
                             .background(Color.White, RoundedCornerShape(20.dp))
                             .animateContentSize()
                     ) {
-                        SearchArea()
-                        DropdownItem("Skill 1")
-                        DropdownItem("Skill 2")
-                        SearchArea()
-                        DropdownItem("Skill 3")
-                        DropdownItem("Skill 4")
+                        SearchArea(searchQuery)
+                        LazyColumn {
+                            val filteredItems = if (searchQuery.value.isEmpty()) {
+                                items
+                            } else {
+                                items.filter { item ->
+                                    properties.any { prop ->
+                                        try {
+                                            val value = prop.get(item)
+                                            value?.toString()
+                                                ?.contains(searchQuery.value, ignoreCase = true) == true
+                                        } catch (e: Exception) {
+                                            false
+                                        }
+                                    }
+                                }
+                            }
+                            items(filteredItems) { item ->
+                                itemContent(item)
+                            }
+                        }
                     }
+
                 }
             }
         }
