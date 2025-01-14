@@ -47,6 +47,7 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import kmp_searchable_dropdown.searchabledropdown.generated.resources.Res
 import kmp_searchable_dropdown.searchabledropdown.generated.resources.expand_less
+import org.example.dropdown.data.Config
 import org.example.dropdown.ui.SearchArea
 import org.jetbrains.compose.resources.painterResource
 import kotlin.reflect.KProperty1
@@ -56,40 +57,32 @@ import kotlin.reflect.KProperty1
 fun <T : Any> SearchableDropdown(
     items: List<T>,
     searchProperties: List<KProperty1<T, *>>,
-    dismissOnClickOutside: Boolean = true,
+    config: Config = Config(),
     itemContent: @Composable (T) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     val rotationAngle by animateDpAsState(targetValue = if (expanded) 180.dp else 0.dp)
     val separationSpace = 20
 
-    // Reference to measure the position of the button
-    val buttonRef = remember { mutableStateOf<LayoutCoordinates?>(null) }
+    val parentCoordinates = remember { mutableStateOf<LayoutCoordinates?>(null) }
 
     Box(
         Modifier
-            .background(
-                color = Color.White,
-                shape = RoundedCornerShape(20.dp)
-            )
             .fillMaxWidth()
+            .background(
+                color = config.backgroundColor,
+                shape = config.shape
+            ).padding(config.padding)
             .onGloballyPositioned { coordinates ->
-                buttonRef.value = coordinates
+                parentCoordinates.value = coordinates
             }
             .clickable {
-                if (dismissOnClickOutside && !expanded)
-                    expanded = !expanded
+                expanded = !expanded
             }
-            .padding(horizontal = 30.dp)
-    ) {
-        Text(
-            text = "Select your skill",
-            color = Color.Black,
-            modifier = Modifier
-                .align(Alignment.CenterStart)
-                .padding(vertical = 16.dp)
-        )
 
+    ) {
+
+        itemContent(items.first())
         Box(modifier = Modifier.align(alignment = Alignment.CenterEnd)) {
             AnimatedIcon(rotationAngle, expanded)
         }
@@ -100,12 +93,11 @@ fun <T : Any> SearchableDropdown(
             alignment = Alignment.TopStart,
             offset = IntOffset(
                 x = 0,
-                y = (buttonRef.value?.positionInRoot()?.y?.toInt() ?: 0) +
-                        (buttonRef.value?.size?.height ?: 0) + separationSpace
+                y = (parentCoordinates.value?.positionInRoot()?.y?.toInt() ?: 0) +
+                        (parentCoordinates.value?.size?.height ?: 0) + separationSpace
             ),
             onDismissRequest = {
-                if (dismissOnClickOutside)
-                    expanded = false
+                expanded = false
             },
             properties = PopupProperties(focusable = true)
         ) {
@@ -123,7 +115,7 @@ fun <T : Any> SearchableDropdown(
                     Column(
                         Modifier
                             .width(with(LocalDensity.current) {
-                                buttonRef.value?.size?.width?.toDp() ?: 300.dp
+                                parentCoordinates.value?.size?.width?.toDp() ?: 300.dp
                             })
                             .background(Color.White, RoundedCornerShape(20.dp))
                             .animateContentSize()
