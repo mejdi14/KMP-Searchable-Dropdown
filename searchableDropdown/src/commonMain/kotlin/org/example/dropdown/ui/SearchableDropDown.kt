@@ -56,6 +56,7 @@ import kotlin.reflect.KProperty1
 fun <T : Any> SearchableDropdown(
     items: List<T>,
     searchProperties: List<KProperty1<T, *>>,
+    dismissOnClickOutside: Boolean = true,
     itemContent: @Composable (T) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -76,7 +77,7 @@ fun <T : Any> SearchableDropdown(
                 buttonRef.value = coordinates
             }
             .clickable {
-                if (!expanded)
+                if (dismissOnClickOutside && !expanded)
                     expanded = !expanded
             }
             .padding(horizontal = 30.dp)
@@ -102,7 +103,10 @@ fun <T : Any> SearchableDropdown(
                 y = (buttonRef.value?.positionInRoot()?.y?.toInt() ?: 0) +
                         (buttonRef.value?.size?.height ?: 0) + separationSpace
             ),
-            onDismissRequest = { expanded = false },
+            onDismissRequest = {
+                if (dismissOnClickOutside)
+                    expanded = false
+            },
             properties = PopupProperties(focusable = true)
         ) {
             AnimatedContent(
