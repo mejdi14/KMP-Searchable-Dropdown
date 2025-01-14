@@ -8,13 +8,13 @@ permissions:
   issues: write
 
 jobs:
-  create_issue_branch_job:
+  create-issue-branch:
     runs-on: ubuntu-latest
     steps:
       - name: Create Issue Branch
-        uses: robvanderleek/create-issue-branch@main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: peter-evans/create-issue-branch@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Post a GIF as a comment
         uses: actions/github-script@v6
