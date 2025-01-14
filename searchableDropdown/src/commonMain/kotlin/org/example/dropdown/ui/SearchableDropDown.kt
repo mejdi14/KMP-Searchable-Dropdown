@@ -45,9 +45,11 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
+import co.touchlab.kermit.Logger
 import kmp_searchable_dropdown.searchabledropdown.generated.resources.Res
 import kmp_searchable_dropdown.searchabledropdown.generated.resources.expand_less
 import org.example.dropdown.data.Config
+import org.example.dropdown.ui.AnimatedIcon
 import org.example.dropdown.ui.SearchArea
 import org.jetbrains.compose.resources.painterResource
 import kotlin.reflect.KProperty1
@@ -77,18 +79,31 @@ fun <T : Any> SearchableDropdown(
                 parentCoordinates.value = coordinates
             }
             .clickable {
+                Logger.i("list is clicked")
                 expanded = !expanded
             }
 
     ) {
+        Text(
+            text = "Select your skill",
+            color = Color.Black,
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .padding(vertical = 16.dp)
+        )
+        val firstItem = items.first()
 
-        itemContent(items.first())
+
+        itemContent(firstItem)
+
+
         Box(modifier = Modifier.align(alignment = Alignment.CenterEnd)) {
             AnimatedIcon(rotationAngle, expanded)
         }
     }
 
     if (expanded) {
+        Logger.i("list is expanded")
         Popup(
             alignment = Alignment.TopStart,
             offset = IntOffset(
@@ -154,36 +169,5 @@ fun <T : Any> SearchableDropdown(
     Spacer(modifier = Modifier.height(10.dp))
 }
 
-@Composable
-private fun AnimatedIcon(rotationAngle: Dp, expanded: Boolean) {
-    val scale = remember { Animatable(1f) }
-    val alpha = remember { Animatable(1f) }
-    val isFirstComposition = remember { mutableStateOf(true) }
 
-    LaunchedEffect(expanded) {
-        if (isFirstComposition.value) {
-            isFirstComposition.value = false
-        } else {
-            if (expanded) {
-                scale.animateTo(0.1f, animationSpec = TweenSpec(durationMillis = 500))
-                scale.animateTo(1f, animationSpec = TweenSpec(durationMillis = 500))
-                alpha.animateTo(0.5f, animationSpec = TweenSpec(durationMillis = 500))
-                alpha.animateTo(1f, animationSpec = TweenSpec(durationMillis = 500))
-            } else {
-                scale.animateTo(0.1f, animationSpec = TweenSpec(durationMillis = 500))
-                scale.animateTo(1f, animationSpec = TweenSpec(durationMillis = 500))
-                alpha.animateTo(0.5f, animationSpec = TweenSpec(durationMillis = 500))
-                alpha.animateTo(1f, animationSpec = TweenSpec(durationMillis = 500))
-            }
-        }
-    }
-    Image(
-        painter = painterResource(Res.drawable.expand_less),
-        contentDescription = "Toggle Dropdown",
-        modifier = Modifier
-            .scale(scale.value)
-            .alpha(scale.value)
-            .rotate(rotationAngle.value)
-    )
-}
 

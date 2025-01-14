@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
         text = student.name,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { /* Handle item click */ }
             .padding(16.dp),
         color = Color.Black
     )
