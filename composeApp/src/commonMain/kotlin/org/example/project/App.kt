@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import org.example.dropdown.data.SearchSettings
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 import org.example.project.ui.SearchableDropdown
@@ -33,11 +34,14 @@ fun App() {
                 Spacer(modifier = Modifier.height(200.dp))
                 SearchableDropdown(
                     items = students,
-                    searchProperties = listOf(
-                        Student::name,
-                        Student::age,
-                        Student::note
+                    SearchSettings(
+                        searchProperties = listOf(
+                            Student::name,
+                            Student::age,
+                            Student::note
+                        )
                     )
+
                 ) { student ->
                     DropdownItem(student)
                 }

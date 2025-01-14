@@ -47,16 +47,14 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
-import co.touchlab.kermit.Logger
 import kmp_searchable_dropdown.searchabledropdown.generated.resources.Res
 import kmp_searchable_dropdown.searchabledropdown.generated.resources.expand_less
 import org.example.dropdown.data.Config
 import org.example.dropdown.data.SearchSettings
+import org.example.dropdown.helper.matchesQuery
 import org.example.dropdown.ui.AnimatedIcon
 import org.example.dropdown.ui.SearchArea
 import org.example.dropdown.ui.SearchSeparator
-import org.jetbrains.compose.resources.painterResource
-import kotlin.reflect.KProperty1
 
 
 @Composable
@@ -88,7 +86,7 @@ fun <T : Any> SearchableDropdown(
             }
 
     ) {
-        if (selectedItem.value != null){
+        if (selectedItem.value != null) {
             itemContent(selectedItem.value!!)
         } else {
             Text(
@@ -137,33 +135,34 @@ fun <T : Any> SearchableDropdown(
                             .animateContentSize()
                     ) {
                         SearchArea(searchQuery)
-                        SearchSeparator()
+                        searchSettings.separator
                         LazyColumn(Modifier.fillMaxWidth()) {
                             val filteredItems = if (searchQuery.value.isEmpty()) {
                                 items
                             } else {
                                 items.filter { item ->
-                                    searchProperties.any { prop ->
+                                    searchSettings.searchProperties.any { prop ->
                                         try {
-                                            val value = prop.get(item)
-                                            value?.toString()
-                                                ?.contains(
-                                                    searchQuery.value,
-                                                    ignoreCase = true
-                                                ) == true
+                                            val value = prop.get(item)?.toString().orEmpty()
+                                            value.matchesQuery(
+                                                searchQuery.value,
+                                                searchSettings.searchType,
+                                                searchSettings.ignoreCase
+                                            )
                                         } catch (e: Exception) {
                                             false
                                         }
                                     }
                                 }
                             }
+
                             items(filteredItems) { item ->
                                 Box(Modifier
-                                    .clickable{
+                                    .clickable {
                                         selectedItem.value = item
                                         expanded = !expanded
-                                    }){
-                                itemContent(item)
+                                    }) {
+                                    itemContent(item)
                                 }
                             }
                         }
