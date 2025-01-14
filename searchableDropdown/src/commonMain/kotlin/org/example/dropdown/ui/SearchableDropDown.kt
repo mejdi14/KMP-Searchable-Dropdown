@@ -26,6 +26,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +41,7 @@ import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -49,8 +51,10 @@ import co.touchlab.kermit.Logger
 import kmp_searchable_dropdown.searchabledropdown.generated.resources.Res
 import kmp_searchable_dropdown.searchabledropdown.generated.resources.expand_less
 import org.example.dropdown.data.Config
+import org.example.dropdown.data.SearchSettings
 import org.example.dropdown.ui.AnimatedIcon
 import org.example.dropdown.ui.SearchArea
+import org.example.dropdown.ui.SearchSeparator
 import org.jetbrains.compose.resources.painterResource
 import kotlin.reflect.KProperty1
 
@@ -58,8 +62,9 @@ import kotlin.reflect.KProperty1
 @Composable
 fun <T : Any> SearchableDropdown(
     items: List<T>,
-    searchProperties: List<KProperty1<T, *>>,
+    searchSettings: SearchSettings<T> = SearchSettings(),
     config: Config = Config(),
+    selectedItem: MutableState<T?> = remember { mutableStateOf<T?>(null) },
     itemContent: @Composable (T) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -79,31 +84,27 @@ fun <T : Any> SearchableDropdown(
                 parentCoordinates.value = coordinates
             }
             .clickable {
-                Logger.i("list is clicked")
                 expanded = !expanded
             }
 
     ) {
-        Text(
-            text = "Select your skill",
-            color = Color.Black,
-            modifier = Modifier
-                .align(Alignment.CenterStart)
-                .padding(vertical = 16.dp)
-        )
-        val firstItem = items.first()
-
-
-        itemContent(firstItem)
-
-
+        if (selectedItem.value != null){
+            itemContent(selectedItem.value!!)
+        } else {
+            Text(
+                text = "Select your skill",
+                color = Color.Black,
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(vertical = 16.dp)
+            )
+        }
         Box(modifier = Modifier.align(alignment = Alignment.CenterEnd)) {
             AnimatedIcon(rotationAngle, expanded)
         }
     }
 
     if (expanded) {
-        Logger.i("list is expanded")
         Popup(
             alignment = Alignment.TopStart,
             offset = IntOffset(
@@ -130,13 +131,14 @@ fun <T : Any> SearchableDropdown(
                     Column(
                         Modifier
                             .width(with(LocalDensity.current) {
-                                parentCoordinates.value?.size?.width?.toDp() ?: 300.dp
+                                (parentCoordinates.value?.size?.width?.toDp() ?: 300.dp) + 60.dp
                             })
                             .background(Color.White, RoundedCornerShape(20.dp))
                             .animateContentSize()
                     ) {
                         SearchArea(searchQuery)
-                        LazyColumn {
+                        SearchSeparator()
+                        LazyColumn(Modifier.fillMaxWidth()) {
                             val filteredItems = if (searchQuery.value.isEmpty()) {
                                 items
                             } else {
@@ -156,7 +158,13 @@ fun <T : Any> SearchableDropdown(
                                 }
                             }
                             items(filteredItems) { item ->
+                                Box(Modifier
+                                    .clickable{
+                                        selectedItem.value = item
+                                        expanded = !expanded
+                                    }){
                                 itemContent(item)
+                                }
                             }
                         }
                     }
@@ -168,6 +176,8 @@ fun <T : Any> SearchableDropdown(
 
     Spacer(modifier = Modifier.height(10.dp))
 }
+
+
 
 
 
