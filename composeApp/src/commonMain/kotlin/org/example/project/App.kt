@@ -3,7 +3,6 @@ package org.example.project
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -33,7 +32,7 @@ fun App() {
                 Spacer(modifier = Modifier.height(200.dp))
                 SearchableDropdown(
                     items = students,
-                    properties = listOf(
+                    searchProperties = listOf(
                         Student::name,
                         Student::age,
                         Student::note

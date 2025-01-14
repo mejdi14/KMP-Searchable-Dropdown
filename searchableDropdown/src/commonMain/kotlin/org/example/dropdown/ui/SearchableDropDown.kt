@@ -55,7 +55,7 @@ import kotlin.reflect.KProperty1
 @Composable
 fun <T : Any> SearchableDropdown(
     items: List<T>,
-    properties: List<KProperty1<T, *>>,
+    searchProperties: List<KProperty1<T, *>>,
     itemContent: @Composable (T) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -130,11 +130,14 @@ fun <T : Any> SearchableDropdown(
                                 items
                             } else {
                                 items.filter { item ->
-                                    properties.any { prop ->
+                                    searchProperties.any { prop ->
                                         try {
                                             val value = prop.get(item)
                                             value?.toString()
-                                                ?.contains(searchQuery.value, ignoreCase = true) == true
+                                                ?.contains(
+                                                    searchQuery.value,
+                                                    ignoreCase = true
+                                                ) == true
                                         } catch (e: Exception) {
                                             false
                                         }
