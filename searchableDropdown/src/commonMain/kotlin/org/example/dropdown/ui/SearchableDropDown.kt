@@ -40,6 +40,7 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import org.example.dropdown.data.DefaultDropdownItem
 import org.example.dropdown.data.DropdownConfig
+import org.example.dropdown.data.ItemContentConfig
 import org.example.dropdown.data.SearchSettings
 import org.example.dropdown.helper.matchesQuery
 import org.example.dropdown.ui.AnimatedIcon
@@ -51,10 +52,9 @@ import org.example.dropdown.ui.search.SearchArea
 fun <T : Any> SearchableDropdown(
     items: List<T>,
     searchSettings: SearchSettings<T> = SearchSettings(),
-    defaultDropdownItem: DefaultDropdownItem<T>? = null,
     dropdownConfig: DropdownConfig = DropdownConfig(),
     selectedItem: MutableState<T?> = remember { mutableStateOf<T?>(null) },
-    itemContent: @Composable (T) -> Unit
+    itemContentConfig: ItemContentConfig<T>,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val rotationAngle by animateDpAsState(targetValue = if (expanded) 180.dp else 0.dp)
@@ -78,7 +78,13 @@ fun <T : Any> SearchableDropdown(
 
     ) {
         if (selectedItem.value != null) {
-            itemContent(selectedItem.value!!)
+            when (itemContentConfig) {
+                is ItemContentConfig.Custom -> itemContentConfig.content
+                is ItemContentConfig.Default -> DefaultDropdownItemComposable(
+                    selectedItem.value!!,
+                    itemContentConfig.defaultItem
+                )
+            }
         } else {
             Text(
                 text = "Select your skill",
@@ -157,8 +163,14 @@ fun <T : Any> SearchableDropdown(
                                         selectedItem.value = item
                                         expanded = !expanded
                                     }) {
-                                   // itemContent(item)
-                                    DefaultDropdownItemComposable(item, defaultDropdownItem)
+                                    // itemContent(item)
+                                    when (itemContentConfig) {
+                                        is ItemContentConfig.Custom -> itemContentConfig.content
+                                        is ItemContentConfig.Default -> DefaultDropdownItemComposable(
+                                            item,
+                                            itemContentConfig.defaultItem
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -171,6 +183,7 @@ fun <T : Any> SearchableDropdown(
 
     Spacer(modifier = Modifier.height(10.dp))
 }
+
 
 
 

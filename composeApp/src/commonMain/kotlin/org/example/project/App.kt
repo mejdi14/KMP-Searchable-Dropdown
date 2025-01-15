@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.example.dropdown.data.DefaultDropdownItem
+import org.example.dropdown.data.ItemContentConfig
 import org.example.dropdown.data.SearchSettings
 import org.example.project.ui.SearchableDropdown
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -40,11 +41,8 @@ fun App() {
                             Student::note
                         )
                     ),
-                    defaultDropdownItem = DefaultDropdownItem<Student>(title = Student::name),
-
-                ) { student ->
-                    DropdownItem(student)
-                }
+                    itemContentConfig = ItemContentConfig.Default(DefaultDropdownItem<Student>(title = Student::name)),
+                    )
                 Spacer(modifier = Modifier.height(200.dp))
             }
         }
