@@ -38,10 +38,12 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
+import org.example.dropdown.data.DefaultDropdownItem
 import org.example.dropdown.data.DropdownConfig
 import org.example.dropdown.data.SearchSettings
 import org.example.dropdown.helper.matchesQuery
 import org.example.dropdown.ui.AnimatedIcon
+import org.example.dropdown.ui.item.DefaultDropdownItemComposable
 import org.example.dropdown.ui.search.SearchArea
 
 
@@ -49,13 +51,14 @@ import org.example.dropdown.ui.search.SearchArea
 fun <T : Any> SearchableDropdown(
     items: List<T>,
     searchSettings: SearchSettings<T> = SearchSettings(),
+    defaultDropdownItem: DefaultDropdownItem<T>? = null,
     dropdownConfig: DropdownConfig = DropdownConfig(),
     selectedItem: MutableState<T?> = remember { mutableStateOf<T?>(null) },
     itemContent: @Composable (T) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     val rotationAngle by animateDpAsState(targetValue = if (expanded) 180.dp else 0.dp)
-    val separationSpace = 20
+
 
     val parentCoordinates = remember { mutableStateOf<LayoutCoordinates?>(null) }
 
@@ -65,7 +68,7 @@ fun <T : Any> SearchableDropdown(
             .background(
                 color = dropdownConfig.backgroundColor,
                 shape = dropdownConfig.shape
-            ).padding(dropdownConfig.horizontalPadding)
+            ).padding(horizontal = dropdownConfig.horizontalPadding)
             .onGloballyPositioned { coordinates ->
                 parentCoordinates.value = coordinates
             }
@@ -96,7 +99,8 @@ fun <T : Any> SearchableDropdown(
             offset = IntOffset(
                 x = 0,
                 y = (parentCoordinates.value?.positionInRoot()?.y?.toInt() ?: 0) +
-                        (parentCoordinates.value?.size?.height ?: 0) + separationSpace
+                        (parentCoordinates.value?.size?.height
+                            ?: 0) + dropdownConfig.separationSpaceBetweenHeaderAndContent
             ),
             onDismissRequest = {
                 expanded = false
@@ -121,7 +125,7 @@ fun <T : Any> SearchableDropdown(
                                     ?: 300.dp) + (dropdownConfig.horizontalPadding * 2)
                             })
                             .background(Color.White, RoundedCornerShape(20.dp))
-                            .padding(dropdownConfig.horizontalPadding)
+                            .padding(horizontal = dropdownConfig.horizontalPadding)
                             .animateContentSize()
                     ) {
                         SearchArea(searchQuery, searchSettings)
@@ -153,7 +157,8 @@ fun <T : Any> SearchableDropdown(
                                         selectedItem.value = item
                                         expanded = !expanded
                                     }) {
-                                    itemContent(item)
+                                   // itemContent(item)
+                                    DefaultDropdownItemComposable(item, defaultDropdownItem)
                                 }
                             }
                         }
