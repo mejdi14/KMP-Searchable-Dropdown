@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
-import org.example.dropdown.data.Config
+import org.example.dropdown.data.DropdownConfig
 import org.example.dropdown.data.SearchSettings
 import org.example.dropdown.helper.matchesQuery
 import org.example.dropdown.ui.AnimatedIcon
@@ -49,7 +49,7 @@ import org.example.dropdown.ui.search.SearchArea
 fun <T : Any> SearchableDropdown(
     items: List<T>,
     searchSettings: SearchSettings<T> = SearchSettings(),
-    config: Config = Config(),
+    dropdownConfig: DropdownConfig = DropdownConfig(),
     selectedItem: MutableState<T?> = remember { mutableStateOf<T?>(null) },
     itemContent: @Composable (T) -> Unit
 ) {
@@ -63,9 +63,9 @@ fun <T : Any> SearchableDropdown(
         Modifier
             .fillMaxWidth()
             .background(
-                color = config.backgroundColor,
-                shape = config.shape
-            ).padding(config.padding)
+                color = dropdownConfig.backgroundColor,
+                shape = dropdownConfig.shape
+            ).padding(dropdownConfig.padding)
             .onGloballyPositioned { coordinates ->
                 parentCoordinates.value = coordinates
             }
@@ -143,6 +143,7 @@ fun <T : Any> SearchableDropdown(
                                     }
                                 }
                             }
+                            searchSettings.searchActionListener.onSearchResults(filteredItems)
 
                             items(filteredItems) { item ->
                                 Box(Modifier
