@@ -1,5 +1,6 @@
-package org.example.dropdown.ui
+package org.example.dropdown.ui.search
 
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
@@ -13,6 +14,6 @@ import org.jetbrains.compose.resources.painterResource
 internal fun SearchIconComposable() {
     Icon(
         painterResource(Res.drawable.search_icon), "",
-        modifier = Modifier.width(50.dp)
+        modifier = Modifier.size(50.dp)
     )
 }

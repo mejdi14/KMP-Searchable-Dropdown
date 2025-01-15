@@ -42,7 +42,7 @@ import org.example.dropdown.data.Config
 import org.example.dropdown.data.SearchSettings
 import org.example.dropdown.helper.matchesQuery
 import org.example.dropdown.ui.AnimatedIcon
-import org.example.dropdown.ui.SearchArea
+import org.example.dropdown.ui.search.SearchArea
 
 
 @Composable
