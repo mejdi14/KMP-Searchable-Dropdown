@@ -122,7 +122,7 @@ fun <T : Any> SearchableDropdown(
                             .background(Color.White, RoundedCornerShape(20.dp))
                             .animateContentSize()
                     ) {
-                        SearchArea(searchQuery)
+                        SearchArea(searchQuery, searchSettings)
                         searchSettings.separator
                         LazyColumn(Modifier.fillMaxWidth()) {
                             val filteredItems = if (searchQuery.value.isEmpty()) {

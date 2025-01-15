@@ -11,9 +11,7 @@ data class SearchSettings<T : Any>(
     val searchProperties: List<KProperty1<T, *>> = emptyList(),
     val separator : @Composable () -> Unit = { SearchSeparator() },
     val searchIcon : SearchIcon = SearchIcon(),
-    val searchInput: @Composable (MutableState<String>) -> Unit = { query ->
-        SearchArea(query)
-    },
+    val searchInput: SearchInput = SearchInput(),
     val searchType: SearchType = SearchType.CONTAINS,
     val ignoreCase: Boolean = true,
 )
