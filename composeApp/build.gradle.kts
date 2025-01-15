@@ -1,14 +1,9 @@
-import org.gradle.kotlin.dsl.commonMain
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.implementation
-import org.gradle.kotlin.dsl.invoke
-import org.gradle.kotlin.dsl.jvm
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
-import kotlin.text.set
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)

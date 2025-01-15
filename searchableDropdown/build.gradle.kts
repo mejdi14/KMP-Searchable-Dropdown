@@ -1,6 +1,4 @@
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.implementation
-import org.gradle.kotlin.dsl.jvm
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
@@ -70,6 +68,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation("co.touchlab:kermit:2.0.4")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
