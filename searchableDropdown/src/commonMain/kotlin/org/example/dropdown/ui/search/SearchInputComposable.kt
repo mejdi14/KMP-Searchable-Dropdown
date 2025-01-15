@@ -17,20 +17,16 @@ import org.example.dropdown.data.SearchInput
 @Composable
 internal fun SearchInputComposable(searchQuery: MutableState<String>, searchInput: SearchInput) {
     OutlinedTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp),
+        modifier = searchInput.modifier,
         value = searchQuery.value,
         onValueChange = { searchQuery.value = it },
-        placeholder = { Text("Searching...") },
+        placeholder = searchInput.placeholder,
         colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent
+            backgroundColor = searchInput.backgroundColor,
+            focusedIndicatorColor = searchInput.focusedIndicatorColor,
+            unfocusedIndicatorColor = searchInput.unfocusedIndicatorColor,
+            disabledIndicatorColor = searchInput.disabledIndicatorColor
         ),
-        keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Search,
-        ),
+        keyboardOptions = searchInput.keyboardOptions,
     )
 }

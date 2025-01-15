@@ -16,6 +16,5 @@ internal fun SearchIconComposable(searchIcon: SearchIcon) {
         painterResource(searchIcon.iconDrawable), searchIcon.contentDescription,
         modifier = searchIcon.modifier,
         tint = searchIcon.iconTintColor,
-
         )
 }
