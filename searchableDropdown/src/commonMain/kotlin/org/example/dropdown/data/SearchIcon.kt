@@ -10,7 +10,7 @@ import org.jetbrains.compose.resources.DrawableResource
 
 data class SearchIcon (
     val iconDrawable: DrawableResource = Res.drawable.search_icon,
-    val iconTintColor: Color = Color.Unspecified,
+    val iconTintColor: Color = Color.Black,
     val contentDescription: String = "search icon",
     val modifier: Modifier = Modifier,
     val iconSize: Dp = 50.dp

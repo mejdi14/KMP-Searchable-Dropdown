@@ -65,7 +65,7 @@ fun <T : Any> SearchableDropdown(
             .background(
                 color = dropdownConfig.backgroundColor,
                 shape = dropdownConfig.shape
-            ).padding(dropdownConfig.padding)
+            ).padding(dropdownConfig.horizontalPadding)
             .onGloballyPositioned { coordinates ->
                 parentCoordinates.value = coordinates
             }
@@ -117,9 +117,11 @@ fun <T : Any> SearchableDropdown(
                     Column(
                         Modifier
                             .width(with(LocalDensity.current) {
-                                (parentCoordinates.value?.size?.width?.toDp() ?: 300.dp) + 60.dp
+                                (parentCoordinates.value?.size?.width?.toDp()
+                                    ?: 300.dp) + (dropdownConfig.horizontalPadding * 2)
                             })
                             .background(Color.White, RoundedCornerShape(20.dp))
+                            .padding(dropdownConfig.horizontalPadding)
                             .animateContentSize()
                     ) {
                         SearchArea(searchQuery, searchSettings)
