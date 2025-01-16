@@ -1,52 +1,32 @@
 package org.example.project.ui
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInRoot
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Popup
-import androidx.compose.ui.window.PopupProperties
 import org.example.dropdown.data.DropdownConfig
 import org.example.dropdown.data.ItemContentConfig
 import org.example.dropdown.data.search.SearchSettings
-import org.example.dropdown.helper.matchesQuery
-import org.example.dropdown.ui.HorizontalDivider
+import org.example.dropdown.ui.DropdownContentPopUp
 import org.example.dropdown.ui.ToggleIconComposable
 import org.example.dropdown.ui.item.DefaultDropdownItemComposable
-import org.example.dropdown.ui.search.SearchArea
 
 
 @Composable
@@ -57,8 +37,8 @@ fun <T : Any> SearchableDropdown(
     selectedItem: MutableState<T?> = remember { mutableStateOf<T?>(null) },
     itemContentConfig: ItemContentConfig<T>,
 ) {
-    var expanded by remember { mutableStateOf(false) }
-    val rotationAngle by animateDpAsState(targetValue = if (expanded) 180.dp else 0.dp)
+    var expanded = remember { mutableStateOf(false) }
+    val rotationAngle by animateDpAsState(targetValue = if (expanded.value) 180.dp else 0.dp)
 
 
     val parentCoordinates = remember { mutableStateOf<LayoutCoordinates?>(null) }
@@ -76,7 +56,7 @@ fun <T : Any> SearchableDropdown(
                 parentCoordinates.value = coordinates
             }
             .clickable {
-                expanded = !expanded
+                expanded.value = !expanded.value
             }
 
     ) {
@@ -98,98 +78,24 @@ fun <T : Any> SearchableDropdown(
             )
         }
         Box(modifier = Modifier.align(alignment = Alignment.CenterEnd)) {
-            ToggleIconComposable(rotationAngle, expanded)
+            ToggleIconComposable(rotationAngle, expanded.value)
         }
     }
 
-    if (expanded) {
-        Popup(
-            alignment = Alignment.TopStart,
-            offset = IntOffset(
-                x = 0,
-                y = (parentCoordinates.value?.positionInRoot()?.y?.toInt() ?: 0) +
-                        (parentCoordinates.value?.size?.height
-                            ?: 0) + dropdownConfig.separationSpaceBetweenHeaderAndContent
-            ),
-            onDismissRequest = {
-                expanded = false
-            },
-            properties = PopupProperties(focusable = true)
-        ) {
-            AnimatedContent(
-                targetState = expanded,
-                transitionSpec = {
-                    fadeIn(animationSpec = tween(500)) + expandVertically(
-                        animationSpec = tween(1000),
-                        expandFrom = Alignment.Top
-                    ) togetherWith fadeOut(animationSpec = tween(300))
-                }
-            ) { isExpanded ->
-                if (isExpanded) {
-                    var searchQuery = remember { mutableStateOf("") }
-                    Column(
-                        Modifier
-                            .width(with(LocalDensity.current) {
-                                (parentCoordinates.value?.size?.width?.toDp()
-                                    ?: 300.dp) + (dropdownConfig.horizontalPadding * 2)
-                            })
-                            .shadow(elevation = 2.dp, shape = dropdownConfig.shape)
-                            .background(Color.White, RoundedCornerShape(20.dp))
-                            .padding(horizontal = dropdownConfig.horizontalPadding)
-                            .animateContentSize()
-                    ) {
-                        SearchArea(searchQuery, searchSettings)
-                        searchSettings.separator
-                        LazyColumn(
-                            Modifier.fillMaxWidth(),
-                        ) {
-                            val filteredItems = if (searchQuery.value.isEmpty()) {
-                                items
-                            } else {
-                                items.filter { item ->
-                                    searchSettings.searchProperties.any { prop ->
-                                        try {
-                                            val value = prop.get(item)?.toString().orEmpty()
-                                            value.matchesQuery(
-                                                searchQuery.value,
-                                                searchSettings.searchType,
-                                                searchSettings.ignoreCase
-                                            )
-                                        } catch (e: Exception) {
-                                            false
-                                        }
-                                    }
-                                }
-                            }
-                            searchSettings.searchActionListener.onSearchResults(filteredItems)
-
-                            itemsIndexed(filteredItems) { index, item ->
-                                Box(Modifier
-                                    .clickable {
-                                        selectedItem.value = item
-                                        expanded = !expanded
-                                    }) {
-                                    when (itemContentConfig) {
-                                        is ItemContentConfig.Custom -> itemContentConfig.content
-                                        is ItemContentConfig.Default -> DefaultDropdownItemComposable(
-                                            item,
-                                            itemContentConfig.defaultItem
-                                        )
-                                    }
-                                }
-                                if (index != items.lastIndex && dropdownConfig.itemSeparator.showSeparator) {
-                                    HorizontalDivider(dropdownConfig.itemSeparator)
-                                }
-                            }
-                        }
-                    }
-
-                }
-            }
-        }
+    if (expanded.value) {
+        DropdownContentPopUp(
+            parentCoordinates,
+            dropdownConfig,
+            expanded,
+            searchSettings,
+            items,
+            selectedItem,
+            itemContentConfig
+        )
     }
     Spacer(modifier = Modifier.height(10.dp))
 }
+
 
 
 
