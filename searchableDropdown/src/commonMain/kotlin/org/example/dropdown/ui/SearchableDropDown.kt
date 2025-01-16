@@ -62,7 +62,7 @@ fun <T : Any> SearchableDropdown(
     ) {
         if (selectedItem.value != null) {
             when (itemContentConfig) {
-                is ItemContentConfig.Custom -> itemContentConfig.content
+                is ItemContentConfig.Custom -> itemContentConfig.content(selectedItem.value!!)
                 is ItemContentConfig.Default -> DefaultDropdownItemComposable(
                     selectedItem.value!!,
                     itemContentConfig.defaultItem
