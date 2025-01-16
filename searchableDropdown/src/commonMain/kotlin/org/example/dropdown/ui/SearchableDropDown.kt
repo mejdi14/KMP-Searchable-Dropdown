@@ -42,7 +42,7 @@ import org.example.dropdown.data.DropdownConfig
 import org.example.dropdown.data.ItemContentConfig
 import org.example.dropdown.data.search.SearchSettings
 import org.example.dropdown.helper.matchesQuery
-import org.example.dropdown.ui.AnimatedIcon
+import org.example.dropdown.ui.ToggleIconComposable
 import org.example.dropdown.ui.item.DefaultDropdownItemComposable
 import org.example.dropdown.ui.search.SearchArea
 
@@ -94,7 +94,7 @@ fun <T : Any> SearchableDropdown(
             )
         }
         Box(modifier = Modifier.align(alignment = Alignment.CenterEnd)) {
-            AnimatedIcon(rotationAngle, expanded)
+            ToggleIconComposable(rotationAngle, expanded)
         }
     }
 

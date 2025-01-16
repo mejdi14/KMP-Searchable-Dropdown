@@ -9,7 +9,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.Dp
@@ -19,7 +18,7 @@ import kmp_searchable_dropdown.searchabledropdown.generated.resources.expand_les
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-internal fun AnimatedIcon(rotationAngle: Dp, expanded: Boolean) {
+internal fun ToggleIconComposable(rotationAngle: Dp, expanded: Boolean) {
     val scale = remember { Animatable(1f) }
     val alpha = remember { Animatable(1f) }
     val isFirstComposition = remember { mutableStateOf(true) }
@@ -44,6 +43,7 @@ internal fun AnimatedIcon(rotationAngle: Dp, expanded: Boolean) {
     Image(
         painter = painterResource(Res.drawable.expand_less),
         contentDescription = "Toggle Dropdown",
+
         modifier = Modifier
             .size(20.dp)
             .scale(scale.value)
