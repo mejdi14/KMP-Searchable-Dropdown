@@ -35,7 +35,7 @@ import androidx.compose.ui.window.PopupProperties
 import org.example.dropdown.data.DropdownConfig
 import org.example.dropdown.data.ItemContentConfig
 import org.example.dropdown.data.search.SearchSettings
-import org.example.dropdown.helper.matchesQuery
+import org.example.dropdown.helper.filterOperation
 import org.example.dropdown.ui.item.DefaultDropdownItemComposable
 import org.example.dropdown.ui.search.SearchArea
 
@@ -95,50 +95,34 @@ internal fun <T : Any> DropdownContentPopUp(
                 ) {
                     SearchArea(searchQuery, searchSettings)
                     searchSettings.separator
-                    LazyColumn(
-                        Modifier.fillMaxWidth(),
-                    ) {
-                        val filteredItems = if (searchQuery.value.isEmpty()) {
-                            items
-                        } else {
-                            items.filter { item ->
-                                searchSettings.searchProperties.any { prop ->
-                                    try {
-                                        val value = prop.get(item)?.toString().orEmpty()
-                                        value.matchesQuery(
-                                            searchQuery.value,
-                                            searchSettings.searchType,
-                                            searchSettings.ignoreCase
+                    val filteredItems = filterOperation(searchQuery, items, searchSettings)
+                    if (filteredItems.isEmpty())
+                        dropdownConfig.emptySearchPlaceholder
+                    else
+                        LazyColumn(
+                            Modifier.fillMaxWidth(),
+                        ) {
+                            searchSettings.searchActionListener.onSearchResults(filteredItems)
+                            itemsIndexed(filteredItems) { index, item ->
+                                Box(Modifier.fillMaxWidth()
+                                    .clickable {
+                                        selectedItem.value = item
+                                        expanded.value = !expanded.value
+                                    }) {
+                                    when (itemContentConfig) {
+                                        is ItemContentConfig.Custom -> itemContentConfig.content
+                                        is ItemContentConfig.Default -> DefaultDropdownItemComposable(
+                                            item,
+                                            itemContentConfig.defaultItem
                                         )
-                                    } catch (e: Exception) {
-                                        false
                                     }
                                 }
-                            }
-                        }
-                        searchSettings.searchActionListener.onSearchResults(filteredItems)
-
-                        itemsIndexed(filteredItems) { index, item ->
-                            Box(Modifier
-                                .clickable {
-                                    selectedItem.value = item
-                                    expanded.value = !expanded.value
-                                }) {
-                                when (itemContentConfig) {
-                                    is ItemContentConfig.Custom -> itemContentConfig.content
-                                    is ItemContentConfig.Default -> DefaultDropdownItemComposable(
-                                        item,
-                                        itemContentConfig.defaultItem
-                                    )
+                                if (index != items.lastIndex && dropdownConfig.itemSeparator.showSeparator) {
+                                    HorizontalDivider(dropdownConfig.itemSeparator)
                                 }
                             }
-                            if (index != items.lastIndex && dropdownConfig.itemSeparator.showSeparator) {
-                                HorizontalDivider(dropdownConfig.itemSeparator)
-                            }
                         }
-                    }
                 }
-
             }
         }
     }

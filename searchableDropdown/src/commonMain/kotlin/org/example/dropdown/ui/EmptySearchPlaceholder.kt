@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun EmptySearchContent() {
+fun EmptySearchPlaceholder() {
     Text(
         text = "No results found",
         color = Color.Gray,

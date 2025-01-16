@@ -1,10 +1,12 @@
 package org.example.dropdown.data
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import org.example.dropdown.ui.EmptySearchPlaceholder
 
 data class DropdownConfig(
     val backgroundColor: Color = Color.White,
@@ -13,5 +15,8 @@ data class DropdownConfig(
     val horizontalPadding: Dp = 30.dp,
     val separationSpaceBetweenHeaderAndContent: Int = 20,
     val toggleIcon: ToggleIcon = ToggleIcon(),
-    val itemSeparator: DropdownItemSeparator = DropdownItemSeparator()
+    val itemSeparator: DropdownItemSeparator = DropdownItemSeparator(),
+    val emptySearchPlaceholder: @Composable () -> Unit = {
+        EmptySearchPlaceholder()
+    }
 )
