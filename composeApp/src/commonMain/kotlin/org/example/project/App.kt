@@ -23,7 +23,7 @@ fun App() {
     MaterialTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = Color.Cyan
+            color = Color(0xFFfafafa)
         ) {
             val students = listOf(
                 Student("Alice", 20, "Good student"),

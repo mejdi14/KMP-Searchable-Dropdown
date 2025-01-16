@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -65,10 +66,12 @@ fun <T : Any> SearchableDropdown(
     Box(
         Modifier
             .fillMaxWidth()
+            .shadow(elevation = 2.dp, shape = dropdownConfig.shape)
             .background(
                 color = dropdownConfig.backgroundColor,
                 shape = dropdownConfig.shape
             ).padding(horizontal = dropdownConfig.horizontalPadding)
+
             .onGloballyPositioned { coordinates ->
                 parentCoordinates.value = coordinates
             }
@@ -130,6 +133,7 @@ fun <T : Any> SearchableDropdown(
                                 (parentCoordinates.value?.size?.width?.toDp()
                                     ?: 300.dp) + (dropdownConfig.horizontalPadding * 2)
                             })
+                            .shadow(elevation = 2.dp, shape = dropdownConfig.shape)
                             .background(Color.White, RoundedCornerShape(20.dp))
                             .padding(horizontal = dropdownConfig.horizontalPadding)
                             .animateContentSize()
@@ -184,7 +188,6 @@ fun <T : Any> SearchableDropdown(
             }
         }
     }
-
     Spacer(modifier = Modifier.height(10.dp))
 }
 
