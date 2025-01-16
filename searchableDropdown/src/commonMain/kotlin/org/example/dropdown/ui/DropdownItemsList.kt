@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import co.touchlab.kermit.Logger
 import org.example.dropdown.data.DropdownConfig
 import org.example.dropdown.data.ItemContentConfig
 import org.example.dropdown.data.search.SearchSettings
@@ -30,13 +31,14 @@ internal fun <T : Any> DropdownItemsList(
     ) {
         searchSettings.searchActionListener.onSearchResults(filteredItems)
         itemsIndexed(filteredItems) { index, item ->
-            Box(Modifier.fillMaxWidth().background(Color.Red)
+
+            Box(Modifier.fillMaxWidth()
                 .clickable {
                     selectedItem.value = item
                     expanded.value = !expanded.value
                 }) {
                 when (itemContentConfig) {
-                    is ItemContentConfig.Custom -> itemContentConfig.content
+                    is ItemContentConfig.Custom -> itemContentConfig.content(item)
                     is ItemContentConfig.Default -> DefaultDropdownItemComposable(
                         item,
                         itemContentConfig.defaultItem
