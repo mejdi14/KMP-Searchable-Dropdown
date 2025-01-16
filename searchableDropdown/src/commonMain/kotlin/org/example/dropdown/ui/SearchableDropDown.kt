@@ -38,10 +38,9 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
-import org.example.dropdown.data.DefaultDropdownItem
 import org.example.dropdown.data.DropdownConfig
 import org.example.dropdown.data.ItemContentConfig
-import org.example.dropdown.data.SearchSettings
+import org.example.dropdown.data.search.SearchSettings
 import org.example.dropdown.helper.matchesQuery
 import org.example.dropdown.ui.AnimatedIcon
 import org.example.dropdown.ui.item.DefaultDropdownItemComposable
@@ -163,7 +162,6 @@ fun <T : Any> SearchableDropdown(
                                         selectedItem.value = item
                                         expanded = !expanded
                                     }) {
-                                    // itemContent(item)
                                     when (itemContentConfig) {
                                         is ItemContentConfig.Custom -> itemContentConfig.content
                                         is ItemContentConfig.Default -> DefaultDropdownItemComposable(

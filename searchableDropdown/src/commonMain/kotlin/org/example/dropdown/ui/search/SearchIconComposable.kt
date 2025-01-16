@@ -2,7 +2,7 @@ package org.example.dropdown.ui.search
 
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
-import org.example.dropdown.data.SearchIcon
+import org.example.dropdown.data.search.SearchIcon
 import org.jetbrains.compose.resources.painterResource
 
 @Composable

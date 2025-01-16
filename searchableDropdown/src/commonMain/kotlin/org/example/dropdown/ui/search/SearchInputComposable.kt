@@ -4,7 +4,7 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import org.example.dropdown.data.SearchInput
+import org.example.dropdown.data.search.SearchInput
 
 @Composable
 internal fun SearchInputComposable(searchQuery: MutableState<String>, searchInput: SearchInput) {

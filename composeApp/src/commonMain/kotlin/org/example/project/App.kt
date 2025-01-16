@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.example.dropdown.data.DefaultDropdownItem
 import org.example.dropdown.data.ItemContentConfig
-import org.example.dropdown.data.SearchSettings
+import org.example.dropdown.data.search.SearchSettings
 import org.example.project.ui.SearchableDropdown
 import org.jetbrains.compose.ui.tooling.preview.Preview
 

@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import org.example.dropdown.data.SearchSettings
+import org.example.dropdown.data.search.SearchSettings
 
 @Composable
 internal fun <T : Any>SearchArea(searchQuery: MutableState<String>, searchSettings: SearchSettings<T>, ) {

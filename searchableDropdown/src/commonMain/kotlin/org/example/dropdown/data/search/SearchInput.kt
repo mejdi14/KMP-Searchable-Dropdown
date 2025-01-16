@@ -1,4 +1,4 @@
-package org.example.dropdown.data
+package org.example.dropdown.data.search
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height

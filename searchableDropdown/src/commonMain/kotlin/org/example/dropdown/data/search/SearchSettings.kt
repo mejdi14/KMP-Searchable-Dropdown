@@ -1,4 +1,4 @@
-package org.example.dropdown.data
+package org.example.dropdown.data.search
 
 import androidx.compose.runtime.Composable
 import org.example.dropdown.SearchActionListener

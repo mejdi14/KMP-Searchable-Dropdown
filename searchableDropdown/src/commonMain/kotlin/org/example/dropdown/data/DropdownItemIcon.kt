@@ -22,7 +22,7 @@ import kotlin.random.Random
 fun RoundInitialsIcon(
     fullName: String,
     modifier: Modifier = Modifier,
-    size: Dp = 48.dp
+    size: Dp = 28.dp
 ) {
 
     val randomColor = remember {

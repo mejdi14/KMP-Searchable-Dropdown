@@ -1,4 +1,4 @@
-package org.example.dropdown.data
+package org.example.dropdown.data.search
 
 enum class SearchType {
     CONTAINS,

@@ -3,6 +3,7 @@ package org.example.dropdown.ui
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -12,6 +13,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import kmp_searchable_dropdown.searchabledropdown.generated.resources.Res
 import kmp_searchable_dropdown.searchabledropdown.generated.resources.expand_less
 import org.jetbrains.compose.resources.painterResource
@@ -27,15 +29,15 @@ internal fun AnimatedIcon(rotationAngle: Dp, expanded: Boolean) {
             isFirstComposition.value = false
         } else {
             if (expanded) {
-                scale.animateTo(0.1f, animationSpec = TweenSpec(durationMillis = 500))
-                scale.animateTo(1f, animationSpec = TweenSpec(durationMillis = 500))
-                alpha.animateTo(0.5f, animationSpec = TweenSpec(durationMillis = 500))
-                alpha.animateTo(1f, animationSpec = TweenSpec(durationMillis = 500))
+                scale.animateTo(0.5f, animationSpec = TweenSpec(durationMillis = 300))
+                scale.animateTo(1f, animationSpec = TweenSpec(durationMillis = 300))
+                alpha.animateTo(0.5f, animationSpec = TweenSpec(durationMillis = 300))
+                alpha.animateTo(1f, animationSpec = TweenSpec(durationMillis = 300))
             } else {
-                scale.animateTo(0.1f, animationSpec = TweenSpec(durationMillis = 500))
-                scale.animateTo(1f, animationSpec = TweenSpec(durationMillis = 500))
-                alpha.animateTo(0.5f, animationSpec = TweenSpec(durationMillis = 500))
-                alpha.animateTo(1f, animationSpec = TweenSpec(durationMillis = 500))
+                scale.animateTo(0.5f, animationSpec = TweenSpec(durationMillis = 300))
+                scale.animateTo(1f, animationSpec = TweenSpec(durationMillis = 300))
+                alpha.animateTo(0.5f, animationSpec = TweenSpec(durationMillis = 300))
+                alpha.animateTo(1f, animationSpec = TweenSpec(durationMillis = 300))
             }
         }
     }
@@ -43,8 +45,8 @@ internal fun AnimatedIcon(rotationAngle: Dp, expanded: Boolean) {
         painter = painterResource(Res.drawable.expand_less),
         contentDescription = "Toggle Dropdown",
         modifier = Modifier
+            .size(20.dp)
             .scale(scale.value)
-            .alpha(scale.value)
             .rotate(rotationAngle.value)
     )
 }

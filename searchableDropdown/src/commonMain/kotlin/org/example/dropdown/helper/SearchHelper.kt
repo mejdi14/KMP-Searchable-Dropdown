@@ -1,6 +1,6 @@
 package org.example.dropdown.helper
 
-import org.example.dropdown.data.SearchType
+import org.example.dropdown.data.search.SearchType
 
 fun String.matchesQuery(query: String, searchType: SearchType, ignoreCase: Boolean = true): Boolean {
     return when (searchType) {
