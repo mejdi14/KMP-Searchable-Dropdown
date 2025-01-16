@@ -8,14 +8,10 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -36,7 +32,6 @@ import org.example.dropdown.data.DropdownConfig
 import org.example.dropdown.data.ItemContentConfig
 import org.example.dropdown.data.search.SearchSettings
 import org.example.dropdown.helper.filterOperation
-import org.example.dropdown.ui.item.DefaultDropdownItemComposable
 import org.example.dropdown.ui.search.SearchArea
 
 
@@ -76,6 +71,7 @@ internal fun <T : Any> DropdownContentPopUp(
                 var searchQuery = remember { mutableStateOf("") }
                 Column(
                     Modifier
+                        .height(dropdownConfig.maxHeight)
                         .width(with(LocalDensity.current) {
                             (parentCoordinates.value?.size?.width?.toDp()
                                 ?: 300.dp) + (dropdownConfig.horizontalPadding * 2)
@@ -99,29 +95,15 @@ internal fun <T : Any> DropdownContentPopUp(
                     if (filteredItems.isEmpty())
                         dropdownConfig.emptySearchPlaceholder
                     else
-                        LazyColumn(
-                            Modifier.fillMaxWidth(),
-                        ) {
-                            searchSettings.searchActionListener.onSearchResults(filteredItems)
-                            itemsIndexed(filteredItems) { index, item ->
-                                Box(Modifier.fillMaxWidth()
-                                    .clickable {
-                                        selectedItem.value = item
-                                        expanded.value = !expanded.value
-                                    }) {
-                                    when (itemContentConfig) {
-                                        is ItemContentConfig.Custom -> itemContentConfig.content
-                                        is ItemContentConfig.Default -> DefaultDropdownItemComposable(
-                                            item,
-                                            itemContentConfig.defaultItem
-                                        )
-                                    }
-                                }
-                                if (index != items.lastIndex && dropdownConfig.itemSeparator.showSeparator) {
-                                    HorizontalDivider(dropdownConfig.itemSeparator)
-                                }
-                            }
-                        }
+                        DropdownItemsList(
+                            searchSettings,
+                            filteredItems,
+                            selectedItem,
+                            expanded,
+                            itemContentConfig,
+                            items,
+                            dropdownConfig
+                        )
                 }
             }
         }

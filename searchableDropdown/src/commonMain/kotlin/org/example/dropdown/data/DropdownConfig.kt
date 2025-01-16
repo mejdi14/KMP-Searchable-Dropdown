@@ -11,6 +11,7 @@ import org.example.dropdown.ui.EmptySearchPlaceholder
 data class DropdownConfig(
     val backgroundColor: Color = Color.White,
     val shape: Shape = RoundedCornerShape(20.dp),
+    val maxHeight: Dp = 300.dp,
     val dropdownShadow: DropdownShadow = DropdownShadow(shape = shape),
     val horizontalPadding: Dp = 30.dp,
     val separationSpaceBetweenHeaderAndContent: Int = 20,

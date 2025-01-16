@@ -14,6 +14,8 @@ import androidx.compose.ui.unit.dp
 import org.example.dropdown.data.DefaultDropdownItem
 import org.example.dropdown.data.ItemContentConfig
 import org.example.dropdown.data.search.SearchSettings
+import org.example.project.demo.CountryDemo
+import org.example.project.demo.StudentDemo
 import org.example.project.ui.SearchableDropdown
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -25,32 +27,15 @@ fun App() {
             modifier = Modifier.fillMaxSize(),
             color = Color(0xFFfafafa)
         ) {
-            val students = listOf(
-                Student("Alice", 20, "Good student"),
-                Student("Bob", 22, "Needs improvement"),
-                Student("Charlie", 21, "Excellent work")
-            )
+
             Column(modifier = Modifier.padding(horizontal = 30.dp)) {
                 Spacer(modifier = Modifier.height(200.dp))
-                SearchableDropdown(
-                    items = students,
-                    SearchSettings(
-                        searchProperties = listOf(
-                            Student::name,
-                            Student::age,
-                            Student::note
-                        )
-                    ),
-                    itemContentConfig = ItemContentConfig.Default(DefaultDropdownItem<Student>(title = Student::name)),
-                    )
-                Spacer(modifier = Modifier.height(200.dp))
+                StudentDemo ()
+                Spacer(modifier = Modifier.height(50.dp))
+                CountryDemo ()
             }
         }
     }
 }
 
-data class Student(
-    val name: String,
-    val age: Int,
-    val note: String
-)
+
