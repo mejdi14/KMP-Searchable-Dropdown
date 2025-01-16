@@ -1,6 +1,7 @@
 package org.example.dropdown.data
 
 import androidx.compose.runtime.Composable
+import org.example.dropdown.ui.icon.RoundInitialsIcon
 import kotlin.reflect.KProperty1
 
 data class DefaultDropdownItem<T : Any>(

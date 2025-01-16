@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -42,6 +43,7 @@ import org.example.dropdown.data.DropdownConfig
 import org.example.dropdown.data.ItemContentConfig
 import org.example.dropdown.data.search.SearchSettings
 import org.example.dropdown.helper.matchesQuery
+import org.example.dropdown.ui.HorizontalDivider
 import org.example.dropdown.ui.ToggleIconComposable
 import org.example.dropdown.ui.item.DefaultDropdownItemComposable
 import org.example.dropdown.ui.search.SearchArea
@@ -135,7 +137,9 @@ fun <T : Any> SearchableDropdown(
                     ) {
                         SearchArea(searchQuery, searchSettings)
                         searchSettings.separator
-                        LazyColumn(Modifier.fillMaxWidth()) {
+                        LazyColumn(
+                            Modifier.fillMaxWidth(),
+                        ) {
                             val filteredItems = if (searchQuery.value.isEmpty()) {
                                 items
                             } else {
@@ -156,7 +160,7 @@ fun <T : Any> SearchableDropdown(
                             }
                             searchSettings.searchActionListener.onSearchResults(filteredItems)
 
-                            items(filteredItems) { item ->
+                            itemsIndexed(filteredItems) { index, item ->
                                 Box(Modifier
                                     .clickable {
                                         selectedItem.value = item
@@ -169,6 +173,9 @@ fun <T : Any> SearchableDropdown(
                                             itemContentConfig.defaultItem
                                         )
                                     }
+                                }
+                                if (index != items.lastIndex) {
+                                    HorizontalDivider()
                                 }
                             }
                         }

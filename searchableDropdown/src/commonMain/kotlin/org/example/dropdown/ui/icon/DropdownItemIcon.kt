@@ -1,4 +1,4 @@
-package org.example.dropdown.data
+package org.example.dropdown.ui.icon
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

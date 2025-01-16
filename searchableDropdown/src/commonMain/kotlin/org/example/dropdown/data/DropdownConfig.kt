@@ -12,5 +12,6 @@ data class DropdownConfig (
     val shape: Shape = RoundedCornerShape(20.dp),
     val horizontalPadding: Dp = 30.dp,
     val separationSpaceBetweenHeaderAndContent: Int = 20,
-    val toggleIcon: ToggleIcon = ToggleIcon()
+    val toggleIcon: ToggleIcon = ToggleIcon(),
+    val itemSeparator: DropdownItemSeparator = DropdownItemSeparator()
 )
