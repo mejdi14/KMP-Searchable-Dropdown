@@ -8,7 +8,7 @@ import kmp_searchable_dropdown.searchabledropdown.generated.resources.Res
 import kmp_searchable_dropdown.searchabledropdown.generated.resources.search_icon
 import org.jetbrains.compose.resources.DrawableResource
 
-internal abstract class BaseIcon {
+abstract class BaseIcon {
     abstract val iconDrawable: DrawableResource
     abstract val iconTintColor: Color
     abstract val contentDescription: String
