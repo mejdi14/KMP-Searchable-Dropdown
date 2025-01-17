@@ -10,6 +10,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -71,7 +72,7 @@ internal fun <T : Any> DropdownContentPopUp(
                 var searchQuery = remember { mutableStateOf("") }
                 Column(
                     Modifier
-                        .height(dropdownConfig.maxHeight)
+                        .heightIn(max = dropdownConfig.maxHeight)
                         .width(with(LocalDensity.current) {
                             (parentCoordinates.value?.size?.width?.toDp()
                                 ?: 300.dp) + (dropdownConfig.horizontalPadding * 2)
