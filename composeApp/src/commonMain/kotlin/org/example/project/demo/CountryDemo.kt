@@ -1,5 +1,6 @@
 package org.example.project.demo
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -14,9 +15,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import org.example.dropdown.data.DefaultDropdownItem
 import org.example.dropdown.data.ItemContentConfig
 import org.example.dropdown.data.search.SearchSettings
@@ -25,6 +24,7 @@ import org.example.project.data.Student
 import org.example.project.data.countries
 import org.example.project.data.students
 import org.example.project.ui.SearchableDropdown
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun CountryDemo (){
@@ -45,10 +45,10 @@ fun CountryDemo (){
                                 .padding(horizontal = 16.dp, vertical = 8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            AsyncImage(
-                                modifier = Modifier.size(32.dp),  // Reduced size to fit within row
-                                model = country.flagUrl,
-                                contentDescription = null,
+                            Image(
+                                painterResource(country.flagResources),
+                                modifier = Modifier.size(32.dp),
+                                contentDescription = "",
                             )
                             Spacer(Modifier.width(12.dp))
                             Text(
