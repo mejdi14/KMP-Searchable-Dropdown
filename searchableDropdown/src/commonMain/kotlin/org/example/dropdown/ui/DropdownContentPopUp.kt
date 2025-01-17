@@ -85,8 +85,7 @@ internal fun <T : Any> DropdownContentPopUp(
                                 )
                             } else Modifier
                         )
-                        .shadow(elevation = 2.dp, shape = dropdownConfig.shape)
-                        .background(Color.White, RoundedCornerShape(20.dp))
+                        .background(dropdownConfig.backgroundColor, dropdownConfig.shape)
                         .padding(horizontal = dropdownConfig.horizontalPadding)
                         .animateContentSize()
                 ) {
