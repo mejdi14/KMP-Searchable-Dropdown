@@ -30,7 +30,7 @@ import org.example.project.ui.SearchableDropdown
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun CountryDemo (){
+fun CountryDemo() {
     SearchableDropdown(
         items = countries,
         searchSettings = SearchSettings(
@@ -41,30 +41,31 @@ fun CountryDemo (){
         ),
         dropdownConfig = DropdownConfig(shape = RoundedCornerShape(8.dp)),
         itemContentConfig = ItemContentConfig.Custom(
-            content = { country ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(48.dp)  // Increased height to accommodate content
-                                .padding(horizontal = 16.dp, vertical = 8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                painterResource(country.flagResources),
-                                modifier = Modifier.size(32.dp),
-                                contentDescription = "",
-                            )
-                            Spacer(Modifier.width(12.dp))
-                            Text(
-                                text = country.name,
-                            )
-                            Spacer(Modifier.width(12.dp))
-                            Text(
-                                text = country.phoneCode,
-                                color = Color.Gray
-                            )
+            content = { country, selectedCountry ->
+                Row(
+                    modifier = Modifier
+                        .background(color = if (country == selectedCountry) Color.Gray else Color.Unspecified)
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painterResource(country.flagResources),
+                        modifier = Modifier.size(32.dp),
+                        contentDescription = "",
+                    )
+                    Spacer(Modifier.width(12.dp))
+                    Text(
+                        text = country.name,
+                    )
+                    Spacer(Modifier.width(12.dp))
+                    Text(
+                        text = country.phoneCode,
+                        color = Color.Gray
+                    )
 
-                        }
+                }
 
             }
         ),

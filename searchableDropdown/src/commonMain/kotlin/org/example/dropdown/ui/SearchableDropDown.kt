@@ -59,14 +59,14 @@ fun <T : Any> SearchableDropdown(
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
-            )  {
+            ) {
                 expanded.value = !expanded.value
             }
 
     ) {
         if (selectedItem.value != null) {
             when (itemContentConfig) {
-                is ItemContentConfig.Custom -> itemContentConfig.content(selectedItem.value!!)
+                is ItemContentConfig.Custom -> itemContentConfig.content(selectedItem.value!!, null)
                 is ItemContentConfig.Default -> DefaultDropdownItemComposable(
                     selectedItem.value!!,
                     itemContentConfig.defaultItem
@@ -94,7 +94,7 @@ fun <T : Any> SearchableDropdown(
             searchSettings,
             items,
             selectedItem,
-            itemContentConfig
+            itemContentConfig,
         )
     }
     Spacer(modifier = Modifier.height(10.dp))
