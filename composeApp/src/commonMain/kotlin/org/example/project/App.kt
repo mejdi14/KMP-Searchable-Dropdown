@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.example.project.demo.CountryDemo
+import org.example.project.demo.PeopleDemo
+import org.example.project.demo.SettingsDemo
 import org.example.project.demo.StudentDemo
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -27,10 +29,14 @@ fun App() {
         ) {
 
             Column(modifier = Modifier.padding(horizontal = 30.dp)) {
-                Spacer(modifier = Modifier.height(200.dp))
+                Spacer(modifier = Modifier.height(50.dp))
+                SettingsDemo()
+                Spacer(modifier = Modifier.height(50.dp))
                 StudentDemo ()
                 Spacer(modifier = Modifier.height(50.dp))
                 CountryDemo ()
+                Spacer(modifier = Modifier.height(50.dp))
+                PeopleDemo ()
             }
         }
     }

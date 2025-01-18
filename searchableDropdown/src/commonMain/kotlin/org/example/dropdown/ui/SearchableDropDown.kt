@@ -73,13 +73,7 @@ fun <T : Any> SearchableDropdown(
                 )
             }
         } else {
-            Text(
-                text = "Select your skill",
-                color = Color.Black,
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .padding(vertical = 16.dp)
-            )
+            dropdownConfig.headerPlaceholder()
         }
         Box(modifier = Modifier.align(alignment = Alignment.CenterEnd)) {
             ToggleIconComposable(rotationAngle, expanded.value)

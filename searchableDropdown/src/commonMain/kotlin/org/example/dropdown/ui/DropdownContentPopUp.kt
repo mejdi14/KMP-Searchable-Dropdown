@@ -91,8 +91,10 @@ internal fun <T : Any> DropdownContentPopUp(
                         .padding(horizontal = dropdownConfig.horizontalPadding)
                         .animateContentSize()
                 ) {
-                    SearchArea(searchQuery, searchSettings)
-                    searchSettings.separator
+                    if (searchSettings.searchEnabled){
+                        SearchArea(searchQuery, searchSettings)
+                        searchSettings.separator
+                    }
                     var filteredItems by remember { mutableStateOf(filterOperation(searchQuery, items, searchSettings))}
                     if (filteredItems.isEmpty())
                         dropdownConfig.emptySearchPlaceholder

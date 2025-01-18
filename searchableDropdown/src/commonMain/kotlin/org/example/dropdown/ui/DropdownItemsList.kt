@@ -46,8 +46,10 @@ internal fun <T : Any> DropdownItemsList(
             Box(Modifier.fillMaxWidth()
                 .background(color = if (item == selectedItem) Color.Gray else Color.Transparent)
                 .clickable {
-                    selectedItem.value = item
-                    expanded.value = !expanded.value
+                    if (dropdownConfig.withItemSelection) {
+                        selectedItem.value = item
+                        expanded.value = !expanded.value
+                    }
                 }) {
                 when (itemContentConfig) {
                     is ItemContentConfig.Custom -> itemContentConfig.content(item, selectedItem.value)

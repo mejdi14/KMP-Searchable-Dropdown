@@ -7,6 +7,7 @@ import kotlin.reflect.KProperty1
 
 
 data class SearchSettings<T : Any>(
+    val searchEnabled : Boolean = true,
     val searchProperties: List<KProperty1<T, *>> = emptyList(),
     val separator : @Composable () -> Unit = { SearchSeparator() },
     val searchIcon : SearchIcon = SearchIcon(),

@@ -1,7 +1,11 @@
 package org.example.dropdown.data
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
@@ -14,6 +18,15 @@ data class DropdownConfig(
     val maxHeight: Dp = 300.dp,
     val dropdownShadow: DropdownShadow = DropdownShadow(shape = shape),
     val horizontalPadding: Dp = 30.dp,
+    val headerPlaceholder: @Composable ()-> Unit = {
+        Text(
+            text = "Select your skill",
+            color = Color.Black,
+            modifier = Modifier
+                .padding(vertical = 16.dp)
+        )
+    },
+    val withItemSelection: Boolean = true,
     val separationSpaceBetweenHeaderAndContent: Int = 20,
     val toggleIcon: ToggleIcon = ToggleIcon(),
     val itemSeparator: DropdownItemSeparator = DropdownItemSeparator(),
