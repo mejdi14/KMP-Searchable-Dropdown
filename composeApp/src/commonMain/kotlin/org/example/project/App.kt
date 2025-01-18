@@ -30,13 +30,11 @@ fun App() {
 
             Column(modifier = Modifier.padding(horizontal = 30.dp)) {
                 Spacer(modifier = Modifier.height(50.dp))
-                SettingsDemo()
-                Spacer(modifier = Modifier.height(50.dp))
-                StudentDemo ()
+                PeopleDemo ()
                 Spacer(modifier = Modifier.height(50.dp))
                 CountryDemo ()
                 Spacer(modifier = Modifier.height(50.dp))
-                PeopleDemo ()
+                SettingsDemo()
             }
         }
     }

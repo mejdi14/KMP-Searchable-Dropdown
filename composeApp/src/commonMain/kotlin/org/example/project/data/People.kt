@@ -17,13 +17,13 @@ import org.jetbrains.compose.resources.DrawableResource
 data class People(
     val name: String,
     val photo: DrawableResource,
-    val note: String
+    val job: String
 )
 
 val people = listOf(
-    People("Arij", Res.drawable.student2, "+93"),
-    People("Mejdi", Res.drawable.student1, "+93"),
-    People("Sami", Res.drawable.student3, "+93"),
-    People("Rami", Res.drawable.student5, "+93"),
-    People("Balqees", Res.drawable.student4, "+93"),
+    People("Arij", Res.drawable.student2, "Software engineer"),
+    People("Mejdi", Res.drawable.student1, "Software engineer"),
+    People("Sami", Res.drawable.student3, "Designer"),
+    People("Rami", Res.drawable.student5, "Product Manager"),
+    People("Balqees", Res.drawable.student4, "QA Tester"),
     )
