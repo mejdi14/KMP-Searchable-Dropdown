@@ -144,7 +144,7 @@ val defaultConfig = ItemContentConfig.Default(
         withIcon = true
     )
 )
-
+```
 
 ## Custom Content
 
