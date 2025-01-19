@@ -11,45 +11,35 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.example.dropdown.data.SearchSettings
-import org.example.project.ui.SearchableDropdown
+import org.example.project.demo.CountryDemo
+import org.example.project.demo.PeopleDemo
+import org.example.project.demo.SettingsDemo
 import org.jetbrains.compose.ui.tooling.preview.Preview
+
 
 @Composable
 @Preview
 fun App() {
     MaterialTheme {
+
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = Color.Cyan
+            color = Color(0xFFfafafa)
         ) {
-            val students = listOf(
-                Student("Alice", 20, "Good student"),
-                Student("Bob", 22, "Needs improvement"),
-                Student("Charlie", 21, "Excellent work")
-            )
-            Column(modifier = Modifier.padding(horizontal = 30.dp)) {
-                Spacer(modifier = Modifier.height(200.dp))
-                SearchableDropdown(
-                    items = students,
-                    SearchSettings(
-                        searchProperties = listOf(
-                            Student::name,
-                            Student::age,
-                            Student::note
-                        )
-                    )
 
-                ) { student ->
-                    DropdownItem(student)
-                }
-                Spacer(modifier = Modifier.height(200.dp))
+            Column(modifier = Modifier.padding(horizontal = 30.dp)) {
+                Spacer(modifier = Modifier.height(50.dp))
+                PeopleDemo ()
+                Spacer(modifier = Modifier.height(50.dp))
+                CountryDemo ()
+                Spacer(modifier = Modifier.height(50.dp))
+                SettingsDemo()
             }
         }
     }
 }
-data class Student(
-    val name: String,
-    val age: Int,
-    val note: String
-)
+
+
+
+
+
