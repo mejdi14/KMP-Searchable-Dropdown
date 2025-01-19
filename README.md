@@ -140,7 +140,7 @@ val defaultConfig = ItemContentConfig.Default(
         withIcon = true
     )
 )
-
+```
 
 ## Custom Content
 
@@ -182,7 +182,7 @@ val customConfig = ItemContentConfig.Custom(
         }
     }
 )
-
+```
 
 
 
