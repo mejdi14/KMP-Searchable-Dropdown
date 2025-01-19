@@ -6,9 +6,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kmp_searchable_dropdown.searchabledropdown.generated.resources.Res
 import kmp_searchable_dropdown.searchabledropdown.generated.resources.expand_less
-import kmp_searchable_dropdown.searchabledropdown.generated.resources.search_icon
 import org.example.dropdown.data.base.BaseIcon
-import org.example.dropdown.data.search.SearchIcon
 import org.jetbrains.compose.resources.DrawableResource
 
 data class ToggleIcon(

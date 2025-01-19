@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import org.example.project.demo.CountryDemo
 import org.example.project.demo.PeopleDemo
 import org.example.project.demo.SettingsDemo
-import org.example.project.demo.StudentDemo
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 

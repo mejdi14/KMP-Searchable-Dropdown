@@ -1,7 +1,6 @@
 package org.example.project.demo
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,14 +19,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kmp_searchable_dropdown.composeapp.generated.resources.Res
-import kmp_searchable_dropdown.composeapp.generated.resources.check_icon
 import kmp_searchable_dropdown.composeapp.generated.resources.green_check
 import org.example.dropdown.data.DropdownConfig
 import org.example.dropdown.data.ItemContentConfig
 import org.example.dropdown.data.search.SearchSettings
-import org.example.project.data.Country
 import org.example.project.data.People
-import org.example.project.data.countries
 import org.example.project.data.people
 import org.example.project.ui.SearchableDropdown
 import org.jetbrains.compose.resources.painterResource

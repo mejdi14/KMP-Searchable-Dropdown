@@ -1,11 +1,6 @@
 package org.example.project.data
 
 import kmp_searchable_dropdown.composeapp.generated.resources.Res
-import kmp_searchable_dropdown.composeapp.generated.resources.fichier_1
-import kmp_searchable_dropdown.composeapp.generated.resources.fichier_2
-import kmp_searchable_dropdown.composeapp.generated.resources.fichier_3
-import kmp_searchable_dropdown.composeapp.generated.resources.fichier_4
-import kmp_searchable_dropdown.composeapp.generated.resources.fichier_5
 import kmp_searchable_dropdown.composeapp.generated.resources.student1
 import kmp_searchable_dropdown.composeapp.generated.resources.student2
 import kmp_searchable_dropdown.composeapp.generated.resources.student3

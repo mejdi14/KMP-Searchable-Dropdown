@@ -1,13 +1,5 @@
 package org.example.dropdown.helper
 
-import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
-import kotlinx.coroutines.launch
-
 /*
 @Composable
 fun DragModifier(): Modifier  =
