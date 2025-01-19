@@ -27,8 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import org.example.dropdown.data.DropdownConfig
-import org.example.dropdown.data.SingleItemContentConfig
 import org.example.dropdown.data.search.SearchSettings
+import org.example.dropdown.data.selection.ItemContentConfig
 import org.example.dropdown.helper.filterOperation
 import org.example.dropdown.ui.search.SearchArea
 
@@ -41,7 +41,7 @@ internal fun <T : Any> DropdownContentPopUp(
     searchSettings: SearchSettings<T>,
     items: List<T>,
     selectedItem: MutableState<T?>,
-    singleItemContentConfig: SingleItemContentConfig<T>
+    itemContentConfig: ItemContentConfig<T>
 ) {
     Popup(
         alignment = Alignment.TopStart,
@@ -99,7 +99,7 @@ internal fun <T : Any> DropdownContentPopUp(
                             filteredItems,
                             selectedItem,
                             expanded,
-                            singleItemContentConfig,
+                            itemContentConfig,
                             dropdownConfig
                         )
                 }

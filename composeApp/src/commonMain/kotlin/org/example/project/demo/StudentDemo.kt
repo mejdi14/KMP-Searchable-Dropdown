@@ -8,8 +8,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.example.dropdown.data.DefaultDropdownItem
 import org.example.dropdown.data.DropdownConfig
-import org.example.dropdown.data.SingleItemContentConfig
 import org.example.dropdown.data.search.SearchSettings
+import org.example.dropdown.data.selection.SingleItemContentConfig
 import org.example.project.data.Student
 import org.example.project.data.students
 import org.example.project.ui.SearchableDropdown
@@ -28,7 +28,7 @@ fun StudentDemo() {
         dropdownConfig = DropdownConfig(headerPlaceholder = { Text("Select student", color = Color.Black,
             modifier = Modifier
                 .padding(vertical = 16.dp)) }),
-        singleItemContentConfig = SingleItemContentConfig.Default(
+        itemContentConfig = SingleItemContentConfig.Default(
             DefaultDropdownItem<Student>(
                 title = Student::name,
                 subtitle = Student::note

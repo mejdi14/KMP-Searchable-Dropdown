@@ -17,8 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import org.example.dropdown.data.DropdownConfig
-import org.example.dropdown.data.SingleItemContentConfig
+import org.example.dropdown.data.listener.MultipleRemoveItemListener
+import org.example.dropdown.data.listener.MultipleSelectActionListener
 import org.example.dropdown.data.search.SearchSettings
+import org.example.dropdown.data.selection.ItemContentConfig
+import org.example.dropdown.data.selection.MultipleItemContentConfig
+import org.example.dropdown.data.selection.SingleItemContentConfig
 import org.example.dropdown.ui.item.DefaultDropdownItemComposable
 
 @Composable
@@ -27,7 +31,7 @@ internal fun <T : Any> DropdownItemsList(
     filteredItems: List<T>,
     selectedItem: MutableState<T?>,
     expanded: MutableState<Boolean>,
-    singleItemContentConfig: SingleItemContentConfig<T>,
+    itemContentConfig: ItemContentConfig<T>,
     dropdownConfig: DropdownConfig<T>
 ) {
     val listState = rememberLazyListState()
@@ -52,16 +56,48 @@ internal fun <T : Any> DropdownItemsList(
                         expanded.value = !expanded.value
                     }
                 }) {
-                when (singleItemContentConfig) {
-                    is SingleItemContentConfig.Custom -> singleItemContentConfig.content(
-                        item,
-                        selectedItem.value
-                    )
 
-                    is SingleItemContentConfig.Default -> DefaultDropdownItemComposable(
-                        item,
-                        singleItemContentConfig.defaultItem
-                    )
+                when (itemContentConfig) {
+                    is SingleItemContentConfig -> {
+                        when (itemContentConfig) {
+                            is SingleItemContentConfig.Custom -> itemContentConfig.content(
+                                selectedItem.value!!,
+                                null
+                            )
+
+                            is SingleItemContentConfig.Default -> DefaultDropdownItemComposable(
+                                selectedItem.value!!,
+                                itemContentConfig.defaultItem
+                            )
+                        }
+                    }
+                    is MultipleItemContentConfig -> {
+                        when (itemContentConfig) {
+                            is MultipleItemContentConfig.Custom -> itemContentConfig.content(
+                                selectedItem.value!!,
+                                null, object : MultipleSelectActionListener<T>{
+                                    override fun onSelect(item: T) {
+                                        TODO("Not yet implemented")
+                                    }
+
+                                    override fun onDeselect(item: T) {
+                                        TODO("Not yet implemented")
+                                    }
+
+                                    override fun isSelected(item: T): Boolean {
+                                        TODO("Not yet implemented")
+                                    }
+
+
+                                }
+                            )
+
+                            is MultipleItemContentConfig.Default -> DefaultDropdownItemComposable(
+                                selectedItem.value!!,
+                                itemContentConfig.defaultItem
+                            )
+                        }
+                    }
                 }
             }
             if (index != filteredItems.lastIndex && dropdownConfig.itemSeparator.showSeparator) {

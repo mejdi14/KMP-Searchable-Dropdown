@@ -21,8 +21,12 @@ import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import org.example.dropdown.data.DropdownConfig
-import org.example.dropdown.data.SingleItemContentConfig
+import org.example.dropdown.data.listener.MultipleRemoveItemListener
+import org.example.dropdown.data.listener.MultipleSelectActionListener
 import org.example.dropdown.data.search.SearchSettings
+import org.example.dropdown.data.selection.ItemContentConfig
+import org.example.dropdown.data.selection.MultipleItemContentConfig
+import org.example.dropdown.data.selection.SingleItemContentConfig
 import org.example.dropdown.ui.DropdownContentPopUp
 import org.example.dropdown.ui.ToggleIconComposable
 import org.example.dropdown.ui.item.DefaultDropdownItemComposable
@@ -34,7 +38,7 @@ fun <T : Any> SearchableDropdown(
     searchSettings: SearchSettings<T> = SearchSettings(),
     dropdownConfig: DropdownConfig<T> = DropdownConfig(),
     selectedItem: MutableState<T?> = remember { mutableStateOf<T?>(null) },
-    singleItemContentConfig: SingleItemContentConfig<T>,
+    itemContentConfig: ItemContentConfig<T>,
 ) {
     var expanded = remember { mutableStateOf(false) }
     val rotationAngle by animateDpAsState(targetValue = if (expanded.value) 0.dp else 180.dp)
@@ -63,12 +67,38 @@ fun <T : Any> SearchableDropdown(
 
     ) {
         if (selectedItem.value != null) {
-            when (singleItemContentConfig) {
-                is SingleItemContentConfig.Custom -> singleItemContentConfig.header(selectedItem.value!!, null)
-                is SingleItemContentConfig.Default -> DefaultDropdownItemComposable(
-                    selectedItem.value!!,
-                    singleItemContentConfig.defaultItem
-                )
+            when (itemContentConfig) {
+                is SingleItemContentConfig -> {
+                    when (itemContentConfig) {
+                        is SingleItemContentConfig.Custom -> itemContentConfig.header(
+                            selectedItem.value!!,
+                            null
+                        )
+
+                        is SingleItemContentConfig.Default -> DefaultDropdownItemComposable(
+                            selectedItem.value!!,
+                            itemContentConfig.defaultItem
+                        )
+                    }
+                }
+                is MultipleItemContentConfig -> {
+                    when (itemContentConfig) {
+                        is MultipleItemContentConfig.Custom -> itemContentConfig.header(
+                            selectedItem.value!!,
+                            null, object : MultipleRemoveItemListener<T>{
+                                override fun onRemove(item: T) {
+                                    TODO("Not yet implemented")
+                                }
+
+                            }
+                        )
+
+                        is MultipleItemContentConfig.Default -> DefaultDropdownItemComposable(
+                            selectedItem.value!!,
+                            itemContentConfig.defaultItem
+                        )
+                    }
+                }
             }
         } else {
             dropdownConfig.headerPlaceholder()
@@ -86,7 +116,7 @@ fun <T : Any> SearchableDropdown(
             searchSettings,
             items,
             selectedItem,
-            singleItemContentConfig,
+            itemContentConfig,
         )
     }
     Spacer(modifier = Modifier.height(10.dp))

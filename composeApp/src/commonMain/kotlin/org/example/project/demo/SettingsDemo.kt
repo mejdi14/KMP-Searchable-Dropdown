@@ -8,8 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.example.dropdown.data.DropdownConfig
-import org.example.dropdown.data.SingleItemContentConfig
 import org.example.dropdown.data.search.SearchSettings
+import org.example.dropdown.data.selection.SingleItemContentConfig
 import org.example.project.data.settings
 import org.example.project.ui.SearchableDropdown
 
@@ -26,7 +26,7 @@ fun SettingsDemo() {
                 modifier = Modifier
                     .padding(vertical = 16.dp))
         }),
-        singleItemContentConfig = SingleItemContentConfig.Custom(
+        itemContentConfig = SingleItemContentConfig.Custom(
             content = { setting, selectedSetting ->
 
                 setting.content()
