@@ -61,7 +61,7 @@ fun PeopleDemo() {
                     Column(
                         modifier = Modifier.weight(1f),
                         verticalArrangement = Arrangement.Center,
-                        ) {
+                    ) {
                         Text(
                             text = person.name,
                         )
@@ -72,15 +72,44 @@ fun PeopleDemo() {
                         )
                     }
                     Spacer(Modifier.width(12.dp))
-                    if(person == selectedPerson)
-                    Image(
-                        painterResource(Res.drawable.green_check),
-                        modifier = Modifier.size(22.dp),
-                        contentDescription = "",
-                    )
+                    if (person == selectedPerson)
+                        Image(
+                            painterResource(Res.drawable.green_check),
+                            modifier = Modifier.size(22.dp),
+                            contentDescription = "",
+                        )
 
                 }
 
+            },
+            header = { person, selectedPerson ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(58.dp)
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painterResource(person.photo),
+                        modifier = Modifier.size(32.dp),
+                        contentDescription = "",
+                    )
+                    Spacer(Modifier.width(12.dp))
+
+                    Text(
+                        text = person.name,
+                    )
+
+                    Spacer(Modifier.width(12.dp))
+                    if (person == selectedPerson)
+                        Image(
+                            painterResource(Res.drawable.green_check),
+                            modifier = Modifier.size(22.dp),
+                            contentDescription = "",
+                        )
+
+                }
             }
         ),
     )
