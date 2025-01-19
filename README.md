@@ -96,23 +96,23 @@ Search Settings
 
 Dropdown Config
 -----
+ ## Fields Table for `DropdownConfig`
 
-## Fields Table for `DropdownConfig`
+| Field                | Type        | Default                     | Description                                                                                      |
+|----------------------|-------------|-----------------------------|--------------------------------------------------------------------------------------------------|
+| `backgroundColor`    | `Color`     | `Color.White`               | The background color of the dropdown.                                                           |
+| `shape`              | `Shape`     | `RoundedCornerShape(20.dp)` | The shape of the dropdown, defining corner radius.                                               |
+| `maxHeight`          | `Dp`        | `300.dp`                    | Maximum height of the dropdown.                                                                 |
+| `dropdownShadow`     | `DropdownShadow` | `DropdownShadow(...)`   | Configuration for the dropdown's shadow, including its shape and elevation.                     |
+| `horizontalPadding`  | `Dp`        | `30.dp`                     | Horizontal padding inside the dropdown.                                                         |
+| `headerPlaceholder`  | `@Composable` | `{ Text(...) }`          | Composable function for the dropdown's header placeholder.                                       |
+| `withItemSelection`  | `Boolean`   | `true`                      | Indicates if item selection is enabled.                                                         |
+| `separationSpaceBetweenHeaderAndContent` | `Int`  | `20`           | Space in pixels between the header and dropdown content.                                        |
+| `toggleIcon`         | `ToggleIcon` | `ToggleIcon()`             | Configuration for the dropdown toggle icon.                                                     |
+| `itemSeparator`      | `DropdownItemSeparator` | `DropdownItemSeparator()` | Configuration for separators between dropdown items.                                            |
+| `emptySearchPlaceholder` | `@Composable` | `{ EmptySearchPlaceholder() }` | Composable function displayed when no search results are found.                                 |
+| `selectItemActionListener` | `SelectActionListener<T>` | `object : SelectActionListener<T> { ... }` | Listener for handling item selection actions in the dropdown.                                   |
 
-| Field                                 | Type                           | Default Value                                                                                           | Description                                                                                     |
-|---------------------------------------|--------------------------------|---------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
-| `backgroundColor`                     | `Color`                        | `Color.White`                                                                                          | The background color of the dropdown.                                                          |
-| `shape`                               | `Shape`                        | `RoundedCornerShape(20.dp)`                                                                            | The shape of the dropdown, which determines the corner radius.                                 |
-| `maxHeight`                           | `Dp`                           | `300.dp`                                                                                               | The maximum height of the dropdown.                                                            |
-| `dropdownShadow`                      | `DropdownShadow`               | `DropdownShadow(shape = shape)`                                                                        | Configuration for the dropdown's shadow, including its shape and elevation.                   |
-| `horizontalPadding`                   | `Dp`                           | `30.dp`                                                                                                | Horizontal padding for the dropdown's content.                                                 |
-| `headerPlaceholder`                   | `@Composable () -> Unit`       | `{ Text("Select your skill", color = Color.Black, modifier = Modifier.padding(vertical = 16.dp)) }`    | A composable function to display a placeholder at the top of the dropdown.                    |
-| `withItemSelection`                   | `Boolean`                      | `true`                                                                                                 | Determines whether item selection is enabled in the dropdown.                                 |
-| `separationSpaceBetweenHeaderAndContent` | `Int`                        | `20`                                                                                                  | Space in pixels between the header and the dropdown content.                                   |
-| `toggleIcon`                          | `ToggleIcon`                   | `ToggleIcon()`                                                                                         | Configuration for the toggle icon, which appears next to the header.                          |
-| `itemSeparator`                       | `DropdownItemSeparator`        | `DropdownItemSeparator()`                                                                              | Configuration for the separator between dropdown items.                                        |
-| `emptySearchPlaceholder`              | `@Composable () -> Unit`       | `{ EmptySearchPlaceholder() }`                                                                         | A composable function to display when no search results are found.                            |
-| `selectItemActionListener`            | `SelectActionListener<T>`      | `object : SelectActionListener<T> { override fun onItemSelectListener(selectedItem: T) { /* empty */ } }` | Listener to handle the action when an item is selected in the dropdown.                       |
 
 
 Hold animation duration after separation
