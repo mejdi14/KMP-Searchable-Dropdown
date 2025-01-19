@@ -1,19 +1,20 @@
 <h1 align="center">Welcome to KMP Searchable Dropdown 👋</h1>
 
 <p align="center">
-  <a href="https://github.com/frinyvonnick/gitmoji-changelog">
-    <img src="https://img.shields.io/badge/API-15%2B-blue.svg?style=flat" alt="gitmoji-changelog">
-  </a>  <a href="https://github.com/frinyvonnick/gitmoji-changelog">
-    <img src="https://jitpack.io/v/mejdi14/AndroidColorPicker.svg" alt="gitmoji-changelog">
+  <a href="https://developer.android.com/guide/topics/manifest/uses-sdk-element">
+    <img src="https://img.shields.io/badge/API-15%2B-blue.svg?style=flat" alt="Minimum API Level" />
   </a>
+  <a href="https://maven-badges.herokuapp.com/maven-central/com.example/your-library">
+    <img src="https://maven-badges.herokuapp.com/maven-central/com.example/your-library/badge.svg" alt="Maven Central" />
   </a>
-	<a href="https://github.com/kefranabg/readme-md-generator/blob/master/LICENSE">
-    <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-yellow.svg" target="_blank" />
+  <a href="https://opensource.org/licenses/MIT">
+    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" />
   </a>
-  <a href="https://codecov.io/gh/kefranabg/readme-md-generator">
-    <img src="https://codecov.io/gh/kefranabg/readme-md-generator/branch/master/graph/badge.svg" />
+  <a href="https://android-arsenal.com/">
+    <img src="https://img.shields.io/badge/Android%20Arsenal-Searchable%20Dropdown-green.svg?style=flat" alt="Android Arsenal" />
   </a>
 </p>
+
 
 ## ✨ Demo
 
@@ -130,6 +131,10 @@ The `ItemContentConfig` class allows you to configure how items in your dropdown
 
 To use the default configuration, you can provide a `DefaultDropdownItem`. This is a quick and easy way to display items with a consistent appearance.
 
+<p align="center">
+  <img src="https://github.com/mejdi14/KMP-Searchable-Dropdown/blob/main/demo/demo_image.jpg" alt="Default Content Demo" width="400" />
+</p>
+
 ### Example:
 
 ```kotlin
@@ -184,6 +189,15 @@ val customConfig = ItemContentConfig.Custom(
 )
 ```
 
+## Upcoming Features
+
+Here's what's coming next:
+
+### 🔜 Multiselection
+
+### 🔜 Animations
+
+If you have suggestions or feature requests, feel free to open an issue or contribute to the repository.
 
 
 ## 🤝 Contributing
