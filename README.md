@@ -47,7 +47,7 @@ dependencies {
 
 ## :fire:How to use
 
-``` java
+``` kotlin
 /* use your own list of objects
 here I used this Data Class as an example:
 data class People(
