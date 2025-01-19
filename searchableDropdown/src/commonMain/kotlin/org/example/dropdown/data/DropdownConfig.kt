@@ -13,7 +13,8 @@ import org.example.dropdown.data.listener.SelectActionListener
 import org.example.dropdown.ui.EmptySearchPlaceholder
 
 data class DropdownConfig<T>(
-    val backgroundColor: Color = Color.White,
+    val headerBackgroundColor: Color = Color.White,
+    val contentBackgroundColor: Color = Color.White,
     val shape: Shape = RoundedCornerShape(20.dp),
     val maxHeight: Dp = 300.dp,
     val dropdownShadow: DropdownShadow = DropdownShadow(shape = shape),

@@ -38,7 +38,14 @@ fun PeopleDemo() {
                 People::job,
             )
         ),
-        dropdownConfig = DropdownConfig(shape = RoundedCornerShape(8.dp)),
+        dropdownConfig = DropdownConfig(shape = RoundedCornerShape(18.dp),
+            headerPlaceholder = {
+                Text(
+                    "Your favorite person", color = Color.Black,
+                    modifier = Modifier
+                        .padding(vertical = 16.dp)
+                )
+            }),
         itemContentConfig = ItemContentConfig.Custom(
             content = { person, selectedPerson ->
                 Row(

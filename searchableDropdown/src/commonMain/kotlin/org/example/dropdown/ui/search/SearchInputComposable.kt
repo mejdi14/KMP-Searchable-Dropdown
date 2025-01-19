@@ -25,7 +25,8 @@ internal fun <T> SearchInputComposable(
             backgroundColor = searchInput.backgroundColor,
             focusedIndicatorColor = searchInput.focusedIndicatorColor,
             unfocusedIndicatorColor = searchInput.unfocusedIndicatorColor,
-            disabledIndicatorColor = searchInput.disabledIndicatorColor
+            disabledIndicatorColor = searchInput.disabledIndicatorColor,
+            textColor = searchInput.inputTextColor
         ),
         keyboardOptions = searchInput.keyboardOptions,
     )

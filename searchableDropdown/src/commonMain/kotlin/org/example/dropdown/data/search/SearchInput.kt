@@ -17,6 +17,7 @@ data class SearchInput (
     val focusedIndicatorColor: Color = Color.Transparent,
     val unfocusedIndicatorColor: Color = Color.Transparent,
     val disabledIndicatorColor: Color = Color.Transparent,
+    val inputTextColor: Color = Color.Black,
     val keyboardOptions: KeyboardOptions  = KeyboardOptions(
         imeAction = ImeAction.Search,
     ),

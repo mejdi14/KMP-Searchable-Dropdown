@@ -16,8 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import kmp_searchable_dropdown.composeapp.generated.resources.Res
+import kmp_searchable_dropdown.composeapp.generated.resources.expand_less
 import org.example.dropdown.data.DropdownConfig
 import org.example.dropdown.data.ItemContentConfig
+import org.example.dropdown.data.ToggleIcon
+import org.example.dropdown.data.search.SearchIcon
+import org.example.dropdown.data.search.SearchInput
 import org.example.dropdown.data.search.SearchSettings
 import org.example.project.data.Country
 import org.example.project.data.countries
@@ -32,9 +37,26 @@ fun CountryDemo() {
             searchProperties = listOf(
                 Country::name,
                 Country::phoneCode,
+            ),
+            searchIcon = SearchIcon(iconTintColor = Color.White),
+            searchInput = SearchInput(
+                placeholder = { Text("Searching...", color = Color.White) },
+                inputTextColor = Color.White
             )
         ),
-        dropdownConfig = DropdownConfig(shape = RoundedCornerShape(8.dp)),
+        dropdownConfig = DropdownConfig(
+            shape = RoundedCornerShape(0.dp), headerBackgroundColor = Color.Black,
+            contentBackgroundColor = Color(0xFF292929),
+            headerPlaceholder = {
+                Text(
+                    "Select Country Code", color = Color.White,
+                    modifier = Modifier
+                        .padding(vertical = 16.dp)
+                )
+            }, toggleIcon = ToggleIcon(Res.drawable.expand_less, iconTintColor = Color.White),
+            separationSpace = 0
+
+        ),
         itemContentConfig = ItemContentConfig.Custom(
             content = { country, selectedCountry ->
                 Row(
@@ -53,6 +75,7 @@ fun CountryDemo() {
                     Spacer(Modifier.width(12.dp))
                     Text(
                         text = country.name,
+                        color = Color.White
                     )
                     Spacer(Modifier.width(12.dp))
                     Text(

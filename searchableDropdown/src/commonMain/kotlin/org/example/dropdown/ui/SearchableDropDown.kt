@@ -47,7 +47,7 @@ fun <T : Any> SearchableDropdown(
             .fillMaxWidth()
             .shadow(elevation = 2.dp, shape = dropdownConfig.shape)
             .background(
-                color = dropdownConfig.backgroundColor,
+                color = dropdownConfig.headerBackgroundColor,
                 shape = dropdownConfig.shape
             ).padding(horizontal = dropdownConfig.horizontalPadding)
 
@@ -74,7 +74,7 @@ fun <T : Any> SearchableDropdown(
             dropdownConfig.headerPlaceholder()
         }
         Box(modifier = Modifier.align(alignment = Alignment.CenterEnd)) {
-            ToggleIconComposable(rotationAngle, expanded.value)
+            ToggleIconComposable(rotationAngle, expanded.value, dropdownConfig.toggleIcon)
         }
     }
 
