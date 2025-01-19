@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import org.example.dropdown.data.DropdownConfig
-import org.example.dropdown.data.ItemContentConfig
+import org.example.dropdown.data.SingleItemContentConfig
 import org.example.dropdown.data.search.SearchSettings
 import org.example.dropdown.ui.item.DefaultDropdownItemComposable
 
@@ -27,7 +27,7 @@ internal fun <T : Any> DropdownItemsList(
     filteredItems: List<T>,
     selectedItem: MutableState<T?>,
     expanded: MutableState<Boolean>,
-    itemContentConfig: ItemContentConfig<T>,
+    singleItemContentConfig: SingleItemContentConfig<T>,
     dropdownConfig: DropdownConfig<T>
 ) {
     val listState = rememberLazyListState()
@@ -52,15 +52,15 @@ internal fun <T : Any> DropdownItemsList(
                         expanded.value = !expanded.value
                     }
                 }) {
-                when (itemContentConfig) {
-                    is ItemContentConfig.Custom -> itemContentConfig.content(
+                when (singleItemContentConfig) {
+                    is SingleItemContentConfig.Custom -> singleItemContentConfig.content(
                         item,
                         selectedItem.value
                     )
 
-                    is ItemContentConfig.Default -> DefaultDropdownItemComposable(
+                    is SingleItemContentConfig.Default -> DefaultDropdownItemComposable(
                         item,
-                        itemContentConfig.defaultItem
+                        singleItemContentConfig.defaultItem
                     )
                 }
             }

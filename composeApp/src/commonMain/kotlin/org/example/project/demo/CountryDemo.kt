@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import kmp_searchable_dropdown.composeapp.generated.resources.Res
 import kmp_searchable_dropdown.composeapp.generated.resources.expand_less
 import org.example.dropdown.data.DropdownConfig
-import org.example.dropdown.data.ItemContentConfig
+import org.example.dropdown.data.SingleItemContentConfig
 import org.example.dropdown.data.ToggleIcon
 import org.example.dropdown.data.search.SearchIcon
 import org.example.dropdown.data.search.SearchInput
@@ -57,7 +57,7 @@ fun CountryDemo() {
             separationSpace = 0
 
         ),
-        itemContentConfig = ItemContentConfig.Custom(
+        singleItemContentConfig = SingleItemContentConfig.Custom(
             content = { country, selectedCountry ->
                 Row(
                     modifier = Modifier

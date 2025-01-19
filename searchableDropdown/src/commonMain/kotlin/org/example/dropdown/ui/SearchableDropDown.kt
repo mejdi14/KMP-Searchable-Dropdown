@@ -21,7 +21,7 @@ import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import org.example.dropdown.data.DropdownConfig
-import org.example.dropdown.data.ItemContentConfig
+import org.example.dropdown.data.SingleItemContentConfig
 import org.example.dropdown.data.search.SearchSettings
 import org.example.dropdown.ui.DropdownContentPopUp
 import org.example.dropdown.ui.ToggleIconComposable
@@ -34,7 +34,7 @@ fun <T : Any> SearchableDropdown(
     searchSettings: SearchSettings<T> = SearchSettings(),
     dropdownConfig: DropdownConfig<T> = DropdownConfig(),
     selectedItem: MutableState<T?> = remember { mutableStateOf<T?>(null) },
-    itemContentConfig: ItemContentConfig<T>,
+    singleItemContentConfig: SingleItemContentConfig<T>,
 ) {
     var expanded = remember { mutableStateOf(false) }
     val rotationAngle by animateDpAsState(targetValue = if (expanded.value) 0.dp else 180.dp)
@@ -63,11 +63,11 @@ fun <T : Any> SearchableDropdown(
 
     ) {
         if (selectedItem.value != null) {
-            when (itemContentConfig) {
-                is ItemContentConfig.Custom -> itemContentConfig.header(selectedItem.value!!, null)
-                is ItemContentConfig.Default -> DefaultDropdownItemComposable(
+            when (singleItemContentConfig) {
+                is SingleItemContentConfig.Custom -> singleItemContentConfig.header(selectedItem.value!!, null)
+                is SingleItemContentConfig.Default -> DefaultDropdownItemComposable(
                     selectedItem.value!!,
-                    itemContentConfig.defaultItem
+                    singleItemContentConfig.defaultItem
                 )
             }
         } else {
@@ -86,7 +86,7 @@ fun <T : Any> SearchableDropdown(
             searchSettings,
             items,
             selectedItem,
-            itemContentConfig,
+            singleItemContentConfig,
         )
     }
     Spacer(modifier = Modifier.height(10.dp))
