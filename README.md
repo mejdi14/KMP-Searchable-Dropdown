@@ -20,16 +20,12 @@
 
 <div style="display: flex; justify-content: center; align-items: center;">
   <img 
-    src="https://raw.githubusercontent.com/mejdi14/Vanish-Composable/main/demo/output.gif"
-    height="300"
-    width="275"
+    src="https://raw.githubusercontent.com/mejdi14/KMP-Searchable-Dropdown/main/demo/output_demo.gif"
+    height="400"
+    width="375"
     style="margin-right: 20px;"
   />
-  <img 
-    src="https://raw.githubusercontent.com/mejdi14/Vanish-Composable/main/demo/second_output.gif"
-    height="300"
-    width="275"
-  />
+
 </div>
 
 
