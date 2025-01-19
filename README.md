@@ -7,9 +7,6 @@
   <a href="https://maven-badges.herokuapp.com/maven-central/com.example/your-library">
     <img src="https://maven-badges.herokuapp.com/maven-central/com.example/your-library/badge.svg" alt="Maven Central" />
   </a>
-  <a href="https://opensource.org/licenses/MIT">
-    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" />
-  </a>
   <a href="https://github.com/mejdi14/KMP-Searchable-Dropdown/actions">
     <img src="https://github.com/mejdi14/KMP-Searchable-Dropdown/workflows/CI/badge.svg" alt="Build Status" />
   </a>
