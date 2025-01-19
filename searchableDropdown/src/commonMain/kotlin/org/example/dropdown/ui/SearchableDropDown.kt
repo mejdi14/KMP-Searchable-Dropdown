@@ -39,7 +39,7 @@ fun <T : Any> SearchableDropdown(
     itemContentConfig: ItemContentConfig<T>,
 ) {
     var expanded = remember { mutableStateOf(false) }
-    val rotationAngle by animateDpAsState(targetValue = if (expanded.value) 180.dp else 0.dp)
+    val rotationAngle by animateDpAsState(targetValue = if (expanded.value) 0.dp else 180.dp)
 
 
     val parentCoordinates = remember { mutableStateOf<LayoutCoordinates?>(null) }

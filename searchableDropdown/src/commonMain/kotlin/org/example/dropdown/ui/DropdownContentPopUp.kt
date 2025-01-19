@@ -95,7 +95,7 @@ internal fun <T : Any> DropdownContentPopUp(
                         SearchArea(searchQuery, searchSettings)
                         searchSettings.separator
                     }
-                    var filteredItems by remember { mutableStateOf(filterOperation(searchQuery, items, searchSettings))}
+                    var filteredItems = filterOperation(searchQuery, items, searchSettings)
                     if (filteredItems.isEmpty())
                         dropdownConfig.emptySearchPlaceholder
                     else
