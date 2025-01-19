@@ -130,7 +130,9 @@ The `ItemContentConfig` class allows you to configure how items in your dropdown
 
 To use the default configuration, you can provide a `DefaultDropdownItem`. This is a quick and easy way to display items with a consistent appearance.
 
-![Default Content Demo](https://github.com/mejdi14/KMP-Searchable-Dropdown/blob/main/demo/demo_image.jpg)
+<p align="center">
+  <img src="https://github.com/mejdi14/KMP-Searchable-Dropdown/blob/main/demo/demo_image.jpg" alt="Default Content Demo" width="400" />
+</p>
 
 ### Example:
 
