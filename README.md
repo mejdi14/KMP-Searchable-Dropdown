@@ -115,23 +115,74 @@ Dropdown Config
 
 
 
-Hold animation duration after separation
+ItemContentConfig Guide
 -----
 
-``` java
- .timeBetweenAnimations
-```
 
-Configuration options
------
+The `ItemContentConfig` class allows you to configure how items in your dropdown are displayed. You can choose between two approaches:
 
-``` java
-  pixelSize: size of each pixel or dot 
-  pixelSpacing: space between pixels when they are separated
-  pixelVelocity: velocity of the pixels
-  animationDuration: duration of the animation from start to finish
-  triggerFinishAt: use this if you want to trigger the end of animation a bit earlier (1f: wait to end, 0f: don't wait)
-```
+1. **Default Content**: Use a predefined layout for your items with a title, optional subtitle, and optional icon.
+2. **Custom Content**: Define completely custom layouts for your items and optionally for the header.
+
+---
+
+## Default Content
+
+To use the default configuration, you can provide a `DefaultDropdownItem`. This is a quick and easy way to display items with a consistent appearance.
+
+### Example:
+
+```kotlin
+val defaultConfig = ItemContentConfig.Default(
+    defaultItem = DefaultDropdownItem(
+        title = Person::name,
+        subtitle = Person::job,
+        withIcon = true
+    )
+)
+
+
+## Custom Content
+
+If you want full control over how the dropdown items and header are displayed, you can use the `Custom` configuration. This allows you to provide composable functions for both `content` (how each item appears) and `header` (the dropdown header).
+
+### Key Points:
+- **`content`**: Defines the layout and styling of each item in the dropdown.
+- **`header`** (Optional): Defines the layout and styling of the dropdown header. If not provided, it will default to using the `content`.
+
+### Example:
+
+```kotlin
+val customConfig = ItemContentConfig.Custom(
+    content = { person, _ ->
+        Row(
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = person.name,
+                fontSize = 16.sp
+            )
+        }
+    },
+    header = { person, _ ->
+        Row(
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Selected: ${person.name}",
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
+            )
+        }
+    }
+)
+
 
 
 
