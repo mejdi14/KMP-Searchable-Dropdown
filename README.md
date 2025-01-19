@@ -107,7 +107,7 @@ Dropdown Config
 | `horizontalPadding`  | `Dp`        | `30.dp`                     | Horizontal padding inside the dropdown.                                                         |
 | `headerPlaceholder`  | `@Composable` | `{ Text(...) }`          | Composable function for the dropdown's header placeholder.                                       |
 | `withItemSelection`  | `Boolean`   | `true`                      | Indicates if item selection is enabled.                                                         |
-| `separationSpaceBetweenHeaderAndContent` | `Int`  | `20`           | Space in pixels between the header and dropdown content.                                        |
+| `separationSpace` | `Int`  | `20`           | Space in pixels between the header and dropdown content.                                        |
 | `toggleIcon`         | `ToggleIcon` | `ToggleIcon()`             | Configuration for the dropdown toggle icon.                                                     |
 | `itemSeparator`      | `DropdownItemSeparator` | `DropdownItemSeparator()` | Configuration for separators between dropdown items.                                            |
 | `emptySearchPlaceholder` | `@Composable` | `{ EmptySearchPlaceholder() }` | Composable function displayed when no search results are found.                                 |
