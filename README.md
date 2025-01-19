@@ -22,7 +22,7 @@
   <img 
     src="https://raw.githubusercontent.com/mejdi14/KMP-Searchable-Dropdown/main/demo/output_demo.gif"
     height="500"
-    width="375"
+    width="305"
     style="margin-right: 20px;"
   />
 
