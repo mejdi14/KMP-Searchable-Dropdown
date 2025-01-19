@@ -4,14 +4,22 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import org.example.dropdown.SearchActionListener
 import org.example.dropdown.data.search.SearchInput
 
 @Composable
-internal fun SearchInputComposable(searchQuery: MutableState<String>, searchInput: SearchInput) {
+internal fun <T> SearchInputComposable(
+    searchQuery: MutableState<String>,
+    searchInput: SearchInput,
+    searchActionListener: SearchActionListener<T>
+) {
     OutlinedTextField(
         modifier = searchInput.modifier,
         value = searchQuery.value,
-        onValueChange = { searchQuery.value = it },
+        onValueChange = {
+            searchActionListener.onSearchTextWatcher(it)
+            searchQuery.value = it
+        },
         placeholder = searchInput.placeholder,
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = searchInput.backgroundColor,

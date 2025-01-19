@@ -15,6 +15,6 @@ internal fun <T : Any>SearchArea(searchQuery: MutableState<String>, searchSettin
         verticalAlignment = Alignment.CenterVertically
     ) {
         SearchIconComposable(searchSettings.searchIcon)
-        SearchInputComposable(searchQuery, searchSettings.searchInput)
+        SearchInputComposable(searchQuery, searchSettings.searchInput, searchSettings.searchActionListener)
     }
 }
