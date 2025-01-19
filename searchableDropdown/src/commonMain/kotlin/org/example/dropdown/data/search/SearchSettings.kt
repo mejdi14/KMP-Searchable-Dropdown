@@ -1,7 +1,7 @@
 package org.example.dropdown.data.search
 
 import androidx.compose.runtime.Composable
-import org.example.dropdown.SearchActionListener
+import org.example.dropdown.data.listener.SearchActionListener
 import org.example.dropdown.ui.search.SearchSeparator
 import kotlin.reflect.KProperty1
 

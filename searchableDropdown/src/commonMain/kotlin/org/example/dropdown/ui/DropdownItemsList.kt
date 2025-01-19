@@ -28,7 +28,7 @@ internal fun <T : Any> DropdownItemsList(
     selectedItem: MutableState<T?>,
     expanded: MutableState<Boolean>,
     itemContentConfig: ItemContentConfig<T>,
-    dropdownConfig: DropdownConfig
+    dropdownConfig: DropdownConfig<T>
 ) {
     val listState = rememberLazyListState()
     var containerHeight by remember { mutableStateOf(0f) }
@@ -48,11 +48,16 @@ internal fun <T : Any> DropdownItemsList(
                 .clickable {
                     if (dropdownConfig.withItemSelection) {
                         selectedItem.value = item
+                        dropdownConfig.selectItemActionListener.onItemSelectListener(item)
                         expanded.value = !expanded.value
                     }
                 }) {
                 when (itemContentConfig) {
-                    is ItemContentConfig.Custom -> itemContentConfig.content(item, selectedItem.value)
+                    is ItemContentConfig.Custom -> itemContentConfig.content(
+                        item,
+                        selectedItem.value
+                    )
+
                     is ItemContentConfig.Default -> DefaultDropdownItemComposable(
                         item,
                         itemContentConfig.defaultItem

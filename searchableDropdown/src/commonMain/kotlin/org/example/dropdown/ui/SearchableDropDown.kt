@@ -32,7 +32,7 @@ import org.example.dropdown.ui.item.DefaultDropdownItemComposable
 fun <T : Any> SearchableDropdown(
     items: List<T>,
     searchSettings: SearchSettings<T> = SearchSettings(),
-    dropdownConfig: DropdownConfig = DropdownConfig(),
+    dropdownConfig: DropdownConfig<T> = DropdownConfig(),
     selectedItem: MutableState<T?> = remember { mutableStateOf<T?>(null) },
     itemContentConfig: ItemContentConfig<T>,
 ) {

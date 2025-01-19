@@ -36,7 +36,7 @@ import org.example.dropdown.ui.search.SearchArea
 @Composable
 internal fun <T : Any> DropdownContentPopUp(
     parentCoordinates: MutableState<LayoutCoordinates?>,
-    dropdownConfig: DropdownConfig,
+    dropdownConfig: DropdownConfig<T>,
     expanded: MutableState<Boolean>,
     searchSettings: SearchSettings<T>,
     items: List<T>,
