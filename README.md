@@ -79,13 +79,19 @@ Search Settings
 
 ## Properties Table
 
-| Property     | Type           | Description                                           |
-|--------------|----------------|-------------------------------------------------------|
-| `property1`  | `string`       | A brief explanation of what this property does.       |
-| `property2`  | `number`       | Details about how this property is used.             |
-| `property3`  | `boolean`      | Explain the behavior when this property is `true` or `false`. |
-| `property4`  | `array`        | Describe the expected contents of the array.         |
-| `property5`  | `object`       | What kind of object is expected here.                |
+## Fields Table for `SearchSettings`
+
+| Field                 | Type                                   | Default Value             | Description                                                                                           |
+|-----------------------|----------------------------------------|---------------------------|-------------------------------------------------------------------------------------------------------|
+| `searchEnabled`       | `Boolean`                             | `true`                    | Indicates whether the search functionality is enabled (also controles its visibility).                                               |
+| `searchProperties`    | `List<KProperty1<T, *>>`              | `emptyList()`             | A list of properties in your object to be searched.                                               |
+| `separator`           | `@Composable () -> Unit`              | `{ SearchSeparator() }`   | A separator between the search and the items of the Dropdown.                         |
+| `searchIcon`          | `SearchIcon`                          | `SearchIcon()`            | Configuration for the search icon, including its appearance and behavior.                            |
+| `searchInput`         | `SearchInput`                         | `SearchInput()`           | Configuration for the search input, such as placeholders or initial text.                            |
+| `searchType`          | `SearchType`                          | `SearchType.CONTAINS`     | Defines the search type (e.g., `CONTAINS`, `STARTS_WITH`, etc.).                                      |
+| `ignoreCase`          | `Boolean`                             | `true`                    | Determines whether the search is case-insensitive.                                                   |
+| `searchActionListener`| `SearchActionListener<T>`             | `object : SearchActionListener<T> { ... }` | Listener for handling search-related actions, such as text changes or results.                       |
+
 
 
 Animation types
