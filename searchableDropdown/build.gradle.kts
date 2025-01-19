@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    id("com.vanniktech.maven.publish") version "0.30.0"
 }
 
 kotlin {
@@ -68,7 +69,6 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation("co.touchlab:kermit:2.0.4")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

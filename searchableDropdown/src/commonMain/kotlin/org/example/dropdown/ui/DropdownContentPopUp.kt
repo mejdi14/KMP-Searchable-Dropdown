@@ -49,7 +49,7 @@ internal fun <T : Any> DropdownContentPopUp(
             x = 0,
             y = (parentCoordinates.value?.positionInRoot()?.y?.toInt() ?: 0) +
                     (parentCoordinates.value?.size?.height
-                        ?: 0) + dropdownConfig.separationSpaceBetweenHeaderAndContent
+                        ?: 0) + dropdownConfig.separationSpace
         ),
         onDismissRequest = {
             expanded.value = false
