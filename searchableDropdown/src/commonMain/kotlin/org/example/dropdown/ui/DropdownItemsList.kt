@@ -17,13 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import org.example.dropdown.data.DropdownConfig
-import org.example.dropdown.data.listener.MultipleRemoveItemListener
 import org.example.dropdown.data.listener.MultipleSelectActionListener
 import org.example.dropdown.data.search.SearchSettings
 import org.example.dropdown.data.selection.ItemContentConfig
 import org.example.dropdown.data.selection.MultipleItemContentConfig
 import org.example.dropdown.data.selection.SingleItemContentConfig
-import org.example.dropdown.ui.item.DefaultDropdownItemComposable
+import org.example.dropdown.ui.item.DefaultSingleItemComposable
 
 @Composable
 internal fun <T : Any> DropdownItemsList(
@@ -61,12 +60,12 @@ internal fun <T : Any> DropdownItemsList(
                     is SingleItemContentConfig -> {
                         when (itemContentConfig) {
                             is SingleItemContentConfig.Custom -> itemContentConfig.content(
-                                selectedItem.value!!,
+                                item,
                                 null
                             )
 
-                            is SingleItemContentConfig.Default -> DefaultDropdownItemComposable(
-                                selectedItem.value!!,
+                            is SingleItemContentConfig.Default -> DefaultSingleItemComposable(
+                                item,
                                 itemContentConfig.defaultItem
                             )
                         }
@@ -74,7 +73,7 @@ internal fun <T : Any> DropdownItemsList(
                     is MultipleItemContentConfig -> {
                         when (itemContentConfig) {
                             is MultipleItemContentConfig.Custom -> itemContentConfig.content(
-                                selectedItem.value!!,
+                                item,
                                 null, object : MultipleSelectActionListener<T>{
                                     override fun onSelect(item: T) {
                                         TODO("Not yet implemented")
@@ -92,8 +91,8 @@ internal fun <T : Any> DropdownItemsList(
                                 }
                             )
 
-                            is MultipleItemContentConfig.Default -> DefaultDropdownItemComposable(
-                                selectedItem.value!!,
+                            is MultipleItemContentConfig.Default -> DefaultSingleItemComposable(
+                                item,
                                 itemContentConfig.defaultItem
                             )
                         }

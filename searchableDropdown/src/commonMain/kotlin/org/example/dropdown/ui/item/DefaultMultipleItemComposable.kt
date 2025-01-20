@@ -1,9 +1,11 @@
 package org.example.dropdown.ui.item
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.Checkbox
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -12,20 +14,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.example.dropdown.data.DefaultDropdownItem
+import org.example.dropdown.data.enum.DefaultSelectorPosition
+
 
 @Composable
-internal fun <T : Any> DefaultDropdownItemComposable(
+internal fun <T : Any> DefaultMultipleItemComposable(
     item: T,
-    defaultDropdownItem: DefaultDropdownItem<T>
+    defaultDropdownItem: DefaultDropdownItem<T>,
+    options: MultipleItemOptions
 ) {
     Row(
         modifier = Modifier.padding(vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically) {
-        if (defaultDropdownItem.withIcon == true) {
-            defaultDropdownItem.icon(item)
-            Spacer(Modifier.width(10.dp))
-        }
-        Text(text = defaultDropdownItem.title.get(item).toString(), modifier = Modifier.weight(1f))
-        Text(text = defaultDropdownItem.subtitle?.get(item).toString(), color = Color.Gray, fontSize = 12.sp)
+        if (options.defaultSelectorPosition == DefaultSelectorPosition.START)
+        Checkbox(checked = true, onCheckedChange = {})
+        DefaultItemBodyComposable<T>(item, defaultDropdownItem)
+        if (options.defaultSelectorPosition == DefaultSelectorPosition.END)
+        Checkbox(checked = true, onCheckedChange = {})
     }
 }
+

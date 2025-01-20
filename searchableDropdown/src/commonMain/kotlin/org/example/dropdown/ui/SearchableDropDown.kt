@@ -22,14 +22,13 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import org.example.dropdown.data.DropdownConfig
 import org.example.dropdown.data.listener.MultipleRemoveItemListener
-import org.example.dropdown.data.listener.MultipleSelectActionListener
 import org.example.dropdown.data.search.SearchSettings
 import org.example.dropdown.data.selection.ItemContentConfig
 import org.example.dropdown.data.selection.MultipleItemContentConfig
 import org.example.dropdown.data.selection.SingleItemContentConfig
 import org.example.dropdown.ui.DropdownContentPopUp
 import org.example.dropdown.ui.ToggleIconComposable
-import org.example.dropdown.ui.item.DefaultDropdownItemComposable
+import org.example.dropdown.ui.item.DefaultSingleItemComposable
 
 
 @Composable
@@ -75,7 +74,7 @@ fun <T : Any> SearchableDropdown(
                             null
                         )
 
-                        is SingleItemContentConfig.Default -> DefaultDropdownItemComposable(
+                        is SingleItemContentConfig.Default -> DefaultSingleItemComposable(
                             selectedItem.value!!,
                             itemContentConfig.defaultItem
                         )
@@ -93,7 +92,7 @@ fun <T : Any> SearchableDropdown(
                             }
                         )
 
-                        is MultipleItemContentConfig.Default -> DefaultDropdownItemComposable(
+                        is MultipleItemContentConfig.Default -> DefaultSingleItemComposable(
                             selectedItem.value!!,
                             itemContentConfig.defaultItem
                         )
