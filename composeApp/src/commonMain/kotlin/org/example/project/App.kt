@@ -15,6 +15,7 @@ import org.example.project.demo.CountryDemo
 import org.example.project.demo.PeopleDemo
 import org.example.project.demo.SettingsDemo
 import org.example.project.demo.StudentDemo
+import org.example.project.multipleDemo.MultiplePeopleDemo
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
@@ -30,7 +31,7 @@ fun App() {
 
             Column(modifier = Modifier.padding(horizontal = 30.dp)) {
                 Spacer(modifier = Modifier.height(50.dp))
-                PeopleDemo ()
+                MultiplePeopleDemo ()
                 Spacer(modifier = Modifier.height(50.dp))
                 CountryDemo ()
                 Spacer(modifier = Modifier.height(50.dp))

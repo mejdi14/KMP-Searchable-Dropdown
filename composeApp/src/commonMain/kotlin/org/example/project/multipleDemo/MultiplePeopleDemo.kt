@@ -1,6 +1,7 @@
 package org.example.project.multipleDemo
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +23,7 @@ import kmp_searchable_dropdown.composeapp.generated.resources.Res
 import kmp_searchable_dropdown.composeapp.generated.resources.green_check
 import org.example.dropdown.data.DropdownConfig
 import org.example.dropdown.data.search.SearchSettings
+import org.example.dropdown.data.selection.MultipleItemContentConfig
 import org.example.dropdown.data.selection.SingleItemContentConfig
 import org.example.project.data.People
 import org.example.project.data.people
@@ -46,8 +48,8 @@ fun MultiplePeopleDemo() {
                         .padding(vertical = 16.dp)
                 )
             }),
-        itemContentConfig = SingleItemContentConfig.Custom(
-            content = { person, selectedPerson ->
+        itemContentConfig = MultipleItemContentConfig.Custom(
+            content = { person, selectedPerson, multipleSelectActionListener ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -57,7 +59,10 @@ fun MultiplePeopleDemo() {
                 ) {
                     Image(
                         painterResource(person.photo),
-                        modifier = Modifier.size(32.dp),
+                        modifier = Modifier.size(32.dp)
+                            .clickable{
+                                multipleSelectActionListener.onSelect(person)
+                            },
                         contentDescription = "",
                     )
                     Spacer(Modifier.width(12.dp))
@@ -85,7 +90,7 @@ fun MultiplePeopleDemo() {
                 }
 
             },
-            header = { person, selectedPerson ->
+            header = { person, selectedPerson, removeItemListener ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

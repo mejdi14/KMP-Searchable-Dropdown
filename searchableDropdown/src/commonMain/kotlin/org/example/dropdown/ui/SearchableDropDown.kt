@@ -9,9 +9,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -41,7 +44,7 @@ fun <T : Any> SearchableDropdown(
 ) {
     var expanded = remember { mutableStateOf(false) }
     val rotationAngle by animateDpAsState(targetValue = if (expanded.value) 0.dp else 180.dp)
-
+    val selectedItemsList = remember { mutableStateListOf<T>() }
 
     val parentCoordinates = remember { mutableStateOf<LayoutCoordinates?>(null) }
 
@@ -65,43 +68,52 @@ fun <T : Any> SearchableDropdown(
             }
 
     ) {
-        if (selectedItem.value != null) {
-            when (itemContentConfig) {
-                is SingleItemContentConfig -> {
-                    when (itemContentConfig) {
-                        is SingleItemContentConfig.Custom -> itemContentConfig.header(
-                            selectedItem.value!!,
-                            null
-                        )
+        if (selectedItemsList.isNotEmpty()) {
+            LazyRow() {
+                items(selectedItemsList) { currentItem ->
 
-                        is SingleItemContentConfig.Default -> DefaultSingleItemComposable(
-                            selectedItem.value!!,
-                            itemContentConfig.defaultItem
-                        )
-                    }
-                }
-                is MultipleItemContentConfig -> {
                     when (itemContentConfig) {
-                        is MultipleItemContentConfig.Custom -> itemContentConfig.header(
-                            selectedItem.value!!,
-                            null, object : MultipleRemoveItemListener<T>{
-                                override fun onRemove(item: T) {
-                                    TODO("Not yet implemented")
-                                }
+                        is SingleItemContentConfig -> {
+                            when (itemContentConfig) {
+                                is SingleItemContentConfig.Custom -> itemContentConfig.header(
+                                    selectedItem.value!!,
+                                    null
+                                )
 
+                                is SingleItemContentConfig.Default -> DefaultSingleItemComposable(
+                                    selectedItem.value!!,
+                                    itemContentConfig.defaultItem
+                                )
                             }
-                        )
+                        }
 
-                        is MultipleItemContentConfig.Default -> DefaultSingleItemComposable(
-                            selectedItem.value!!,
-                            itemContentConfig.defaultItemCustomization
-                        )
+                        is MultipleItemContentConfig -> {
+                            when (itemContentConfig) {
+                                is MultipleItemContentConfig.Custom -> itemContentConfig.header(
+                                    currentItem,
+                                    null, object : MultipleRemoveItemListener<T> {
+                                        override fun onRemove(item: T) {
+                                            TODO("Not yet implemented")
+                                        }
+
+                                    }
+                                )
+
+                                is MultipleItemContentConfig.Default -> DefaultSingleItemComposable(
+                                    currentItem,
+                                    itemContentConfig.defaultItemCustomization
+                                )
+                            }
+                        }
                     }
                 }
             }
+
         } else {
             dropdownConfig.headerPlaceholder()
         }
+
+
         Box(modifier = Modifier.align(alignment = Alignment.CenterEnd)) {
             ToggleIconComposable(rotationAngle, expanded.value, dropdownConfig.toggleIcon)
         }
@@ -116,6 +128,7 @@ fun <T : Any> SearchableDropdown(
             items,
             selectedItem,
             itemContentConfig,
+            selectedItemsList
         )
     }
     Spacer(modifier = Modifier.height(10.dp))

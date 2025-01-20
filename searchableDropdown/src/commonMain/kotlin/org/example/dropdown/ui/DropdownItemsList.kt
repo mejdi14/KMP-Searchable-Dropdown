@@ -13,9 +13,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import co.touchlab.kermit.Logger
 import org.example.dropdown.data.DropdownConfig
 import org.example.dropdown.data.listener.MultipleSelectActionListener
 import org.example.dropdown.data.search.SearchSettings
@@ -32,11 +34,12 @@ internal fun <T : Any> DropdownItemsList(
     selectedItem: MutableState<T?>,
     expanded: MutableState<Boolean>,
     itemContentConfig: ItemContentConfig<T>,
-    dropdownConfig: DropdownConfig<T>
+    dropdownConfig: DropdownConfig<T>,
+    selectedItemsList: SnapshotStateList<T>,
 ) {
     val listState = rememberLazyListState()
     var containerHeight by remember { mutableStateOf(0f) }
-    var selectedItemsList by remember { mutableStateOf(mutableListOf<T>()) }
+
 
     LazyColumn(
         state = listState,
@@ -50,13 +53,19 @@ internal fun <T : Any> DropdownItemsList(
         itemsIndexed(filteredItems) { index, item ->
             Box(Modifier.fillMaxWidth()
                 .background(color = if (item == selectedItem) Color.Gray else Color.Transparent)
-                .clickable {
-                    if (dropdownConfig.withItemSelection) {
-                        selectedItem.value = item
-                        dropdownConfig.selectItemActionListener.onItemSelectListener(item)
-                        expanded.value = !expanded.value
+                .then(
+                    if (dropdownConfig.withItemSelection && itemContentConfig is SingleItemContentConfig) {
+                        Modifier.clickable {
+                            selectedItem.value = item
+                            dropdownConfig.selectItemActionListener.onItemSelectListener(item)
+                            expanded.value = !expanded.value
+                        }
+                    } else {
+                        Modifier
                     }
-                }) {
+                )
+                )
+            {
 
                 when (itemContentConfig) {
                     is SingleItemContentConfig -> {
@@ -86,7 +95,7 @@ internal fun <T : Any> DropdownItemsList(
                                     }
 
                                     override fun isSelected(item: T): Boolean {
-                                        TODO("Not yet implemented")
+                                        return selectedItemsList.contains(item)
                                     }
 
 
