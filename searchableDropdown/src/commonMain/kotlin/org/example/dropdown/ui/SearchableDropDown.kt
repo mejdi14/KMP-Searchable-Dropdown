@@ -94,7 +94,7 @@ fun <T : Any> SearchableDropdown(
 
                         is MultipleItemContentConfig.Default -> DefaultSingleItemComposable(
                             selectedItem.value!!,
-                            itemContentConfig.defaultItem
+                            itemContentConfig.defaultItemCustomization
                         )
                     }
                 }

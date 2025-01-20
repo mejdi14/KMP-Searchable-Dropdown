@@ -22,6 +22,7 @@ import org.example.dropdown.data.search.SearchSettings
 import org.example.dropdown.data.selection.ItemContentConfig
 import org.example.dropdown.data.selection.MultipleItemContentConfig
 import org.example.dropdown.data.selection.SingleItemContentConfig
+import org.example.dropdown.ui.item.DefaultMultipleItemComposable
 import org.example.dropdown.ui.item.DefaultSingleItemComposable
 
 @Composable
@@ -35,6 +36,7 @@ internal fun <T : Any> DropdownItemsList(
 ) {
     val listState = rememberLazyListState()
     var containerHeight by remember { mutableStateOf(0f) }
+    var selectedItemsList by remember { mutableStateOf(mutableListOf<T>()) }
 
     LazyColumn(
         state = listState,
@@ -76,7 +78,7 @@ internal fun <T : Any> DropdownItemsList(
                                 item,
                                 null, object : MultipleSelectActionListener<T>{
                                     override fun onSelect(item: T) {
-                                        TODO("Not yet implemented")
+                                        selectedItemsList.add(item)
                                     }
 
                                     override fun onDeselect(item: T) {
@@ -91,9 +93,12 @@ internal fun <T : Any> DropdownItemsList(
                                 }
                             )
 
-                            is MultipleItemContentConfig.Default -> DefaultSingleItemComposable(
+                            is MultipleItemContentConfig.Default -> DefaultMultipleItemComposable(
                                 item,
-                                itemContentConfig.defaultItem
+                                itemContentConfig.defaultItemCustomization,
+                                itemContentConfig.options,
+                                selectedItemsList
+
                             )
                         }
                     }
