@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.example.dropdown.data.DefaultDropdownItem
 import org.example.dropdown.data.enum.DefaultSelectorPosition
+import org.example.dropdown.ui.DefaultCheckboxComposable
 import org.example.dropdown.ui.item.DefaultItemBodyComposable
 
 class CustomMultipleItemComposable {
@@ -25,21 +26,9 @@ internal fun <T : Any> CustomMultipleItemComposable(
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (options.defaultSelectorPosition == DefaultSelectorPosition.START)
-            Checkbox(checked = selectedItemsList.contains(item), onCheckedChange = { selected ->
-                when (selected) {
-                    true -> selectedItemsList.add(item)
-                    false -> selectedItemsList.remove(item)
-                    else -> {}
-                }
-            })
+            DefaultCheckboxComposable(selectedItemsList, item, options)
         bodyContent()
         if (options.defaultSelectorPosition == DefaultSelectorPosition.END)
-            Checkbox(checked = selectedItemsList.contains(item), onCheckedChange = { selected ->
-                when (selected) {
-                    true -> selectedItemsList.add(item)
-                    false -> selectedItemsList.remove(item)
-                    else -> {}
-                }
-            })
+            DefaultCheckboxComposable(selectedItemsList, item, options)
     }
 }
