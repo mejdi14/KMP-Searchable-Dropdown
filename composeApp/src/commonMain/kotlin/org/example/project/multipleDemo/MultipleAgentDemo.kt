@@ -27,6 +27,7 @@ import kmp_searchable_dropdown.composeapp.generated.resources.green_check
 import org.example.dropdown.data.DropdownConfig
 import org.example.dropdown.data.search.SearchSettings
 import org.example.dropdown.data.selection.MultipleItemContentConfig
+import org.example.dropdown.ui.item.MultipleItemOptions
 import org.example.project.data.Agent
 import org.example.project.data.People
 import org.example.project.data.agents
@@ -45,6 +46,7 @@ fun MultipleAgentDemo() {
             )
         ),
         dropdownConfig = DropdownConfig(shape = RoundedCornerShape(18.dp),
+            horizontalPadding = 12.dp,
             headerPlaceholder = {
                 Text(
                     "Your favorite person", color = Color.Black,
@@ -94,6 +96,7 @@ fun MultipleAgentDemo() {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.background(color = agent.backgroundColor, shape = RoundedCornerShape(10.dp))
+                        .padding(horizontal = 8.dp, vertical = 2.dp)
                 ) {
                     Text(agent.name, color = agent.textColor)
                     Spacer(Modifier.width(5.dp))
@@ -106,7 +109,8 @@ fun MultipleAgentDemo() {
                             }
                     )
                 }
-            }
+            },
+            options = MultipleItemOptions()
         ),
     )
 }

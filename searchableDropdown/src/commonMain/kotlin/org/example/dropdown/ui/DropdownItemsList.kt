@@ -86,30 +86,56 @@ internal fun <T : Any> DropdownItemsList(
                     is MultipleItemContentConfig -> {
                         when (itemContentConfig) {
                             is MultipleItemContentConfig.Custom ->
-                                CustomMultipleItemComposable(
-                                    item,
-                                    itemContentConfig.options,
-                                    selectedItemsList,
-                                bodyContent = {
-                                    itemContentConfig.content(
-                                        item,
-                                        null, object : MultipleSelectActionListener<T>{
-                                            override fun onSelect(item: T) {
-                                                selectedItemsList.add(item)
+                                when(itemContentConfig.options.useDefaultSelector){
+                                    true -> {
+                                        CustomMultipleItemComposable(
+                                            item,
+                                            itemContentConfig.options,
+                                            selectedItemsList,
+                                            bodyContent = {
+                                                itemContentConfig.content(
+                                                    item,
+                                                    null, object : MultipleSelectActionListener<T>{
+                                                        override fun onSelect(item: T) {
+                                                            selectedItemsList.add(item)
+                                                        }
+
+                                                        override fun onDeselect(item: T) {
+                                                            selectedItemsList.remove(item)
+                                                        }
+
+                                                        override fun isSelected(item: T): Boolean {
+                                                            return selectedItemsList.contains(item)
+                                                        }
+
+
+                                                    }
+                                                )
+                                            })
+                                    }
+                                    false -> {
+                                        itemContentConfig.content(
+                                            item,
+                                            null, object : MultipleSelectActionListener<T>{
+                                                override fun onSelect(item: T) {
+                                                    selectedItemsList.add(item)
+                                                }
+
+                                                override fun onDeselect(item: T) {
+                                                    selectedItemsList.remove(item)
+                                                }
+
+                                                override fun isSelected(item: T): Boolean {
+                                                    return selectedItemsList.contains(item)
+                                                }
+
+
                                             }
+                                        )
+                                    }
+                                    else -> {}
+                                }
 
-                                            override fun onDeselect(item: T) {
-                                                selectedItemsList.remove(item)
-                                            }
-
-                                            override fun isSelected(item: T): Boolean {
-                                                return selectedItemsList.contains(item)
-                                            }
-
-
-                                        }
-                                    )
-                                })
 
                             is MultipleItemContentConfig.Default -> DefaultMultipleItemComposable(
                                 item,
