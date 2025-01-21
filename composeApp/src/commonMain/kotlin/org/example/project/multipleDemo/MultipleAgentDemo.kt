@@ -1,6 +1,7 @@
 package org.example.project.multipleDemo
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,24 +22,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kmp_searchable_dropdown.composeapp.generated.resources.Res
+import kmp_searchable_dropdown.composeapp.generated.resources.cross_icon
 import kmp_searchable_dropdown.composeapp.generated.resources.green_check
 import org.example.dropdown.data.DropdownConfig
 import org.example.dropdown.data.search.SearchSettings
 import org.example.dropdown.data.selection.MultipleItemContentConfig
-import org.example.dropdown.data.selection.SingleItemContentConfig
+import org.example.project.data.Agent
 import org.example.project.data.People
+import org.example.project.data.agents
 import org.example.project.data.people
 import org.example.project.ui.SearchableDropdown
 import org.jetbrains.compose.resources.painterResource
 
+
 @Composable
-fun MultiplePeopleDemo() {
+fun MultipleAgentDemo() {
     SearchableDropdown(
-        items = people,
+        items = agents,
         searchSettings = SearchSettings(
             searchProperties = listOf(
-                People::name,
-                People::job,
+                Agent::name,
             )
         ),
         dropdownConfig = DropdownConfig(shape = RoundedCornerShape(18.dp),
@@ -73,11 +77,7 @@ fun MultiplePeopleDemo() {
                         Text(
                             text = person.name,
                         )
-                        Text(
-                            text = person.job,
-                            color = Color.Gray,
-                            fontSize = 12.sp
-                        )
+
                     }
                     Spacer(Modifier.width(12.dp))
                     if (person == selectedPerson)
@@ -90,12 +90,22 @@ fun MultiplePeopleDemo() {
                 }
 
             },
-            header = { person, selectedPerson, removeItemListener ->
-                Image(
-                    painterResource(person.photo),
-                    modifier = Modifier.size(32.dp),
-                    contentDescription = "",
-                )
+            header = { agent, selectedPerson, removeItemListener ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.background(color = agent.backgroundColor, shape = RoundedCornerShape(10.dp))
+                ) {
+                    Text(agent.name, color = agent.textColor)
+                    Spacer(Modifier.width(5.dp))
+                    Icon(
+                        painter = painterResource(Res.drawable.cross_icon), contentDescription = "",
+                        tint = agent.textColor,
+                        modifier = Modifier.padding(2.dp)
+                            .clickable {
+                                removeItemListener.onRemove(agent)
+                            }
+                    )
+                }
             }
         ),
     )

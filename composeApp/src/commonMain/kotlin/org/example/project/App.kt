@@ -15,6 +15,7 @@ import org.example.project.demo.CountryDemo
 import org.example.project.demo.PeopleDemo
 import org.example.project.demo.SettingsDemo
 import org.example.project.demo.StudentDemo
+import org.example.project.multipleDemo.MultipleAgentDemo
 import org.example.project.multipleDemo.MultipleCountryDemo
 import org.example.project.multipleDemo.MultiplePeopleDemo
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -36,7 +37,8 @@ fun App() {
                 Spacer(modifier = Modifier.height(50.dp))
                 MultipleCountryDemo ()
                 Spacer(modifier = Modifier.height(50.dp))
-                SettingsDemo()
+                //SettingsDemo()
+                MultipleAgentDemo()
             }
         }
     }
