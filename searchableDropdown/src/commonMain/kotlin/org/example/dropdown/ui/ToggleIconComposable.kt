@@ -2,7 +2,6 @@ package org.example.dropdown.ui
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.TweenSpec
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
@@ -13,14 +12,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import kmp_searchable_dropdown.searchabledropdown.generated.resources.Res
-import kmp_searchable_dropdown.searchabledropdown.generated.resources.expand_less
 import org.example.dropdown.data.ToggleIcon
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-internal fun ToggleIconComposable(rotationAngle: Dp, expanded: Boolean, toggleIcon: ToggleIcon) {
+internal fun ToggleIconComposable(
+    rotationAngle: Dp,
+    expanded: Boolean,
+    toggleIcon: ToggleIcon,
+    modifier: Modifier
+) {
     val scale = remember { Animatable(1f) }
     val alpha = remember { Animatable(1f) }
     val isFirstComposition = remember { mutableStateOf(true) }
@@ -46,7 +47,7 @@ internal fun ToggleIconComposable(rotationAngle: Dp, expanded: Boolean, toggleIc
         painter = painterResource(toggleIcon.iconDrawable),
         contentDescription = toggleIcon.contentDescription,
         tint = toggleIcon.iconTintColor,
-        modifier = Modifier
+        modifier = modifier
             .size(toggleIcon.iconSize)
             .scale(scale.value)
             .rotate(rotationAngle.value)

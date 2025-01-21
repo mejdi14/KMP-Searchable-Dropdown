@@ -9,14 +9,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.example.dropdown.data.DefaultDropdownItem
 import org.example.dropdown.data.enum.DefaultSelectorPosition
+import org.example.dropdown.ui.item.DefaultItemBodyComposable
 
-
+class CustomMultipleItemComposable {
+}
 @Composable
-internal fun <T : Any> DefaultMultipleItemComposable(
+internal fun <T : Any> CustomMultipleItemComposable(
     item: T,
-    defaultDropdownItem: DefaultDropdownItem<T>,
     options: MultipleItemOptions,
     selectedItemsList: MutableList<T>,
+    bodyContent: @Composable () -> Unit
 ) {
     Row(
         modifier = Modifier.padding(vertical = 16.dp, horizontal = 6.dp),
@@ -30,7 +32,7 @@ internal fun <T : Any> DefaultMultipleItemComposable(
                     else -> {}
                 }
             })
-        DefaultItemBodyComposable<T>(item, defaultDropdownItem)
+        bodyContent()
         if (options.defaultSelectorPosition == DefaultSelectorPosition.END)
             Checkbox(checked = selectedItemsList.contains(item), onCheckedChange = { selected ->
                 when (selected) {
@@ -41,4 +43,3 @@ internal fun <T : Any> DefaultMultipleItemComposable(
             })
     }
 }
-

@@ -24,7 +24,6 @@ import org.example.dropdown.data.search.SearchIcon
 import org.example.dropdown.data.search.SearchInput
 import org.example.dropdown.data.search.SearchSettings
 import org.example.dropdown.data.selection.MultipleItemContentConfig
-import org.example.dropdown.data.selection.SingleItemContentConfig
 import org.example.dropdown.ui.item.DefaultItemHeaderComposable
 import org.example.dropdown.ui.item.MultipleItemOptions
 import org.example.project.data.Country
@@ -87,10 +86,13 @@ fun MultipleCountryDemo() {
                     )
 
                 }
-
             },
             header = { country, selectedCountry, multipleRemoveItemListener ->
-                DefaultItemHeaderComposable(item = country, title = Country::name)
+                DefaultItemHeaderComposable(
+                    item = country,
+                    title = Country::name,
+                    removeItemListener = multipleRemoveItemListener
+                )
             },
             options = MultipleItemOptions(useDefaultSelector = true)
 

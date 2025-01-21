@@ -14,11 +14,6 @@ sealed class MultipleItemContentConfig<T : Any>  : ItemContentConfig<T>{
         val options: MultipleItemOptions = MultipleItemOptions(),
     ) : MultipleItemContentConfig<T>()
 
-    /*data class HalfCustom<T : Any>(
-        val content: @Composable (T, T?) -> Unit,
-        val header: @Composable (T, T?, MultipleRemoveItemListener<T>) -> Unit,
-        val options: MultipleItemOptions = MultipleItemOptions(),
-    ) : MultipleItemContentConfig<T>()*/
 
     data class Default<T : Any>(
         val defaultItemCustomization: DefaultDropdownItem<T>,

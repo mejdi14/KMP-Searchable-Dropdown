@@ -17,13 +17,14 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
-import co.touchlab.kermit.Logger
 import org.example.dropdown.data.DropdownConfig
 import org.example.dropdown.data.listener.MultipleSelectActionListener
 import org.example.dropdown.data.search.SearchSettings
 import org.example.dropdown.data.selection.ItemContentConfig
 import org.example.dropdown.data.selection.MultipleItemContentConfig
 import org.example.dropdown.data.selection.SingleItemContentConfig
+import org.example.dropdown.ui.item.CustomMultipleItemComposable
+import org.example.dropdown.ui.item.DefaultItemBodyComposable
 import org.example.dropdown.ui.item.DefaultMultipleItemComposable
 import org.example.dropdown.ui.item.DefaultSingleItemComposable
 
@@ -70,7 +71,8 @@ internal fun <T : Any> DropdownItemsList(
                 when (itemContentConfig) {
                     is SingleItemContentConfig -> {
                         when (itemContentConfig) {
-                            is SingleItemContentConfig.Custom -> itemContentConfig.content(
+                            is SingleItemContentConfig.Custom ->
+                                itemContentConfig.content(
                                 item,
                                 null
                             )
@@ -83,30 +85,37 @@ internal fun <T : Any> DropdownItemsList(
                     }
                     is MultipleItemContentConfig -> {
                         when (itemContentConfig) {
-                            is MultipleItemContentConfig.Custom -> itemContentConfig.content(
-                                item,
-                                null, object : MultipleSelectActionListener<T>{
-                                    override fun onSelect(item: T) {
-                                        selectedItemsList.add(item)
-                                    }
+                            is MultipleItemContentConfig.Custom ->
+                                CustomMultipleItemComposable(
+                                    item,
+                                    itemContentConfig.options,
+                                    selectedItemsList,
+                                bodyContent = {
+                                    itemContentConfig.content(
+                                        item,
+                                        null, object : MultipleSelectActionListener<T>{
+                                            override fun onSelect(item: T) {
+                                                selectedItemsList.add(item)
+                                            }
 
-                                    override fun onDeselect(item: T) {
-                                        TODO("Not yet implemented")
-                                    }
+                                            override fun onDeselect(item: T) {
+                                                selectedItemsList.remove(item)
+                                            }
 
-                                    override fun isSelected(item: T): Boolean {
-                                        return selectedItemsList.contains(item)
-                                    }
+                                            override fun isSelected(item: T): Boolean {
+                                                return selectedItemsList.contains(item)
+                                            }
 
 
-                                }
-                            )
+                                        }
+                                    )
+                                })
 
                             is MultipleItemContentConfig.Default -> DefaultMultipleItemComposable(
                                 item,
                                 itemContentConfig.defaultItemCustomization,
                                 itemContentConfig.options,
-                                selectedItemsList
+                                selectedItemsList,
 
                             )
                         }

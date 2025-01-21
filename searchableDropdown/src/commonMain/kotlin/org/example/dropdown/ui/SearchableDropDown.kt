@@ -4,11 +4,15 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -48,7 +52,7 @@ fun <T : Any> SearchableDropdown(
 
     val parentCoordinates = remember { mutableStateOf<LayoutCoordinates?>(null) }
 
-    Box(
+    Row(
         Modifier
             .fillMaxWidth()
             .shadow(elevation = 2.dp, shape = dropdownConfig.shape)
@@ -65,11 +69,17 @@ fun <T : Any> SearchableDropdown(
                 indication = null
             ) {
                 expanded.value = !expanded.value
-            }
+            },
+        verticalAlignment = Alignment.CenterVertically
 
     ) {
         if (selectedItemsList.isNotEmpty()) {
-            LazyRow() {
+            LazyRow(
+                modifier = Modifier.weight(1f).padding(vertical = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                contentPadding = PaddingValues(horizontal = 6.dp)
+            ) {
                 items(selectedItemsList) { currentItem ->
 
                     when (itemContentConfig) {
@@ -93,7 +103,7 @@ fun <T : Any> SearchableDropdown(
                                     currentItem,
                                     null, object : MultipleRemoveItemListener<T> {
                                         override fun onRemove(item: T) {
-                                            TODO("Not yet implemented")
+                                            selectedItemsList.remove(item)
                                         }
 
                                     }
@@ -110,12 +120,18 @@ fun <T : Any> SearchableDropdown(
             }
 
         } else {
-            dropdownConfig.headerPlaceholder()
+            Box(Modifier.weight(1f)) {
+                dropdownConfig.headerPlaceholder()
+            }
         }
 
 
-        Box(modifier = Modifier.align(alignment = Alignment.CenterEnd)) {
-            ToggleIconComposable(rotationAngle, expanded.value, dropdownConfig.toggleIcon)
+        Box(modifier = Modifier.size(20.dp)) {
+            ToggleIconComposable(
+                rotationAngle, expanded.value, dropdownConfig.toggleIcon, Modifier.align(
+                    Alignment.Center
+                )
+            )
         }
     }
 

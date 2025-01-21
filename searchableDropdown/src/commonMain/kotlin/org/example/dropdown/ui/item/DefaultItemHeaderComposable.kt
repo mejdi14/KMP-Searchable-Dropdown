@@ -2,8 +2,10 @@ package org.example.dropdown.ui.item
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +19,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import kmp_searchable_dropdown.searchabledropdown.generated.resources.Res
 import kmp_searchable_dropdown.searchabledropdown.generated.resources.cross_icon
+import org.example.dropdown.data.listener.MultipleRemoveItemListener
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import kotlin.reflect.KProperty1
@@ -30,16 +33,22 @@ fun <T> DefaultItemHeaderComposable(
     iconColor: Color = Color.Black,
     item: T,
     title: KProperty1<T, *>,
+    removeItemListener: MultipleRemoveItemListener<T>
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.background(color = backgroundColor, shape = shape)
+            .padding(horizontal = 8.dp, vertical = 2.dp)
     ) {
         Text(title.get(item).toString())
         Spacer(Modifier.width(5.dp))
         Icon(
             painter = painterResource(deleteIcon), contentDescription = "",
-            tint = iconColor
+            tint = iconColor,
+            modifier = Modifier.padding(2.dp)
+                .clickable {
+                    removeItemListener.onRemove(item)
+                }
         )
     }
 }
