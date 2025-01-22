@@ -25,8 +25,14 @@
     width="255"
     style="margin-right: 20px;"
   />
-
+<img 
+    src="https://raw.githubusercontent.com/mejdi14/Vanish-Composable/main/demo/output.gif"
+    height="500"
+    width="255"
+    style="margin-right: 20px;"
+  />
 </div>
+
 
 
 ## Installation
