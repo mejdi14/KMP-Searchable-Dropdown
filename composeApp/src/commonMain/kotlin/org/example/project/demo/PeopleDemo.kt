@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.sp
 import kmp_searchable_dropdown.composeapp.generated.resources.Res
 import kmp_searchable_dropdown.composeapp.generated.resources.green_check
 import org.example.dropdown.data.DropdownConfig
-import org.example.dropdown.data.ItemContentConfig
 import org.example.dropdown.data.search.SearchSettings
+import org.example.dropdown.data.selection.SingleItemContentConfig
 import org.example.project.data.People
 import org.example.project.data.people
 import org.example.project.ui.SearchableDropdown
@@ -46,7 +46,7 @@ fun PeopleDemo() {
                         .padding(vertical = 16.dp)
                 )
             }),
-        itemContentConfig = ItemContentConfig.Custom(
+        itemContentConfig = SingleItemContentConfig.Custom(
             content = { person, selectedPerson ->
                 Row(
                     modifier = Modifier

@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -27,8 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import org.example.dropdown.data.DropdownConfig
-import org.example.dropdown.data.ItemContentConfig
 import org.example.dropdown.data.search.SearchSettings
+import org.example.dropdown.data.selection.ItemContentConfig
 import org.example.dropdown.helper.filterOperation
 import org.example.dropdown.ui.search.SearchArea
 
@@ -41,7 +42,8 @@ internal fun <T : Any> DropdownContentPopUp(
     searchSettings: SearchSettings<T>,
     items: List<T>,
     selectedItem: MutableState<T?>,
-    itemContentConfig: ItemContentConfig<T>
+    itemContentConfig: ItemContentConfig<T>,
+    selectedItemsList: SnapshotStateList<T>,
 ) {
     Popup(
         alignment = Alignment.TopStart,
@@ -100,7 +102,8 @@ internal fun <T : Any> DropdownContentPopUp(
                             selectedItem,
                             expanded,
                             itemContentConfig,
-                            dropdownConfig
+                            dropdownConfig,
+                            selectedItemsList
                         )
                 }
             }
