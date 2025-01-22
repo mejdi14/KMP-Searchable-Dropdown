@@ -207,7 +207,9 @@ val multipleCustomConfig = MultipleItemContentConfig.Custom(
 
 
 You receive isSelected for each item, so you can visually reflect the selection state.
+
 The multipleSelectActionListener helps you handle toggling (select/deselect) with a simple function call.
+
 The header composable is called for each selected item if you want to display them (like chips or icons) above the list.
 Extras: MultipleItemOptions
 For multi-selection specifically, the options parameter lets you control various behaviors:
