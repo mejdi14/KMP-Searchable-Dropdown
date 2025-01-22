@@ -43,7 +43,7 @@ above):
 ```gradle
 dependencies {
 	...
-	implementation("io.github.mejdi14:KMP-Searchable-Dropdown:0.0.2")
+	implementation("io.github.mejdi14:KMP-Searchable-Dropdown:0.1.0")
 }
 ```
 
@@ -122,25 +122,22 @@ ItemContentConfig Guide
 -----
 
 
-The `ItemContentConfig` class allows you to configure how items in your dropdown are displayed. You can choose between two approaches:
+The ItemContentConfig class (and its subtypes) allows you to configure how items in your dropdown are displayed. Depending on your use case, you can choose:
 
-1. **Default Content**: Use a predefined layout for your items with a title, optional subtitle, and optional icon.
-2. **Custom Content**: Define completely custom layouts for your items and optionally for the header.
+Single Item Selection – Only one item can be chosen.
+Multi-Item Selection – Multiple items can be chosen at once.
+Within each selection mode, there are two approaches to rendering items:
 
----
+Default Content: Use a predefined layout with minimal setup.
+Custom Content: Fully control the composable layout of your items (and optionally the header).
+Below, you’ll find an overview of each approach in a format similar to the one shown for single-item usage.
 
-## Default Content
+Single Item Selection
+Default Content
+If you want a quick, predefined appearance (title, optional subtitle, and optional icon), you can pass a DefaultDropdownItem to a Default configuration. This is the easiest way to get started—just map the fields (e.g., title, subtitle) to your data’s properties.
 
-To use the default configuration, you can provide a `DefaultDropdownItem`. This is a quick and easy way to display items with a consistent appearance.
-
-<p align="center">
-  <img src="https://github.com/mejdi14/KMP-Searchable-Dropdown/blob/main/demo/demo_image.jpg" alt="Default Content Demo" width="400" />
-</p>
-
-### Example:
-
-```kotlin
-val defaultConfig = ItemContentConfig.Default(
+``` kotlin
+val defaultConfig = SingleItemContentConfig.Default(
     defaultItem = DefaultDropdownItem(
         title = Person::name,
         subtitle = Person::job,
@@ -148,48 +145,77 @@ val defaultConfig = ItemContentConfig.Default(
     )
 )
 ```
+<p align="center"> <img src="https://github.com/mejdi14/KMP-Searchable-Dropdown/blob/main/demo/demo_image.jpg" alt="Default Content Demo" width="400" /> </p>
+Tip: You can hide the subtitle or the icon if you don’t need them by simply not providing those properties.
 
-## Custom Content
+Custom Content
+For maximum flexibility, use Custom. You’ll define a composable function for the content (how each item appears) and optionally a separate header layout (how the selected item is shown in the closed dropdown state).
 
-If you want full control over how the dropdown items and header are displayed, you can use the `Custom` configuration. This allows you to provide composable functions for both `content` (how each item appears) and `header` (the dropdown header).
-
-### Key Points:
-- **`content`**: Defines the layout and styling of each item in the dropdown.
-- **`header`** (Optional): Defines the layout and styling of the dropdown header. If not provided, it will default to using the `content`.
-
-### Example:
-
-```kotlin
-val customConfig = ItemContentConfig.Custom(
+``` kotlin
+val customConfig = SingleItemContentConfig.Custom(
     content = { person, _ ->
-        Row(
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = person.name,
-                fontSize = 16.sp
-            )
-        }
+        // Define each item's row layout here
     },
     header = { person, _ ->
-        Row(
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Selected: ${person.name}",
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
-            )
-        }
+        // Define how to show the selected item in the header
     }
 )
 ```
+
+Key Point: If you omit the header parameter, it will use the same composable as content. This is perfect when you want both the dropdown items and the header to look the same.
+
+Multi-Item Selection
+Default Content (Multi)
+Multi-selection also supports a Default approach. You can still provide something like a DefaultDropdownItem for consistency, but with multiple selections in mind. Additionally, you can tweak multi-selection options—such as the maximum number of items a user can select or whether to show a built-in checkbox.
+
+``` kotlin
+val multipleDefaultConfig = MultipleItemContentConfig.Default(
+    defaultItemCustomization = DefaultDropdownItem(
+        title = Person::name,
+        subtitle = Person::job,
+        withIcon = true
+    ),
+    options = MultipleItemOptions(
+        selectionMaxCount = 3,       // For example, limit to 3 selections
+        useDefaultSelector = true    // Enable built-in checkboxes/icons
+    )
+)
+```
+
+Info: This gives you a quick setup where each selected item is managed automatically, and the dropdown shows a checkbox or icon by default.
+
+Custom Content (Multi)
+When you need full control over each item’s layout (including how you indicate “selected” vs. “not selected”), as well as how selected items appear in the header, choose Custom.
+
+``` kotlin
+val multipleCustomConfig = MultipleItemContentConfig.Custom(
+    content = { person, isSelected, multipleSelectActionListener ->
+        // Define how each item row should look,
+        // and call `onSelect` or `onDeselect` on click.
+    },
+    header = { person, selectedPerson, removeItemListener ->
+        // Define how each selected item appears
+        // in the header (e.g. chips or horizontal list).
+    },
+    options = MultipleItemOptions(
+        selectionMaxCount = 5,
+        useDefaultSelector = false
+    )
+)
+```
+
+
+
+You receive isSelected for each item, so you can visually reflect the selection state.
+The multipleSelectActionListener helps you handle toggling (select/deselect) with a simple function call.
+The header composable is called for each selected item if you want to display them (like chips or icons) above the list.
+Extras: MultipleItemOptions
+For multi-selection specifically, the options parameter lets you control various behaviors:
+
+selectionMaxCount: Prevents users from selecting more than a certain number of items.
+useDefaultSelector: Adds a built-in checkbox or icon next to each item.
+defaultSelectorPosition: Positions that icon on the start or end of the item row.
+defaultCheckboxParams: Styles the checkbox if useDefaultSelector is true.
 
 ## Upcoming Features
 
