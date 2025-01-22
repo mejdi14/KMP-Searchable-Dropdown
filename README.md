@@ -127,8 +127,8 @@ Default Content: Use a predefined layout with minimal setup.
 Custom Content: Fully control the composable layout of your items (and optionally the header).
 Below, you’ll find an overview of each approach in a format similar to the one shown for single-item usage.
 
-## Single Item Selection
-Default Content
+# Single Item Selection
+### Default Content
 If you want a quick, predefined appearance (title, optional subtitle, and optional icon), you can pass a DefaultDropdownItem to a Default configuration. This is the easiest way to get started—just map the fields (e.g., title, subtitle) to your data’s properties.
 
 ``` kotlin
@@ -143,7 +143,7 @@ val defaultConfig = SingleItemContentConfig.Default(
 <p align="center"> <img src="https://github.com/mejdi14/KMP-Searchable-Dropdown/blob/main/demo/demo_image.jpg" alt="Default Content Demo" width="400" /> </p>
 Tip: You can hide the subtitle or the icon if you don’t need them by simply not providing those properties.
 
-Custom Content
+### Custom Content
 For maximum flexibility, use Custom. You’ll define a composable function for the content (how each item appears) and optionally a separate header layout (how the selected item is shown in the closed dropdown state).
 
 ``` kotlin
@@ -160,7 +160,7 @@ val customConfig = SingleItemContentConfig.Custom(
 Key Point: If you omit the header parameter, it will use the same composable as content. This is perfect when you want both the dropdown items and the header to look the same.
 
 ## Multi-Item Selection
-# Default Content (Multi)
+###  Default Content (Multi)
 Multi-selection also supports a Default approach. You can still provide something like a DefaultDropdownItem for consistency, but with multiple selections in mind. Additionally, you can tweak multi-selection options—such as the maximum number of items a user can select or whether to show a built-in checkbox.
 
 <img 
@@ -186,7 +186,7 @@ val multipleDefaultConfig = MultipleItemContentConfig.Default(
 
 Info: This gives you a quick setup where each selected item is managed automatically, and the dropdown shows a checkbox or icon by default.
 
-# Custom Content (Multi)
+###  Custom Content (Multi)
 When you need full control over each item’s layout (including how you indicate “selected” vs. “not selected”), as well as how selected items appear in the header, choose Custom.
 
 ``` kotlin
