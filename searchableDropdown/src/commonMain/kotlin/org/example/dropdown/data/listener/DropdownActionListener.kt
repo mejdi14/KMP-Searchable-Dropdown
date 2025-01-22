@@ -1,41 +1,40 @@
 package org.example.dropdown.data.listener
 
 
-interface DropdownActionListener {
-    // Default empty implementations
-    fun onExpandListener(): Boolean {
-        return false
+abstract class DropdownActionListener {
+    open fun onExpandListener(isSelected: Boolean) {
+        // Default implementation: Do nothing
     }
 
-    fun onDoubleClick() {}
-    fun onLongPress() {}
-    fun onDragStart() {}
+    open fun <T> onItemSelect(item: T) {
+        // Default implementation: Do nothing
+    }
 
-    companion object {
-        fun create(
-            singleClick: (() -> Unit)? = null,
-            doubleClick: (() -> Unit)? = null,
-            longPress: (() -> Unit)? = null,
-            dragStart: (() -> Unit)? = null
-        ): DropdownActionListener {
-            return object : DropdownActionListener {
-                override fun onExpandListener(): Boolean {
-                    singleClick?.invoke()
-                    return false
-                }
+    open fun onLongPress() {
+        // Default implementation: Do nothing
+    }
 
-                override fun onDoubleClick() {
-                    doubleClick?.invoke()
-                }
-
-                override fun onLongPress() {
-                    longPress?.invoke()
-                }
-
-                override fun onDragStart() {
-                    dragStart?.invoke()
-                }
-            }
-        }
+    open fun onDragStart() {
+        // Default implementation: Do nothing
     }
 }
+
+
+val defaultDropdownActionListener = object : DropdownActionListener() {
+    override fun onExpandListener(isSelected: Boolean) {
+        // Default implementation: Do nothing
+    }
+
+    override fun <T> onItemSelect(item: T) {
+        // Default implementation: Do nothing
+    }
+
+    override fun onLongPress() {
+        // Default implementation: Do nothing
+    }
+
+    override fun onDragStart() {
+        // Default implementation: Do nothing
+    }
+}
+

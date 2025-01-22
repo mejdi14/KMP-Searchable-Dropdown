@@ -31,16 +31,21 @@ fun App() {
             color = Color(0xFFfafafa)
         ) {
 
-            Column(modifier = Modifier.padding(horizontal = 30.dp)) {
-                Spacer(modifier = Modifier.height(50.dp))
-                MultiplePeopleDemo ()
-                Spacer(modifier = Modifier.height(50.dp))
-                MultipleCountryDemo ()
-                Spacer(modifier = Modifier.height(50.dp))
-                //SettingsDemo()
-                MultipleAgentDemo()
-            }
+            MobileDemo()
         }
+    }
+}
+
+@Composable
+private fun MobileDemo() {
+    Column(modifier = Modifier.padding(horizontal = 30.dp)) {
+        Spacer(modifier = Modifier.height(50.dp))
+        MultiplePeopleDemo()
+        Spacer(modifier = Modifier.height(50.dp))
+        MultipleCountryDemo()
+        Spacer(modifier = Modifier.height(50.dp))
+        //SettingsDemo()
+        MultipleAgentDemo()
     }
 }
 

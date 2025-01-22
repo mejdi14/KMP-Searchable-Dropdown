@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import kmp_searchable_dropdown.composeapp.generated.resources.Res
 import kmp_searchable_dropdown.composeapp.generated.resources.green_check
 import org.example.dropdown.data.DropdownConfig
+import org.example.dropdown.data.listener.DropdownActionListener
 import org.example.dropdown.data.search.SearchSettings
 import org.example.dropdown.data.selection.MultipleItemContentConfig
 import org.example.dropdown.data.selection.SingleItemContentConfig
@@ -47,22 +48,31 @@ fun MultiplePeopleDemo() {
                     modifier = Modifier
                         .padding(vertical = 16.dp)
                 )
+            },
+            dropdownActionListener = object : DropdownActionListener(){
+                override fun <T> onItemSelect(item: T) {
+
+                }
+
             }),
         itemContentConfig = MultipleItemContentConfig.Custom(
-            content = { person, selectedPerson, multipleSelectActionListener ->
+            content = { person, isSelected, multipleSelectActionListener ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(58.dp)
+                        .clickable{
+                            if (isSelected)
+                                multipleSelectActionListener.onDeselect(person)
+                            else
+                                multipleSelectActionListener.onSelect(person)
+                        }
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
                         painterResource(person.photo),
-                        modifier = Modifier.size(32.dp)
-                            .clickable{
-                                multipleSelectActionListener.onSelect(person)
-                            },
+                        modifier = Modifier.size(32.dp),
                         contentDescription = "",
                     )
                     Spacer(Modifier.width(12.dp))
@@ -80,7 +90,7 @@ fun MultiplePeopleDemo() {
                         )
                     }
                     Spacer(Modifier.width(12.dp))
-                    if (person == selectedPerson)
+                    if (isSelected)
                         Image(
                             painterResource(Res.drawable.green_check),
                             modifier = Modifier.size(22.dp),

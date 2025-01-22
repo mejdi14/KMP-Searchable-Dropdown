@@ -9,7 +9,7 @@ import org.example.dropdown.ui.item.MultipleItemOptions
 
 sealed class MultipleItemContentConfig<T : Any>  : ItemContentConfig<T>{
     data class Custom<T : Any>(
-        val content: @Composable (T, T?, MultipleSelectActionListener<T>) -> Unit,
+        val content: @Composable (T, Boolean, MultipleSelectActionListener<T>) -> Unit,
         val header: @Composable (T, T?, MultipleRemoveItemListener<T>) -> Unit,
         val options: MultipleItemOptions = MultipleItemOptions(),
     ) : MultipleItemContentConfig<T>()

@@ -9,7 +9,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import org.example.dropdown.data.listener.DropdownActionListener
 import org.example.dropdown.data.listener.SelectActionListener
+import org.example.dropdown.data.listener.defaultDropdownActionListener
 import org.example.dropdown.ui.EmptySearchPlaceholder
 
 data class DropdownConfig<T>(
@@ -35,10 +37,5 @@ data class DropdownConfig<T>(
     val emptySearchPlaceholder: @Composable () -> Unit = {
         EmptySearchPlaceholder()
     },
-    val selectItemActionListener : SelectActionListener<T> = object : SelectActionListener<T> {
-        override fun onItemSelectListener(selectedItem: T) {
-            // empty default
-        }
-
-    }
+    val dropdownActionListener: DropdownActionListener = defaultDropdownActionListener
 )

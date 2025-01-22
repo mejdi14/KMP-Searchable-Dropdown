@@ -26,6 +26,7 @@ import kmp_searchable_dropdown.composeapp.generated.resources.cross_icon
 import kmp_searchable_dropdown.composeapp.generated.resources.green_check
 import org.example.dropdown.data.DropdownConfig
 import org.example.dropdown.data.search.SearchSettings
+import org.example.dropdown.data.selection.CheckboxParams
 import org.example.dropdown.data.selection.MultipleItemContentConfig
 import org.example.dropdown.ui.item.MultipleItemOptions
 import org.example.project.data.Agent
@@ -49,26 +50,29 @@ fun MultipleAgentDemo() {
             horizontalPadding = 12.dp,
             headerPlaceholder = {
                 Text(
-                    "Your favorite person", color = Color.Black,
+                    "Agency Team", color = Color.Black,
                     modifier = Modifier
                         .padding(vertical = 16.dp)
                 )
             }),
         itemContentConfig = MultipleItemContentConfig.Custom(
-            content = { person, selectedPerson, multipleSelectActionListener ->
+            content = { agent, isSelected, multipleSelectActionListener ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .clickable {
+                            if (isSelected)
+                                multipleSelectActionListener.onDeselect(agent)
+                            else
+                                multipleSelectActionListener.onSelect(agent)
+                        }
                         .height(58.dp)
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painterResource(person.photo),
-                        modifier = Modifier.size(32.dp)
-                            .clickable{
-                                multipleSelectActionListener.onSelect(person)
-                            },
+                        painterResource(agent.photo),
+                        modifier = Modifier.size(32.dp),
                         contentDescription = "",
                     )
                     Spacer(Modifier.width(12.dp))
@@ -77,17 +81,12 @@ fun MultipleAgentDemo() {
                         verticalArrangement = Arrangement.Center,
                     ) {
                         Text(
-                            text = person.name,
+                            text = agent.name,
                         )
 
                     }
                     Spacer(Modifier.width(12.dp))
-                    if (person == selectedPerson)
-                        Image(
-                            painterResource(Res.drawable.green_check),
-                            modifier = Modifier.size(22.dp),
-                            contentDescription = "",
-                        )
+
 
                 }
 
@@ -95,9 +94,18 @@ fun MultipleAgentDemo() {
             header = { agent, selectedPerson, removeItemListener ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.background(color = agent.backgroundColor, shape = RoundedCornerShape(10.dp))
+                    modifier = Modifier.background(
+                        color = agent.backgroundColor,
+                        shape = RoundedCornerShape(10.dp)
+                    )
                         .padding(horizontal = 8.dp, vertical = 2.dp)
                 ) {
+                    Image(
+                        painterResource(agent.photo),
+                        modifier = Modifier.size(22.dp),
+                        contentDescription = "",
+                    )
+                    Spacer(Modifier.width(3.dp))
                     Text(agent.name, color = agent.textColor)
                     Spacer(Modifier.width(5.dp))
                     Icon(
@@ -110,7 +118,13 @@ fun MultipleAgentDemo() {
                     )
                 }
             },
-            options = MultipleItemOptions()
+            options = MultipleItemOptions(
+                useDefaultSelector = true,
+                defaultCheckboxParams = CheckboxParams(
+                    checkedColor = Color.Black,
+                    checkmarkColor = Color.White
+                )
+            )
         ),
     )
 }

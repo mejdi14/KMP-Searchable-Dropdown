@@ -47,8 +47,8 @@ fun MultipleCountryDemo() {
             )
         ),
         dropdownConfig = DropdownConfig(
-            shape = RoundedCornerShape(0.dp), headerBackgroundColor = Color.Black,
-            contentBackgroundColor = Color(0xFF292929),
+            shape = RoundedCornerShape(0.dp), headerBackgroundColor = Color(0xFF282b34),
+            contentBackgroundColor = Color(0xFF1c1f24),
             headerPlaceholder = {
                 Text(
                     "Select Country Code", color = Color.White,
@@ -60,10 +60,9 @@ fun MultipleCountryDemo() {
 
         ),
         itemContentConfig = MultipleItemContentConfig.Custom(
-            content = { country, selectedCountry, multipleSelectActionListener ->
+            content = { country, isSelected, multipleSelectActionListener ->
                 Row(
                     modifier = Modifier
-                        .background(color = if (country == selectedCountry) Color.Gray else Color.Unspecified)
                         .fillMaxWidth()
                         .height(48.dp)
                         .padding(horizontal = 16.dp, vertical = 8.dp),
@@ -81,7 +80,7 @@ fun MultipleCountryDemo() {
                     )
                     Spacer(Modifier.width(12.dp))
                     Text(
-                        text = country.phoneCode,
+                        text = "",
                         color = Color.Gray
                     )
 
