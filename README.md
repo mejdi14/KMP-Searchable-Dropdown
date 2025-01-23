@@ -130,6 +130,12 @@ Below, you’ll find an overview of each approach in a format similar to the one
 ## Single Item Selection
 ### Default Content
 If you want a quick, predefined appearance (title, optional subtitle, and optional icon), you can pass a DefaultDropdownItem to a Default configuration. This is the easiest way to get started—just map the fields (e.g., title, subtitle) to your data’s properties.
+<img 
+    src="https://raw.githubusercontent.com/mejdi14/KMP-Searchable-Dropdown/main/demo/output_demo.gif"
+    height="500"
+    width="455"
+    style="margin-right: 20px;"
+  />
 
 ``` kotlin
 val defaultConfig = SingleItemContentConfig.Default(
