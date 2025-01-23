@@ -133,7 +133,7 @@ If you want a quick, predefined appearance (title, optional subtitle, and option
 <img 
     src="https://raw.githubusercontent.com/mejdi14/KMP-Searchable-Dropdown/main/demo/output_demo.gif"
     height="500"
-    width="455"
+    width="255"
     style="margin-right: 20px;"
   />
 
