@@ -231,8 +231,6 @@ defaultCheckboxParams: Styles the checkbox if useDefaultSelector is true.
 
 Here's what's coming next:
 
-### 🔜 Multiselection
-
 ### 🔜 Animations
 
 If you have suggestions or feature requests, feel free to open an issue or contribute to the repository.
