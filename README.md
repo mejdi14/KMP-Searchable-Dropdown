@@ -21,7 +21,7 @@
 <div style="display: flex; justify-content: center; align-items: center;">
   <img 
     src="https://raw.githubusercontent.com/mejdi14/KMP-Searchable-Dropdown/main/demo/banner.webp"
-    height="500"
+    height="540"
     width="605"
     style="margin-right: 20px;"
   />
