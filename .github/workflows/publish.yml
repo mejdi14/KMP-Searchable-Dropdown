@@ -22,6 +22,10 @@ jobs:
         run: |
           echo "${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}" | base64 --decode > mykeys.gpg
 
+      - name: Import GPG key
+        run: |
+          gpg --import mykeys.gpg
+
       - name: Verify GPG key
         run: |
           gpg --list-keys
