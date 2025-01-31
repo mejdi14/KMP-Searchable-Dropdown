@@ -3,11 +3,11 @@ name: Publish to Maven Central
 on:
   push:
     tags:
-      - 'v*' # Trigger the workflow only when a tag starting with 'v' is pushed (e.g., v0.3.0)
+      - 'v*'
 
 jobs:
   publish:
-    runs-on: macos-latest # Use macOS to build iOS targets
+    runs-on: macos-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -15,7 +15,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: '11'
+          java-version: '17'
           distribution: 'temurin'
 
       - name: Decode GPG key
