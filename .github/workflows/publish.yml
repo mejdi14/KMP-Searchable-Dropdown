@@ -3,11 +3,11 @@ name: Publish to Maven Central
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*' # Trigger the workflow only when a tag starting with 'v' is pushed (e.g., v0.3.0)
 
 jobs:
   publish:
-    runs-on: macos-latest
+    runs-on: macos-latest # Use macOS to build iOS targets
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -23,8 +23,10 @@ jobs:
           echo "${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}" | base64 --decode > mykeys.gpg
 
       - name: Import GPG key
+        env:
+          GPG_TTY: /dev/null
         run: |
-          gpg --import mykeys.gpg
+          gpg --batch --pinentry-mode loopback --import mykeys.gpg
 
       - name: Verify GPG key
         run: |
@@ -37,27 +39,3 @@ jobs:
         env:
           SONATYPE_HOST: CENTRAL_PORTAL
           RELEASE_SIGNING_ENABLED: true
-          GROUP: io.github.mejdi14
-          POM_ARTIFACT_ID: KMP-Searchable-Dropdown
-          VERSION_NAME: ${{ github.ref_name }} # Use the tag name as the version (e.g., v0.3.0)
-          POM_NAME: KMP-Searchable-Dropdown
-          POM_DESCRIPTION: This library provides ....
-          POM_URL: https://github.com/mejdi14/KMP-Searchable-Dropdown
-          POM_LICENSE_NAME: The Apache Software License, Version 2.0
-          POM_LICENSE_URL: https://www.apache.org/licenses/LICENSE-2.0.txt
-          POM_LICENSE_DIST: repo
-          POM_SCM_URL: https://github.com/mejdi14/KMP-Searchable-Dropdown
-          POM_SCM_CONNECTION: scm:git:git://github.com/mejdi14/KMP-Searchable-Dropdown.git
-          POM_SCM_DEV_CONNECTION: scm:git:ssh://git@github.com/mejdi14/KMP-Searchable-Dropdown.git
-          POM_DEVELOPER_ID: mejdi14
-          POM_DEVELOPER_NAME: mejdi hafiene
-          POM_DEVELOPER_URL: https://github.com/mejdi14/
-          POM_DEVELOPER_EMAIL: mejdihafiane@gmail.com
-          mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
-          mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-          signing.keyId: ${{ secrets.SIGNING_KEY_ID }}
-          signing.password: ${{ secrets.SIGNING_PASSWORD }}
-          signing.secretKeyRingFile: mykeys.gpg
-        run: |
-          ./gradlew :searchableDropdown:assemble
-          ./gradlew publishAllPublicationsToMavenCentralRepository
