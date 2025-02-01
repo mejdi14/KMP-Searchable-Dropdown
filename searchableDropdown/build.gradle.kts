@@ -11,7 +11,6 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     id("com.vanniktech.maven.publish") version "0.30.0"
-    signing
 }
 
 kotlin {
@@ -107,20 +106,5 @@ compose.desktop {
             packageName = "org.example.dropdown"
             packageVersion = "1.0.0"
         }
-    }
-}
-
-afterEvaluate {
-    if (project.hasProperty("signing.keyId") &&
-        project.hasProperty("signing.password") &&
-        project.hasProperty("signing.secretKeyRingFile")) {
-
-        signing {
-            useGpgCmd()
-            // Signs all the publications (including AndroidReleasePublication)
-            sign(publishing.publications)
-        }
-    } else {
-        logger.warn("Signing credentials not found; skipping signing configuration")
     }
 }
