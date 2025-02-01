@@ -24,7 +24,7 @@ jobs:
       - name: Build and publish
         env:
           SONATYPE_HOST: CENTRAL_PORTAL
-          RELEASE_SIGNING_ENABLED: false
+          RELEASE_SIGNING_ENABLED: true
           GROUP: io.github.mejdi14
           POM_ARTIFACT_ID: KMP-Searchable-Dropdown
           VERSION_NAME: ${{ github.ref_name }} # Use the tag name as the version (e.g., v0.3.0)
