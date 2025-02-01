@@ -18,23 +18,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Import GPG key
-        env:
-          GPG_TTY: /dev/null
-        run: |
-          gpg --batch --pinentry-mode loopback --import mykeys.gpg
-
-      - name: Verify GPG key
-        run: |
-          gpg --list-keys
-
       - name: Grant execute permission to gradlew
         run: chmod +x gradlew
 
       - name: Build and publish
         env:
           SONATYPE_HOST: CENTRAL_PORTAL
-          RELEASE_SIGNING_ENABLED: true
+          RELEASE_SIGNING_ENABLED: false
           GROUP: io.github.mejdi14
           POM_ARTIFACT_ID: KMP-Searchable-Dropdown
           VERSION_NAME: ${{ github.ref_name }} # Use the tag name as the version (e.g., v0.3.0)
@@ -55,7 +45,7 @@ jobs:
           mavenCentralPassword: 1p7xdMppb3mV1wI5FAz5ZiUVXBxnG+n4dpVR4LxyGhnR # Hardcoded password
           signing.keyId: B4893510 # Hardcoded key ID
           signing.password: Azma4everfuck14@ # Hardcoded signing password
-          signing.secretKeyRingFile: mykeys.gpg # Path to the GPG key file
+          signing.secretKeyRingFile: mykeys.gpg # Path to the GPG key file in the root of the project
         run: |
           ./gradlew :searchableDropdown:assemble
-          ./gradlew publishAllPublicationsToMavenCentralRepository
+          ./gradlew publishAllPublicationsToMavenCentralRepository --debug
