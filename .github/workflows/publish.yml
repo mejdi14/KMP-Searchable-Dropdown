@@ -48,4 +48,4 @@ jobs:
           signing.secretKeyRingFile: mykeys.gpg # Path to the GPG key file in the root of the project
         run: |
           ./gradlew :searchableDropdown:assemble
-          ./gradlew publishAllPublicationsToMavenCentralRepository --debug
+          ./gradlew publishAllPublicationsToMavenCentralRepository
