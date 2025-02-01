@@ -22,10 +22,14 @@ jobs:
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@v4
         with:
-          # Provide your GPG private key (base64‑encoded) and its passphrase.
-          # (Make sure to update your secret name if needed.)
-          gpg_key: ${{ secrets.SIGNING_SECRET_KEY }}
+          gpg_private_key: ${{ secrets.SIGNING_SECRET_KEY }}
           passphrase: ${{ secrets.SIGNING_PASSWORD }}
+          git_config_global: false
+          git_user_signingkey: false
+          git_commit_gpgsign: false
+          git_tag_gpgsign: false
+          git_push_gpgsign: if-asked
+          workdir: .
 
       - name: Grant execute permission to gradlew
         run: chmod +x gradlew
