@@ -12,24 +12,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up JDK 17 and cache Gradle
+      - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          distribution: temurin
           java-version: '17'
-          cache: gradle
+          distribution: 'temurin'
+
+      - name: Decode GPG key
+        run: |
+          echo "${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}" | base64 --decode > mykeys.gpg
 
       - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v4
-        with:
-          gpg_private_key: ${{ secrets.SIGNING_SECRET_KEY }}
-          passphrase: ${{ secrets.SIGNING_PASSWORD }}
-          git_config_global: false
-          git_user_signingkey: false
-          git_commit_gpgsign: false
-          git_tag_gpgsign: false
-          git_push_gpgsign: if-asked
-          workdir: .
+        env:
+          GPG_TTY: /dev/null
+        run: |
+          gpg --batch --pinentry-mode loopback --import mykeys.gpg
+
+      - name: Verify GPG key
+        run: |
+          gpg --list-keys
 
       - name: Grant execute permission to gradlew
         run: chmod +x gradlew
@@ -40,24 +41,25 @@ jobs:
           RELEASE_SIGNING_ENABLED: true
           GROUP: io.github.mejdi14
           POM_ARTIFACT_ID: KMP-Searchable-Dropdown
-          VERSION_NAME: ${{ github.ref_name }}  # Uses the tag name as version (e.g., v0.3.0)
+          VERSION_NAME: ${{ github.ref_name }} # Use the tag name as the version (e.g., v0.3.0)
           POM_NAME: KMP-Searchable-Dropdown
-          POM_DESCRIPTION: "This library provides …"
+          POM_DESCRIPTION: This library provides ....
           POM_URL: https://github.com/mejdi14/KMP-Searchable-Dropdown
-          POM_LICENSE_NAME: "The Apache Software License, Version 2.0"
+          POM_LICENSE_NAME: The Apache Software License, Version 2.0
           POM_LICENSE_URL: https://www.apache.org/licenses/LICENSE-2.0.txt
           POM_LICENSE_DIST: repo
           POM_SCM_URL: https://github.com/mejdi14/KMP-Searchable-Dropdown
           POM_SCM_CONNECTION: scm:git:git://github.com/mejdi14/KMP-Searchable-Dropdown.git
           POM_SCM_DEV_CONNECTION: scm:git:ssh://git@github.com/mejdi14/KMP-Searchable-Dropdown.git
           POM_DEVELOPER_ID: mejdi14
-          POM_DEVELOPER_NAME: "mejdi hafiene"
+          POM_DEVELOPER_NAME: mejdi hafiene
           POM_DEVELOPER_URL: https://github.com/mejdi14/
           POM_DEVELOPER_EMAIL: mejdihafiane@gmail.com
           mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           signing.keyId: ${{ secrets.SIGNING_KEY_ID }}
           signing.password: ${{ secrets.SIGNING_PASSWORD }}
+          signing.secretKAVeyRingFile: mykeys.gpg
         run: |
-          # Clean, build, publish to Sonatype staging, then close and release the repository.
-          ./gradlew clean build publishToSonatype closeAndReleaseRepository
+          ./gradlew :searchableDropdown:assemble
+          ./gradlew publishAllPublicationsToMavenCentralRepository
