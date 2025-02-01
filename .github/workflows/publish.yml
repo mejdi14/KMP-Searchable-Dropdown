@@ -59,7 +59,7 @@ jobs:
           mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           signing.keyId: ${{ secrets.SIGNING_KEY_ID }}
           signing.password: ${{ secrets.SIGNING_PASSWORD }}
-          signing.secretKAVeyRingFile: mykeys.gpg
+          signing.secretKeyRingFile: mykeys.gpg
         run: |
           ./gradlew :searchableDropdown:assemble
-          ./gradlew publishAllPublicationsToMavenCentralRepository
+          ./gradlew publishAllPublicationsToMavenCentralRepository --warning-mode all --stacktrace
