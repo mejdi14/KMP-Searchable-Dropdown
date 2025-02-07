@@ -115,12 +115,23 @@ compose.desktop {
 
 // --- Signing Configuration using GPG command-line ---
 
-if ((project.findProperty("RELEASE_SIGNING_ENABLED") as String).toBoolean()) {
-    // The signing plugin will sign all publications created by the maven-publish plugin.
+if ((project.findProperty("RELEASE_SIGNING_ENABLED")?.toString() ?: "false").toBoolean()) {
     signing {
-        // This instructs Gradle to use your system-installed GPG (which reads keys from ~/.gnupg)
-        useGpgCmd()
-        // Sign all publications (vanniktech's plugin creates a publishing block that this references)
+        val keyId = System.getenv("SIGNING_KEY_ID")
+            ?: project.findProperty("signing.keyId")?.toString() ?: ""
+        val privateKey = System.getenv("GPG_PRIVATE_KEY")
+            ?: project.findProperty("GPG_PRIVATE_KEY")?.toString() ?: ""
+        val passphrase = System.getenv("GPG_PASSPHRASE")
+            ?: project.findProperty("signing.password")?.toString() ?: ""
+
+        // Optionally, you can add a check to ensure these are not empty
+        if (keyId.isEmpty() || privateKey.isEmpty()) {
+            throw GradleException("GPG key ID and private key must be provided for signing.")
+        }
+
+        useInMemoryPgpKeys(keyId, privateKey, passphrase)
         sign(publishing.publications)
     }
 }
+
+
