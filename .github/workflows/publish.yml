@@ -47,5 +47,5 @@ jobs:
           signing.password: Azma4everfuck14@ # Hardcoded signing password
           signing.secretKeyRingFile: mykeys.gpg # Path to the GPG key file in the root of the project
         run: |
-          ./gradlew :searchableDropdown:assemble
+          ./gradlew :searchableDropdown:assemble  
           ./gradlew publishAllPublicationsToMavenCentralRepository

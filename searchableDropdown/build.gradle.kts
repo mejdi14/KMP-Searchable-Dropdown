@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
+import org.gradle.plugins.signing.SigningExtension
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -11,6 +12,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     id("com.vanniktech.maven.publish") version "0.30.0"
+    // Ensure you have the signing plugin available
+    signing
 }
 
 kotlin {
@@ -106,5 +109,17 @@ compose.desktop {
             packageName = "org.example.dropdown"
             packageVersion = "1.0.0"
         }
+    }
+}
+
+// --- Signing Configuration using GPG command-line ---
+
+if ((project.findProperty("RELEASE_SIGNING_ENABLED") as String).toBoolean()) {
+    // The signing plugin will sign all publications created by the maven-publish plugin.
+    signing {
+        // This instructs Gradle to use your system-installed GPG (which reads keys from ~/.gnupg)
+        useGpgCmd()
+        // Sign all publications (vanniktech's plugin creates a publishing block that this references)
+        sign(publishing.publications)
     }
 }
