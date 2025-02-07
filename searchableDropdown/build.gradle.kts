@@ -117,14 +117,11 @@ compose.desktop {
 
 if ((project.findProperty("RELEASE_SIGNING_ENABLED")?.toString() ?: "false").toBoolean()) {
     signing {
-        val keyId = project.findProperty("signing.keyId") as String
-        val privateKey = project.findProperty("GPG_PRIVATE_KEY") as String
-        val passphrase = project.findProperty("signing.password") as String
-
-        useInMemoryPgpKeys(keyId, privateKey, passphrase)
+        useGpgCmd()  // This tells Gradle to use the system's GPG installation.
         sign(publishing.publications)
     }
 }
+
 
 
 

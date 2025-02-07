@@ -21,12 +21,21 @@ jobs:
       - name: Grant execute permission to gradlew
         run: chmod +x gradlew
 
+      - name: Import GPG Key
+        run: |
+          # Import the passphrase-free GPG private key into the keyring.
+          echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+          # (Optional) List imported keys for debugging.
+          gpg --list-secret-keys --keyid-format LONG
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
       - name: Build and Publish to Maven Central
         env:
           RELEASE_SIGNING_ENABLED: true
           MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        run: ./gradlew publish --info
+          # Optionally, provide the key ID if needed. With useGpgCmd(), GPG will use your default key if only one is available.
+          signing.keyId: ${{ secrets.SIGNING_KEY_ID }}
+        run: |
+          ./gradlew publish
