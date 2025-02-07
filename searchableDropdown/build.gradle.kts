@@ -115,23 +115,25 @@ compose.desktop {
 
 // --- Signing Configuration using GPG command-line ---
 
-if ((project.findProperty("RELEASE_SIGNING_ENABLED")?.toString() ?: "false").toBoolean()) {
-    signing {
-        val keyId = System.getenv("SIGNING_KEY_ID")
-            ?: project.findProperty("signing.keyId")?.toString() ?: ""
-        val privateKey = System.getenv("GPG_PRIVATE_KEY")
-            ?: project.findProperty("GPG_PRIVATE_KEY")?.toString() ?: ""
-        val passphrase = System.getenv("GPG_PASSPHRASE")
-            ?: project.findProperty("signing.password")?.toString() ?: ""
+val releaseSigningEnabled = (project.findProperty("RELEASE_SIGNING_ENABLED")?.toString() ?: "false").toBoolean()
+if (releaseSigningEnabled) {
+    // Retrieve values from environment variables or fallback to project properties.
+    val keyId = System.getenv("SIGNING_KEY_ID")
+        ?: project.findProperty("signing.keyId")?.toString() ?: ""
+    val privateKey = System.getenv("GPG_PRIVATE_KEY")
+        ?: project.findProperty("GPG_PRIVATE_KEY")?.toString() ?: ""
+    val passphrase = System.getenv("GPG_PASSPHRASE")
+        ?: project.findProperty("signing.password")?.toString() ?: ""
 
-        // Optionally, you can add a check to ensure these are not empty
-        if (keyId.isEmpty() || privateKey.isEmpty()) {
-            throw GradleException("GPG key ID and private key must be provided for signing.")
+    if (keyId.isNotEmpty() && privateKey.isNotEmpty()) {
+        signing {
+            useInMemoryPgpKeys(keyId, privateKey, passphrase)
+            sign(publishing.publications)
         }
-
-        useInMemoryPgpKeys(keyId, privateKey, passphrase)
-        sign(publishing.publications)
+    } else {
+        logger.warn("Signing is enabled but GPG key ID and/or private key are not provided; skipping signing.")
     }
 }
+
 
 
