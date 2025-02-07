@@ -20,19 +20,26 @@ jobs:
 
       - name: Import GPG key
         run: |
-          # Import the private key from the secret into the GPG keyring.
+          # Import the private key into the GPG keyring.
           echo "$GPG_PRIVATE_KEY" | gpg --batch --import
-          # Set GPG_TTY so that GPG knows which terminal to use.
-          export GPG_TTY=$(tty)
-          # List keys for debugging (optional)
+          # (Optional) List imported keys for debugging.
           gpg --list-secret-keys --keyid-format LONG
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
 
-      - name: Configure GPG for non-interactive mode
+      - name: Configure GPG for non-interactive signing
         run: |
           mkdir -p ~/.gnupg
+          # Configure gpg to not use a tty and to use loopback pinentry mode.
           echo "no-tty" >> ~/.gnupg/gpg.conf
+          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+          echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+          # Ensure proper permissions
+          chmod 700 ~/.gnupg
+          chmod 600 ~/.gnupg/gpg.conf ~/.gnupg/gpg-agent.conf
+          # Reload the gpg-agent so it picks up the new configuration.
+          gpgconf --kill gpg-agent
+        # No env variables needed here
 
       - name: Grant execute permission to gradlew
         run: chmod +x gradlew
@@ -42,8 +49,10 @@ jobs:
           RELEASE_SIGNING_ENABLED: true
           MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-          # Optionally pass your key ID if needed (recommended to use the long key ID)
+          # Recommended to use the long key ID, for example: "9C645D84223AC825"
           signing.keyId: ${{ secrets.SIGNING_KEY_ID }}
+          # Optionally, force the pinentry mode via an env var:
+          GPG_PINENTRY_MODE: loopback
         run: |
-          # Run the Gradle publish task (our build is configured to use useGpgCmd())
           ./gradlew publish
+
