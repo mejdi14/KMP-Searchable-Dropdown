@@ -29,6 +29,11 @@ jobs:
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
 
+      - name: Configure GPG for non-interactive mode
+        run: |
+          mkdir -p ~/.gnupg
+          echo "no-tty" >> ~/.gnupg/gpg.conf
+
       - name: Grant execute permission to gradlew
         run: chmod +x gradlew
 
