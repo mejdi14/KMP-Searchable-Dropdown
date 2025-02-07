@@ -115,25 +115,17 @@ compose.desktop {
 
 // --- Signing Configuration using GPG command-line ---
 
-val releaseSigningEnabled = (project.findProperty("RELEASE_SIGNING_ENABLED")?.toString() ?: "false").toBoolean()
-if (releaseSigningEnabled) {
-    // Retrieve values from environment variables or fallback to project properties.
-    val keyId = System.getenv("SIGNING_KEY_ID")
-        ?: project.findProperty("signing.keyId")?.toString() ?: ""
-    val privateKey = System.getenv("GPG_PRIVATE_KEY")
-        ?: project.findProperty("GPG_PRIVATE_KEY")?.toString() ?: ""
-    val passphrase = System.getenv("GPG_PASSPHRASE")
-        ?: project.findProperty("signing.password")?.toString() ?: ""
+if ((project.findProperty("RELEASE_SIGNING_ENABLED")?.toString() ?: "false").toBoolean()) {
+    signing {
+        val keyId = project.findProperty("signing.keyId") as String
+        val privateKey = project.findProperty("GPG_PRIVATE_KEY") as String
+        val passphrase = project.findProperty("signing.password") as String
 
-    if (keyId.isNotEmpty() && privateKey.isNotEmpty()) {
-        signing {
-            useInMemoryPgpKeys(keyId, privateKey, passphrase)
-            sign(publishing.publications)
-        }
-    } else {
-        logger.warn("Signing is enabled but GPG key ID and/or private key are not provided; skipping signing.")
+        useInMemoryPgpKeys(keyId, privateKey, passphrase)
+        sign(publishing.publications)
     }
 }
+
 
 
 
