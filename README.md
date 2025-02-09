@@ -38,7 +38,7 @@ above):
 ```gradle
 dependencies {
 	...
-	implementation("io.github.mejdi14:KMP-Searchable-Dropdown:0.1.0")
+	implementation("io.github.mejdi14:KMP-Searchable-Dropdown:1.1.0")
 }
 ```
 

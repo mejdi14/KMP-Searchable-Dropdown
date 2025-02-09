@@ -53,11 +53,9 @@ jobs:
           POM_DEVELOPER_EMAIL: mejdihafiane@gmail.com
 
         run: |
-          # Extract the version from the tag.
           VERSION_NAME=${GITHUB_REF#refs/tags/v}
           echo "Publishing version: $VERSION_NAME"
-          
-          # Pass the VERSION_NAME and other environment variables to Gradle as project properties
+
           ./gradlew publish \
             -PVERSION_NAME="$VERSION_NAME" \
             -PGROUP="$GROUP" \
