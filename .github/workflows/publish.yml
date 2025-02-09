@@ -52,12 +52,26 @@ jobs:
           POM_DEVELOPER_URL: https://github.com/mejdi14/
           POM_DEVELOPER_EMAIL: mejdihafiane@gmail.com
 
-
         run: |
           # Extract the version from the tag.
-          # For a tag like "v0.0.2", this will remove the "refs/tags/v" prefix and the "v" so that VERSION_NAME becomes "0.0.2".
           VERSION_NAME=${GITHUB_REF#refs/tags/v}
           echo "Publishing version: $VERSION_NAME"
           
-          # Pass the VERSION_NAME to Gradle as a project property
-          ./gradlew publish -PVERSION_NAME="$VERSION_NAME"
+          # Pass the VERSION_NAME and other environment variables to Gradle as project properties
+          ./gradlew publish \
+            -PVERSION_NAME="$VERSION_NAME" \
+            -PGROUP="$GROUP" \
+            -PPOM_ARTIFACT_ID="$POM_ARTIFACT_ID" \
+            -PPOM_NAME="$POM_NAME" \
+            -PPOM_DESCRIPTION="$POM_DESCRIPTION" \
+            -PPOM_URL="$POM_URL" \
+            -PPOM_LICENSE_NAME="$POM_LICENSE_NAME" \
+            -PPOM_LICENSE_URL="$POM_LICENSE_URL" \
+            -PPOM_LICENSE_DIST="$POM_LICENSE_DIST" \
+            -PPOM_SCM_URL="$POM_SCM_URL" \
+            -PPOM_SCM_CONNECTION="$POM_SCM_CONNECTION" \
+            -PPOM_SCM_DEV_CONNECTION="$POM_SCM_DEV_CONNECTION" \
+            -PPOM_DEVELOPER_ID="$POM_DEVELOPER_ID" \
+            -PPOM_DEVELOPER_NAME="$POM_DEVELOPER_NAME" \
+            -PPOM_DEVELOPER_URL="$POM_DEVELOPER_URL" \
+            -PPOM_DEVELOPER_EMAIL="$POM_DEVELOPER_EMAIL"
