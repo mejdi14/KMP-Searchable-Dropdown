@@ -7,6 +7,9 @@ import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 import org.gradle.plugins.signing.SigningExtension
 import org.gradle.plugins.signing.Sign
 
+fun getProp(key: String, default: String? = null): String? =
+    System.getenv(key) ?: (project.findProperty(key) as? String) ?: default
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
