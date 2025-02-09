@@ -7,8 +7,6 @@ import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 import org.gradle.plugins.signing.SigningExtension
 import org.gradle.plugins.signing.Sign
 
-fun getProp(key: String, default: String? = null): String? =
-    System.getenv(key) ?: (project.findProperty(key) as? String) ?: default
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -16,7 +14,6 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     id("com.vanniktech.maven.publish") version "0.30.0"
-    // Ensure you have the signing plugin available
     signing
 }
 
@@ -116,16 +113,9 @@ compose.desktop {
     }
 }
 
-// --- Signing Configuration using GPG command-line ---
-
 if ((project.findProperty("RELEASE_SIGNING_ENABLED")?.toString() ?: "false").toBoolean()) {
     signing {
-        useGpgCmd()  // This tells Gradle to use the system's GPG installation.
+        useGpgCmd()
         sign(publishing.publications)
     }
 }
-
-
-
-
-
