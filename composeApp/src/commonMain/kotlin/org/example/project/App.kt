@@ -28,7 +28,7 @@ fun App() {
 
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = Color(0xFFfafafa)
+            color = Color(0xFFdfdeda)
         ) {
 
             MobileDemo()

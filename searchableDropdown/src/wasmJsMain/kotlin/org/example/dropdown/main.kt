@@ -1,4 +1,4 @@
-package org.example.project
+package org.example.dropdown
 
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.ComposeViewport
