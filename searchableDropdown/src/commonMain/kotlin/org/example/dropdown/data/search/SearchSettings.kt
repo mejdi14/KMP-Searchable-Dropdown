@@ -10,11 +10,12 @@ import kotlin.reflect.KProperty1
 
 
 data class SearchSettings<T : Any>(
-    val searchEnabled : Boolean = true,
+    val searchEnabled: Boolean = true,
     val searchProperties: List<KProperty1<T, *>> = emptyList(),
-    val separator : @Composable () -> Unit = { SearchSeparator() },
-    val searchIcon : SearchIcon = SearchIcon(),
-    val clearSearchIcon : SearchIcon = SearchIcon(Res.drawable.cross_icon, Color.White),
+    val separator: @Composable () -> Unit = { SearchSeparator() },
+    val searchIcon: SearchIcon = SearchIcon(),
+    val clearSearchIcon: SearchIcon = SearchIcon(Res.drawable.cross_icon, Color.White),
+    val searchIconPosition: SearchIconPosition = SearchIconPosition.LEFT,
     val searchInput: SearchInput = SearchInput(),
     val searchType: SearchType = SearchType.CONTAINS,
     val ignoreCase: Boolean = true,
@@ -28,3 +29,4 @@ data class SearchSettings<T : Any>(
         }
     }
 )
+

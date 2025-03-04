@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kmp_searchable_dropdown.searchabledropdown.generated.resources.Res
 import kmp_searchable_dropdown.searchabledropdown.generated.resources.cross_icon
+import org.example.dropdown.data.search.SearchIconPosition
 import org.example.dropdown.data.search.SearchSettings
 import org.jetbrains.compose.resources.painterResource
 
@@ -24,7 +25,8 @@ internal fun <T : Any> SearchArea(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        SearchIconComposable(searchSettings.searchIcon)
+        if (searchSettings.searchIconPosition == SearchIconPosition.LEFT)
+            SearchIconComposable(searchSettings.searchIcon)
         SearchInputComposable(
             searchQuery,
             searchSettings.searchInput,
@@ -38,5 +40,7 @@ internal fun <T : Any> SearchArea(
             contentDescription = "",
             tint = searchSettings.clearSearchIcon.iconTintColor
         )
+        if (searchSettings.searchIconPosition == SearchIconPosition.RIGHT)
+            SearchIconComposable(searchSettings.searchIcon)
     }
 }
