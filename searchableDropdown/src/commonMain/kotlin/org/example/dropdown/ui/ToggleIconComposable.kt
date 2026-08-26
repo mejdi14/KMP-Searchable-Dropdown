@@ -23,24 +23,15 @@ internal fun ToggleIconComposable(
     modifier: Modifier
 ) {
     val scale = remember { Animatable(1f) }
-    val alpha = remember { Animatable(1f) }
     val isFirstComposition = remember { mutableStateOf(true) }
 
     LaunchedEffect(expanded) {
         if (isFirstComposition.value) {
             isFirstComposition.value = false
         } else {
-            if (expanded) {
-                scale.animateTo(0.5f, animationSpec = TweenSpec(durationMillis = 300))
-                scale.animateTo(1f, animationSpec = TweenSpec(durationMillis = 300))
-                alpha.animateTo(0.5f, animationSpec = TweenSpec(durationMillis = 300))
-                alpha.animateTo(1f, animationSpec = TweenSpec(durationMillis = 300))
-            } else {
-                scale.animateTo(0.5f, animationSpec = TweenSpec(durationMillis = 300))
-                scale.animateTo(1f, animationSpec = TweenSpec(durationMillis = 300))
-                alpha.animateTo(0.5f, animationSpec = TweenSpec(durationMillis = 300))
-                alpha.animateTo(1f, animationSpec = TweenSpec(durationMillis = 300))
-            }
+            // Pulse the icon on every toggle, regardless of direction.
+            scale.animateTo(0.5f, animationSpec = TweenSpec(durationMillis = 300))
+            scale.animateTo(1f, animationSpec = TweenSpec(durationMillis = 300))
         }
     }
     Icon(

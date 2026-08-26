@@ -11,7 +11,7 @@ import org.example.dropdown.data.DropdownConfig
 import org.example.dropdown.data.search.SearchSettings
 import org.example.dropdown.data.selection.SingleItemContentConfig
 import org.example.project.data.settings
-import org.example.project.ui.SearchableDropdown
+import org.example.dropdown.ui.SearchableDropdown
 
 @Composable
 fun SettingsDemo() {

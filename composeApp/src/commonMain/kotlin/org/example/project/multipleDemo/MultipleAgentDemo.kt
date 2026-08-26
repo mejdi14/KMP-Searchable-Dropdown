@@ -33,7 +33,7 @@ import org.example.project.data.Agent
 import org.example.project.data.People
 import org.example.project.data.agents
 import org.example.project.data.people
-import org.example.project.ui.SearchableDropdown
+import org.example.dropdown.ui.SearchableDropdown
 import org.jetbrains.compose.resources.painterResource
 
 

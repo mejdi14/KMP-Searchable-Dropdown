@@ -12,7 +12,7 @@ import org.example.dropdown.data.search.SearchSettings
 import org.example.dropdown.data.selection.SingleItemContentConfig
 import org.example.project.data.Student
 import org.example.project.data.students
-import org.example.project.ui.SearchableDropdown
+import org.example.dropdown.ui.SearchableDropdown
 
 @Composable
 fun StudentDemo() {

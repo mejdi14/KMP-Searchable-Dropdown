@@ -20,21 +20,5 @@ abstract class DropdownActionListener {
 }
 
 
-val defaultDropdownActionListener = object : DropdownActionListener() {
-    override fun onExpandListener(isSelected: Boolean) {
-        // Default implementation: Do nothing
-    }
-
-    override fun <T> onItemSelect(item: T) {
-        // Default implementation: Do nothing
-    }
-
-    override fun onLongPress() {
-        // Default implementation: Do nothing
-    }
-
-    override fun onDragStart() {
-        // Default implementation: Do nothing
-    }
-}
+val defaultDropdownActionListener = object : DropdownActionListener() {}
 

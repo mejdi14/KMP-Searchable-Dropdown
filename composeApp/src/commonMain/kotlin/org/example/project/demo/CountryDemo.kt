@@ -26,7 +26,7 @@ import org.example.dropdown.data.search.SearchSettings
 import org.example.dropdown.data.selection.SingleItemContentConfig
 import org.example.project.data.Country
 import org.example.project.data.countries
-import org.example.project.ui.SearchableDropdown
+import org.example.dropdown.ui.SearchableDropdown
 import org.jetbrains.compose.resources.painterResource
 
 @Composable

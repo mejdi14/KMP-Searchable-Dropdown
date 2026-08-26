@@ -68,7 +68,7 @@ internal fun <T : Any> DropdownContentPopUp(
             }
         ) { isExpanded ->
             if (isExpanded) {
-                var searchQuery = remember { mutableStateOf("") }
+                val searchQuery = remember { mutableStateOf("") }
                 Column(
                     Modifier
                         .heightIn(max = dropdownConfig.maxHeight)
@@ -92,7 +92,7 @@ internal fun <T : Any> DropdownContentPopUp(
                         SearchArea(searchQuery, searchSettings)
                         searchSettings.separator
                     }
-                    var filteredItems = filterOperation(searchQuery, items, searchSettings)
+                    val filteredItems = filterOperation(searchQuery, items, searchSettings)
                     if (filteredItems.isEmpty())
                         dropdownConfig.emptySearchPlaceholder
                     else

@@ -1,16 +1,14 @@
-package org.example.project.ui
+package org.example.dropdown.ui
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,19 +25,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.PopupProperties
 import org.example.dropdown.data.DropdownConfig
 import org.example.dropdown.data.listener.MultipleRemoveItemListener
 import org.example.dropdown.data.search.SearchSettings
 import org.example.dropdown.data.selection.ItemContentConfig
 import org.example.dropdown.data.selection.MultipleItemContentConfig
 import org.example.dropdown.data.selection.SingleItemContentConfig
-import org.example.dropdown.ui.DropdownContentPopUp
-import org.example.dropdown.ui.ToggleIconComposable
 import org.example.dropdown.ui.item.DefaultSingleItemComposable
 
 
@@ -51,7 +45,7 @@ fun <T : Any> SearchableDropdown(
     selectedItem: MutableState<T?> = remember { mutableStateOf<T?>(null) },
     itemContentConfig: ItemContentConfig<T>,
 ) {
-    var expanded = remember { mutableStateOf(false) }
+    val expanded = remember { mutableStateOf(false) }
     val rotationAngle by animateDpAsState(targetValue = if (expanded.value) 0.dp else 180.dp)
     val selectedItemsList = remember { mutableStateListOf<T>() }
 

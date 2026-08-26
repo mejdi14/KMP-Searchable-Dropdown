@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.example.dropdown.data.listener.DropdownActionListener
-import org.example.dropdown.data.listener.SelectActionListener
 import org.example.dropdown.data.listener.defaultDropdownActionListener
 import org.example.dropdown.ui.EmptySearchPlaceholder
 

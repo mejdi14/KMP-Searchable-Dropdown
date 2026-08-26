@@ -28,7 +28,7 @@ import org.example.dropdown.ui.item.DefaultItemHeaderComposable
 import org.example.dropdown.ui.item.MultipleItemOptions
 import org.example.project.data.Country
 import org.example.project.data.countries
-import org.example.project.ui.SearchableDropdown
+import org.example.dropdown.ui.SearchableDropdown
 import org.jetbrains.compose.resources.painterResource
 
 @Composable

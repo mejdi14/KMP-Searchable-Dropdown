@@ -16,7 +16,7 @@ internal fun <T : Any> RowScope.DefaultItemBodyComposable(
     item: T,
     defaultDropdownItem: DefaultDropdownItem<T>,
 ) {
-    if (defaultDropdownItem.withIcon == true) {
+    if (defaultDropdownItem.withIcon) {
         defaultDropdownItem.icon(item)
         Spacer(Modifier.width(10.dp))
     }
