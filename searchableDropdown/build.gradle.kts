@@ -1,5 +1,4 @@
 import org.gradle.kotlin.dsl.dependencies
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -75,7 +74,7 @@ kotlin {
 }
 
 android {
-    namespace = "org.example.dropdown"
+    namespace = "io.github.mejdi14.searchabledropdown"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
@@ -99,18 +98,6 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
-}
-
-compose.desktop {
-    application {
-        mainClass = "org.example.dropdown.MainKt"
-
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.example.dropdown"
-            packageVersion = "1.0.0"
-        }
-    }
 }
 
 if ((project.findProperty("RELEASE_SIGNING_ENABLED")?.toString() ?: "false").toBoolean()) {

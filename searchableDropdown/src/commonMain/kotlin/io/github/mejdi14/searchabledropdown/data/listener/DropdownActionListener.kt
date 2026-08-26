@@ -1,0 +1,24 @@
+package io.github.mejdi14.searchabledropdown.data.listener
+
+
+abstract class DropdownActionListener {
+    open fun onExpandListener(isSelected: Boolean) {
+        // Default implementation: Do nothing
+    }
+
+    open fun <T> onItemSelect(item: T) {
+        // Default implementation: Do nothing
+    }
+
+    open fun onLongPress() {
+        // Default implementation: Do nothing
+    }
+
+    open fun onDragStart() {
+        // Default implementation: Do nothing
+    }
+}
+
+
+val defaultDropdownActionListener = object : DropdownActionListener() {}
+
