@@ -36,5 +36,22 @@ data class DropdownConfig<T>(
     val emptySearchPlaceholder: @Composable () -> Unit = {
         EmptySearchPlaceholder()
     },
-    val dropdownActionListener: DropdownActionListener = defaultDropdownActionListener
+    val dropdownActionListener: DropdownActionListener = defaultDropdownActionListener,
+    /**
+     * When true, items can be reordered by long-pressing and dragging them while the
+     * popup is open. Reordering is only active when the list is not being filtered by
+     * a search query.
+     */
+    val reorderEnabled: Boolean = false,
+    /**
+     * Produces a stable, unique key for each item, used to track rows while reordering.
+     * On Android the key must be a type that can be stored in a Bundle (e.g. String, Int),
+     * so provide a value like `{ it.id }` when the default [hashCode] is not unique enough.
+     */
+    val reorderKey: (T) -> Any = { it.hashCode() },
+    /**
+     * Called with the new item order after a drag-and-drop reorder completes. Useful
+     * for persisting the order on the caller side.
+     */
+    val onReorder: (List<T>) -> Unit = {}
 )

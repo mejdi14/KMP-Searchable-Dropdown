@@ -42,6 +42,8 @@ fun MultiplePeopleDemo() {
             )
         ),
         dropdownConfig = DropdownConfig(shape = RoundedCornerShape(18.dp),
+            reorderEnabled = true,
+            reorderKey = { it.name },
             headerPlaceholder = {
                 Text(
                     "Your favorite person", color = Color.Black,

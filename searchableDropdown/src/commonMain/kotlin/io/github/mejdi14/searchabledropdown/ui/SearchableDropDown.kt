@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -53,6 +54,22 @@ fun <T : Any> SearchableDropdown(
 
     val parentCoordinates = remember { mutableStateOf<LayoutCoordinates?>(null) }
 
+    // A reorderable copy of the items, used only when drag-to-reorder is enabled. It is
+    // reseeded whenever the caller passes a new source list, but a reorder (which does not
+    // change [items]) is preserved.
+    val orderedItems = remember { mutableStateListOf<T>().apply { addAll(items) } }
+    LaunchedEffect(items) {
+        orderedItems.clear()
+        orderedItems.addAll(items)
+    }
+    val displayedItems: List<T> = if (dropdownConfig.reorderEnabled) orderedItems else items
+    val onMove: (Int, Int) -> Unit = { from, to ->
+        if (from in orderedItems.indices && to in orderedItems.indices && from != to) {
+            orderedItems.add(to, orderedItems.removeAt(from))
+            dropdownConfig.onReorder(orderedItems.toList())
+        }
+    }
+
 
     Row(
         Modifier
@@ -66,11 +83,13 @@ fun <T : Any> SearchableDropdown(
             .background(
                 color = dropdownConfig.headerBackgroundColor,
                 shape = dropdownConfig.shape
-            ).padding(horizontal = dropdownConfig.horizontalPadding)
-
+            )
+            // Capture the full header box (before padding) so the popup can match
+            // its left edge and width exactly.
             .onGloballyPositioned { coordinates ->
                 parentCoordinates.value = coordinates
             }
+            .padding(horizontal = dropdownConfig.horizontalPadding)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
@@ -103,10 +122,11 @@ fun <T : Any> SearchableDropdown(
             dropdownConfig,
             expanded,
             searchSettings,
-            items,
+            displayedItems,
             selectedItem,
             itemContentConfig,
-            selectedItemsList
+            selectedItemsList,
+            onMove,
         )
     }
     Spacer(modifier = Modifier.height(10.dp))

@@ -1,0 +1,15 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web",
+      "runtimeExecutable": "./gradlew",
+      "runtimeArgs": [
+        "composeApp:wasmJsBrowserDevelopmentRun",
+        "--continuous",
+        "-Dorg.gradle.java.home=/Applications/Android Studio.app/Contents/jbr/Contents/Home"
+      ],
+      "port": 8080
+    }
+  ]
+}
