@@ -98,12 +98,15 @@ internal fun <T : Any> DropdownContentPopUp(
                             } else Modifier
                         )
                         .background(dropdownConfig.contentBackgroundColor, dropdownConfig.shape)
-                        .padding(horizontal = dropdownConfig.horizontalPadding)
                         .animateContentSize()
                 ) {
+                    // Horizontal padding lives on the search area and on each row's content (not on
+                    // the whole column) so the rows — and the drag tint — span the full popup width.
                     if (searchSettings.searchEnabled){
-                        SearchArea(searchQuery, searchSettings)
-                        searchSettings.separator
+                        Column(Modifier.padding(horizontal = dropdownConfig.horizontalPadding)) {
+                            SearchArea(searchQuery, searchSettings)
+                            searchSettings.separator
+                        }
                     }
                     val filteredItems = filterOperation(searchQuery, items, searchSettings)
                     // Reordering only makes sense on the full, unfiltered list.
