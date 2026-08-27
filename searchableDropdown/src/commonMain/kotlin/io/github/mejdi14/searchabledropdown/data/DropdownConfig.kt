@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import io.github.mejdi14.searchabledropdown.data.listener.DropdownActionListener
 import io.github.mejdi14.searchabledropdown.data.listener.defaultDropdownActionListener
 import io.github.mejdi14.searchabledropdown.ui.EmptySearchPlaceholder
+import io.github.mejdi14.searchabledropdown.ui.icon.DragHandleIcon
 
 data class DropdownConfig<T>(
     val headerBackgroundColor: Color = Color.White,
@@ -43,6 +44,19 @@ data class DropdownConfig<T>(
      * a search query.
      */
     val reorderEnabled: Boolean = false,
+    /**
+     * Tint applied to the row being dragged while reordering. When null (default), it is derived
+     * from [contentBackgroundColor] by nudging it toward more contrast, so the held row always
+     * stands out regardless of theme.
+     */
+    val dragTintColor: Color? = null,
+    /**
+     * When true, also show [dragIndicatorIcon] on the dragged row as an extra hint on top of the
+     * tint. Off by default.
+     */
+    val showDragIcon: Boolean = false,
+    /** The icon drawn on the dragged row when [showDragIcon] is true. Defaults to a drag handle. */
+    val dragIndicatorIcon: @Composable () -> Unit = { DragHandleIcon() },
     /**
      * Produces a stable, unique key for each item, used to track rows while reordering.
      * On Android the key must be a type that can be stored in a Bundle (e.g. String, Int),
