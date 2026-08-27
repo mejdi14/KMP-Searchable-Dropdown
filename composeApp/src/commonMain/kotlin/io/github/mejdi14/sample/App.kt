@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -55,6 +57,12 @@ private fun DemoScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            // Keep content clear of the system bars (we draw edge-to-edge) and, crucially, above
+            // the keyboard so the in-header search field scrolls into view when the IME opens.
+            .systemBarsPadding()
+            .imePadding()
+            // Small gap so the header/search field never sits flush against the keyboard.
+            .padding(bottom = 16.dp)
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 28.dp)
     ) {

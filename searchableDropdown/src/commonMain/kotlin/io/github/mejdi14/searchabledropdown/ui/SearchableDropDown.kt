@@ -146,6 +146,18 @@ fun <T : Any> SearchableDropdown(
     }
 
     if (expanded.value) {
+        // In header-search mode the popup is non-focusable (so the header field stays usable), so
+        // it can't dismiss on outside taps by itself. These scrims restore that — they cover the
+        // screen around the header (leaving the header strip free) and close on tap. Declared
+        // before the content popup so the list stays on top of them.
+        if (searchSettings.searchEnabled &&
+            searchSettings.searchLocation == SearchLocation.HEADER
+        ) {
+            HeaderSearchDismissScrims(
+                headerCoordinates = parentCoordinates.value,
+                onDismiss = { expanded.value = false },
+            )
+        }
         DropdownContentPopUp(
             parentCoordinates,
             dropdownConfig,
