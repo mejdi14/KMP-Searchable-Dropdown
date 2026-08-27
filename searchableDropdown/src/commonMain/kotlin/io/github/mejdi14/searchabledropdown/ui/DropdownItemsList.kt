@@ -258,12 +258,16 @@ internal fun <T : Any> DropdownItemsList(
                     )
                     .then(clickModifier)
             ) {
-                when (itemContentConfig) {
-                    is SingleItemContentConfig ->
-                        SingleItemRow(item, itemContentConfig)
+                // Row background/tint fills the full width above; the content is inset here so it
+                // keeps the configured horizontal padding.
+                Box(Modifier.padding(horizontal = dropdownConfig.horizontalPadding)) {
+                    when (itemContentConfig) {
+                        is SingleItemContentConfig ->
+                            SingleItemRow(item, itemContentConfig)
 
-                    is MultipleItemContentConfig ->
-                        MultipleItemRow(item, itemContentConfig, selectedItemsList)
+                        is MultipleItemContentConfig ->
+                            MultipleItemRow(item, itemContentConfig, selectedItemsList)
+                    }
                 }
                 if (isDragging && dropdownConfig.showDragIcon) {
                     Box(Modifier.align(Alignment.CenterEnd).padding(end = 12.dp)) {
