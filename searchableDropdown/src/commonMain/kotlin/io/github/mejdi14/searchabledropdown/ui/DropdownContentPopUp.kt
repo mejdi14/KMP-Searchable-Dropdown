@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
@@ -32,6 +31,7 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
 import io.github.mejdi14.searchabledropdown.data.DropdownConfig
+import io.github.mejdi14.searchabledropdown.data.search.SearchLocation
 import io.github.mejdi14.searchabledropdown.data.search.SearchSettings
 import io.github.mejdi14.searchabledropdown.data.selection.ItemContentConfig
 import io.github.mejdi14.searchabledropdown.helper.filterOperation
@@ -49,6 +49,7 @@ internal fun <T : Any> DropdownContentPopUp(
     itemContentConfig: ItemContentConfig<T>,
     selectedItemsList: SnapshotStateList<T>,
     onMove: (Int, Int) -> Unit,
+    searchQuery: MutableState<String>,
 ) {
     val coordinates = parentCoordinates.value
     val anchorLeft = coordinates?.positionInWindow()?.x?.toInt() ?: 0
@@ -82,7 +83,6 @@ internal fun <T : Any> DropdownContentPopUp(
             }
         ) { isExpanded ->
             if (isExpanded) {
-                val searchQuery = remember { mutableStateOf("") }
                 Column(
                     Modifier
                         .heightIn(max = dropdownConfig.maxHeight)
@@ -102,7 +102,10 @@ internal fun <T : Any> DropdownContentPopUp(
                 ) {
                     // Horizontal padding lives on the search area and on each row's content (not on
                     // the whole column) so the rows — and the drag tint — span the full popup width.
-                    if (searchSettings.searchEnabled){
+                    // The search field is only shown here when it is not being hosted in the header.
+                    if (searchSettings.searchEnabled &&
+                        searchSettings.searchLocation == SearchLocation.POPUP
+                    ) {
                         Column(Modifier.padding(horizontal = dropdownConfig.horizontalPadding)) {
                             SearchArea(searchQuery, searchSettings)
                             searchSettings.separator

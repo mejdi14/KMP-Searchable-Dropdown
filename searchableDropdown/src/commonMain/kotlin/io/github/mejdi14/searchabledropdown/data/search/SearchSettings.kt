@@ -18,6 +18,11 @@ data class SearchSettings<T : Any>(
     val searchInput: SearchInput = SearchInput(),
     val searchType: SearchType = SearchType.CONTAINS,
     val ignoreCase: Boolean = true,
+    /**
+     * Where the search field appears: [SearchLocation.POPUP] (default) shows it at the top of the
+     * popup; [SearchLocation.HEADER] turns the header itself into the search field while open.
+     */
+    val searchLocation: SearchLocation = SearchLocation.POPUP,
     val searchActionListener: SearchActionListener<T> = object : SearchActionListener<T> {
         override fun onSearchTextWatcher(text: String) {
             // Empty implementation

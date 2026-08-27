@@ -83,7 +83,7 @@ private fun DemoScreen() {
         DemoSection(
             index = 3,
             title = "Agency team",
-            description = "Fully custom rows and colorful removable chips for the selected members.",
+            description = "Colorful removable chips, plus the search field hosted in the header itself.",
         ) {
             MultipleAgentDemo()
         }

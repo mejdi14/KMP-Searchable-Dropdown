@@ -25,6 +25,7 @@ import kmp_searchable_dropdown.composeapp.generated.resources.Res
 import kmp_searchable_dropdown.composeapp.generated.resources.cross_icon
 import kmp_searchable_dropdown.composeapp.generated.resources.green_check
 import io.github.mejdi14.searchabledropdown.data.DropdownConfig
+import io.github.mejdi14.searchabledropdown.data.search.SearchLocation
 import io.github.mejdi14.searchabledropdown.data.search.SearchSettings
 import io.github.mejdi14.searchabledropdown.data.selection.CheckboxParams
 import io.github.mejdi14.searchabledropdown.data.selection.MultipleItemContentConfig
@@ -44,7 +45,9 @@ fun MultipleAgentDemo() {
         searchSettings = SearchSettings(
             searchProperties = listOf(
                 Agent::name,
-            )
+            ),
+            // Show the search field in the header itself while the popup is open.
+            searchLocation = SearchLocation.HEADER,
         ),
         dropdownConfig = DropdownConfig(shape = RoundedCornerShape(18.dp),
             horizontalPadding = 12.dp,

@@ -33,11 +33,13 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import io.github.mejdi14.searchabledropdown.data.DropdownConfig
 import io.github.mejdi14.searchabledropdown.data.listener.MultipleRemoveItemListener
+import io.github.mejdi14.searchabledropdown.data.search.SearchLocation
 import io.github.mejdi14.searchabledropdown.data.search.SearchSettings
 import io.github.mejdi14.searchabledropdown.data.selection.ItemContentConfig
 import io.github.mejdi14.searchabledropdown.data.selection.MultipleItemContentConfig
 import io.github.mejdi14.searchabledropdown.data.selection.SingleItemContentConfig
 import io.github.mejdi14.searchabledropdown.ui.item.DefaultSingleItemComposable
+import io.github.mejdi14.searchabledropdown.ui.search.SearchArea
 
 
 @Composable
@@ -70,6 +72,15 @@ fun <T : Any> SearchableDropdown(
         }
     }
 
+    // Search query lifted here so it can be shared between the header (when the search field lives
+    // there) and the popup's filtering. Cleared on close so each open starts fresh.
+    val searchQuery = remember { mutableStateOf("") }
+    LaunchedEffect(expanded.value) {
+        if (!expanded.value) searchQuery.value = ""
+    }
+    val showHeaderSearch = searchSettings.searchEnabled &&
+            searchSettings.searchLocation == SearchLocation.HEADER && expanded.value
+
 
     Row(
         Modifier
@@ -90,24 +101,42 @@ fun <T : Any> SearchableDropdown(
                 parentCoordinates.value = coordinates
             }
             .padding(horizontal = dropdownConfig.horizontalPadding)
-            .clickable(
+            // Tapping the header toggles the popup — except while it is acting as the search field,
+            // where taps should reach the text field instead of closing the popup.
+            .then(
+                if (showHeaderSearch) Modifier
+                else Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) {
+                    expanded.value = !expanded.value
+                }
+            ),
+        verticalAlignment = Alignment.CenterVertically
+
+    ) {
+        if (showHeaderSearch) {
+            Box(Modifier.weight(1f)) {
+                SearchArea(searchQuery, searchSettings)
+            }
+        } else {
+            DropdownHeaderContent(
+                itemContentConfig = itemContentConfig,
+                selectedItem = selectedItem,
+                selectedItemsList = selectedItemsList,
+                placeholder = dropdownConfig.headerPlaceholder,
+            )
+        }
+        Spacer(Modifier.width(5.dp))
+
+        Box(
+            modifier = Modifier.size(20.dp).clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
             ) {
                 expanded.value = !expanded.value
-            },
-        verticalAlignment = Alignment.CenterVertically
-
-    ) {
-        DropdownHeaderContent(
-            itemContentConfig = itemContentConfig,
-            selectedItem = selectedItem,
-            selectedItemsList = selectedItemsList,
-            placeholder = dropdownConfig.headerPlaceholder,
-        )
-        Spacer(Modifier.width(5.dp))
-
-        Box(modifier = Modifier.size(20.dp)) {
+            }
+        ) {
             ToggleIconComposable(
                 rotationAngle, expanded.value, dropdownConfig.toggleIcon, Modifier.align(
                     Alignment.Center
@@ -127,6 +156,7 @@ fun <T : Any> SearchableDropdown(
             itemContentConfig,
             selectedItemsList,
             onMove,
+            searchQuery,
         )
     }
     Spacer(modifier = Modifier.height(10.dp))
