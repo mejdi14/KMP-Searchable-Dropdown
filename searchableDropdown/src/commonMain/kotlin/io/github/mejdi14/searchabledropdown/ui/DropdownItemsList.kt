@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListItemInfo
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
@@ -93,20 +94,32 @@ internal fun <T : Any> DropdownItemsList(
         autoScrollSpeed.value = 0f
     }
 
-    // Move the dragged item to whichever row the finger currently sits over, but only once the
-    // finger has crossed that row's midpoint. The midpoint check adds hysteresis so the swap
-    // doesn't flip back and forth while the finger hovers near a boundary. Suspend because it
-    // may need to restore the scroll position (see below); it is only called from the loop.
+    // The dragged row's own center (the finger, corrected for where within the row it was
+    // grabbed). Reordering is driven by this rather than the raw finger so a swap fires at ~50%
+    // overlap of the dragged row over its neighbor — the platform-standard threshold (matching
+    // RecyclerView's ItemTouchHelper default of 0.5) — regardless of where you grabbed the row.
+    fun draggedRowCenter(): Float = pointerY.value - grabOffset.value
+
+    // Move the dragged item onto the neighbor it now overlaps by more than half. Using real
+    // overlap (rather than "center past the target's midpoint", which for equal-height rows only
+    // triggers at full overlap) gives the platform-standard ~50% threshold. Once swapped, the
+    // reverse overlap sits at exactly 50%, which provides natural hysteresis against flip-flopping.
+    // Suspend because it may restore the scroll position; only called from the loop.
     suspend fun checkSwap() {
         val from = draggingIndex.value
         if (from < 0) return
-        val y = pointerY.value
-        val target = listState.layoutInfo.visibleItemsInfo.firstOrNull {
-            it.index != from && y.toInt() in it.offset..(it.offset + it.size)
-        } ?: return
-        val targetMid = target.offset + target.size / 2f
-        val crossedMidpoint = if (target.index < from) y < targetMid else y > targetMid
-        if (!crossedMidpoint) return
+        val visible = listState.layoutInfo.visibleItemsInfo
+        val draggedSize = (visible.firstOrNull { it.index == from }?.size
+            ?: visible.firstOrNull()?.size ?: return).toFloat()
+        val center = draggedRowCenter()
+        val draggedTop = center - draggedSize / 2f
+        val draggedBottom = center + draggedSize / 2f
+
+        fun overlapWith(c: LazyListItemInfo): Float =
+            minOf(draggedBottom, (c.offset + c.size).toFloat()) - maxOf(draggedTop, c.offset.toFloat())
+
+        val target = visible.filter { it.index != from }.maxByOrNull { overlapWith(it) } ?: return
+        if (overlapWith(target) <= target.size / 2f) return
 
         val to = target.index
         // Capture the scroll anchor so we can restore it if the move changes the first visible
@@ -121,7 +134,7 @@ internal fun <T : Any> DropdownItemsList(
         }
     }
 
-    // Set the auto-scroll speed based on how close the finger is to a viewport edge.
+    // Set the auto-scroll speed based on how close the dragged row is to a viewport edge.
     fun updateAutoScrollSpeed() {
         if (draggingIndex.value < 0) {
             autoScrollSpeed.value = 0f
@@ -131,7 +144,7 @@ internal fun <T : Any> DropdownItemsList(
         val edge = (info.visibleItemsInfo.firstOrNull()?.size ?: 0).toFloat().coerceAtLeast(1f)
         val topZone = info.viewportStartOffset + edge
         val bottomZone = info.viewportEndOffset - edge
-        val y = pointerY.value
+        val y = draggedRowCenter()
         autoScrollSpeed.value = when {
             y < topZone -> -((topZone - y) / edge).coerceIn(0f, 1f) * MAX_AUTO_SCROLL
             y > bottomZone -> ((y - bottomZone) / edge).coerceIn(0f, 1f) * MAX_AUTO_SCROLL
