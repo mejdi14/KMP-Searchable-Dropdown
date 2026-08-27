@@ -21,4 +21,8 @@ val people = listOf(
     People("Sami", Res.drawable.student3, "Designer"),
     People("Rami", Res.drawable.student5, "Product Manager"),
     People("Balqees", Res.drawable.student4, "QA Tester"),
+    People("Nour", Res.drawable.student3, "Data Scientist"),
+    People("Yassine", Res.drawable.student1, "DevOps Engineer"),
+    People("Salma", Res.drawable.student4, "UX Researcher"),
+    People("Karim", Res.drawable.student2, "Mobile Developer"),
     )
