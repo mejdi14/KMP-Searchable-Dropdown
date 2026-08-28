@@ -14,5 +14,5 @@ data class SearchIcon(
     override val iconTintColor: Color = Color.Black,
     override val contentDescription: String = "search icon",
     override val modifier: Modifier = Modifier,
-    override val iconSize: Dp = 50.dp
+    override val iconSize: Dp = 20.dp
 ) : BaseIcon()

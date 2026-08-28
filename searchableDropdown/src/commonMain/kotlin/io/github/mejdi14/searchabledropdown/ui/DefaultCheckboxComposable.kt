@@ -23,7 +23,7 @@ internal fun <T : Any> DefaultCheckboxComposable(
             }
         },
         colors = CheckboxDefaults.colors(
-            checkedColor = options.defaultCheckboxParams.checkedColor, // Use params
+            checkedColor = options.defaultCheckboxParams.checkedColor,
             uncheckedColor = options.defaultCheckboxParams.uncheckedColor,
             checkmarkColor = options.defaultCheckboxParams.checkmarkColor
         ),

@@ -38,34 +38,16 @@ data class DropdownConfig<T>(
         EmptySearchPlaceholder()
     },
     val dropdownActionListener: DropdownActionListener = defaultDropdownActionListener,
-    /**
-     * When true, items can be reordered by long-pressing and dragging them while the
-     * popup is open. Reordering is only active when the list is not being filtered by
-     * a search query.
-     */
+
     val reorderEnabled: Boolean = false,
-    /**
-     * Tint applied to the row being dragged while reordering. When null (default), it is derived
-     * from [contentBackgroundColor] by nudging it toward more contrast, so the held row always
-     * stands out regardless of theme.
-     */
+
     val dragTintColor: Color? = null,
-    /**
-     * When true, also show [dragIndicatorIcon] on the dragged row as an extra hint on top of the
-     * tint. Off by default.
-     */
+
     val showDragIcon: Boolean = false,
-    /** The icon drawn on the dragged row when [showDragIcon] is true. Defaults to a drag handle. */
+
     val dragIndicatorIcon: @Composable () -> Unit = { DragHandleIcon() },
-    /**
-     * Produces a stable, unique key for each item, used to track rows while reordering.
-     * On Android the key must be a type that can be stored in a Bundle (e.g. String, Int),
-     * so provide a value like `{ it.id }` when the default [hashCode] is not unique enough.
-     */
+
     val reorderKey: (T) -> Any = { it.hashCode() },
-    /**
-     * Called with the new item order after a drag-and-drop reorder completes. Useful
-     * for persisting the order on the caller side.
-     */
+
     val onReorder: (List<T>) -> Unit = {}
 )

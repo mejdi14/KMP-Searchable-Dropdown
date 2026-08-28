@@ -13,4 +13,3 @@ data class DropdownItemSeparator(
     override val height: Dp = 0.3.dp,
     override val modifier: Modifier = Modifier.fillMaxWidth()
 ) : BaseSeparator()
-

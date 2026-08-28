@@ -66,8 +66,6 @@ data class Country(
     val phoneCode: String
 )
 
-
-
 val countries = listOf(
     Country("Afghanistan", Res.drawable.afghanistan, "+93"),
     Country("Albania", Res.drawable.albania, "+355"),

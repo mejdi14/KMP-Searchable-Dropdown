@@ -39,7 +39,6 @@ import kmp_searchable_dropdown.composeapp.generated.resources.expand_less
 import kmp_searchable_dropdown.composeapp.generated.resources.settings
 import org.jetbrains.compose.resources.painterResource
 
-
 data class Settings(
     val label: String,
     val content: @Composable () -> Unit,
@@ -136,7 +135,6 @@ private fun ArchiveSetting() {
         )
         Spacer(Modifier.width(12.dp))
 
-
     }
 }
 
@@ -175,12 +173,11 @@ fun SimpleSwitch() {
     Switch(
         checked = checked,
         onCheckedChange = { checked = it },
-        // Optional modifiers and colors
+
         modifier = Modifier.padding(8.dp),
 
     )
 }
-
 
 @Composable
 fun ExpandableSettingsRow() {
@@ -190,7 +187,7 @@ fun ExpandableSettingsRow() {
     var option3Checked by remember { mutableStateOf(false) }
 
     Column {
-        // Main Settings Row
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -268,4 +265,3 @@ private fun SettingsOption(
         )
     }
 }
-

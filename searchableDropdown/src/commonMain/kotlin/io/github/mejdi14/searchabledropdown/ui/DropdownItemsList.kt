@@ -42,13 +42,8 @@ import io.github.mejdi14.searchabledropdown.ui.item.CustomMultipleItemComposable
 import io.github.mejdi14.searchabledropdown.ui.item.DefaultMultipleItemComposable
 import io.github.mejdi14.searchabledropdown.ui.item.DefaultSingleItemComposable
 
-/** Maximum edge auto-scroll speed while reordering, in pixels per frame. */
 private const val MAX_AUTO_SCROLL = 20f
 
-/**
- * Nudges [background] toward more contrast (darker on light backgrounds, lighter on dark ones)
- * so the row being dragged stands out from the rest of the list, whatever the theme.
- */
 private fun draggedRowTint(background: Color): Color {
     val overlay = if (background.luminance() > 0.5f) Color.Black else Color.White
     return lerp(background, overlay, 0.10f)
@@ -68,23 +63,15 @@ internal fun <T : Any> DropdownItemsList(
 ) {
     val listState = rememberLazyListState()
 
-    // Tint used for the row being dragged: a caller override, or a contrast-nudged version of the
-    // content background so the held row always reads as "picked up".
     val dragTint = dropdownConfig.dragTintColor ?: draggedRowTint(dropdownConfig.contentBackgroundColor)
 
-    // Drag-to-reorder state. The gesture lives on the list container (not the rows), so it
-    // survives rows being disposed as the list auto-scrolls. We track the dragged item, its
-    // current index, the finger position in list coordinates, and the edge auto-scroll speed.
     val draggingItem = remember { mutableStateOf<T?>(null) }
     val draggingIndex = remember { mutableStateOf(-1) }
     val pointerY = remember { mutableStateOf(0f) }
     val autoScrollSpeed = remember { mutableStateOf(0f) }
-    // Where within the grabbed row the finger landed, relative to the row center. Used so the row
-    // stays put on long-press and only moves once the finger actually moves (no initial jump).
+
     val grabOffset = remember { mutableStateOf(0f) }
 
-    // Keying each row keeps its state attached to the item as the order changes. Keys must be
-    // unique and, on Android, Bundle-saveable — hence the caller-provided reorderKey.
     val itemKey: ((Int, T) -> Any)? =
         if (canReorder) { _, item -> dropdownConfig.reorderKey(item) } else null
 
@@ -94,17 +81,8 @@ internal fun <T : Any> DropdownItemsList(
         autoScrollSpeed.value = 0f
     }
 
-    // The dragged row's own center (the finger, corrected for where within the row it was
-    // grabbed). Reordering is driven by this rather than the raw finger so a swap fires at ~50%
-    // overlap of the dragged row over its neighbor — the platform-standard threshold (matching
-    // RecyclerView's ItemTouchHelper default of 0.5) — regardless of where you grabbed the row.
     fun draggedRowCenter(): Float = pointerY.value - grabOffset.value
 
-    // Move the dragged item onto the neighbor it now overlaps by more than half. Using real
-    // overlap (rather than "center past the target's midpoint", which for equal-height rows only
-    // triggers at full overlap) gives the platform-standard ~50% threshold. Once swapped, the
-    // reverse overlap sits at exactly 50%, which provides natural hysteresis against flip-flopping.
-    // Suspend because it may restore the scroll position; only called from the loop.
     suspend fun checkSwap() {
         val from = draggingIndex.value
         if (from < 0) return
@@ -122,9 +100,7 @@ internal fun <T : Any> DropdownItemsList(
         if (overlapWith(target) <= target.size / 2f) return
 
         val to = target.index
-        // Capture the scroll anchor so we can restore it if the move changes the first visible
-        // row — otherwise LazyColumn re-anchors and the viewport visibly jumps (the "the top
-        // item jitters as it makes room" glitch when the dragged row reaches the top).
+
         val firstIndex = listState.firstVisibleItemIndex
         val firstOffset = listState.firstVisibleItemScrollOffset
         onMove(from, to)
@@ -134,7 +110,6 @@ internal fun <T : Any> DropdownItemsList(
         }
     }
 
-    // Set the auto-scroll speed based on how close the dragged row is to a viewport edge.
     fun updateAutoScrollSpeed() {
         if (draggingIndex.value < 0) {
             autoScrollSpeed.value = 0f
@@ -152,9 +127,6 @@ internal fun <T : Any> DropdownItemsList(
         }
     }
 
-    // A single per-frame loop drives all reordering while a drag is active. Running once per
-    // frame (after layout has settled) keeps swaps in sync with the list — doing it here rather
-    // than inside onDrag avoids double-swapping and the stale-layout glitch near the edges.
     LaunchedEffect(draggingItem.value) {
         if (draggingItem.value == null) return@LaunchedEffect
         while (true) {
@@ -171,8 +143,7 @@ internal fun <T : Any> DropdownItemsList(
         Modifier.pointerInput(Unit) {
             awaitEachGesture {
                 val down = awaitFirstDown(requireUnconsumed = false)
-                // A quick tap never reaches here (long press cancels), so the row's own click
-                // still works. A hold enters reorder mode.
+
                 val longPress = awaitLongPressOrCancellation(down.id) ?: return@awaitEachGesture
                 val hit = listState.layoutInfo.visibleItemsInfo.firstOrNull {
                     longPress.position.y.toInt() in it.offset..(it.offset + it.size)
@@ -181,14 +152,9 @@ internal fun <T : Any> DropdownItemsList(
                 draggingIndex.value = hit.index
                 draggingItem.value = filteredItems.getOrNull(hit.index)
                 pointerY.value = longPress.position.y
-                // Remember where in the row the finger grabbed, so the row doesn't jump to center
-                // itself under the finger — it stays where it is until the finger moves.
+
                 grabOffset.value = longPress.position.y - (hit.offset + hit.size / 2f)
 
-                // For the rest of the gesture, consume ALL pointer changes in the Initial pass
-                // (parent-before-child). This does two things: the dragged row's own release is
-                // never seen as a tap, and any other finger landing on a different row is blocked
-                // too — so you can't select another item while a drag is in progress.
                 var dragging = true
                 while (dragging) {
                     val event = awaitPointerEvent(PointerEventPass.Initial)
@@ -230,14 +196,16 @@ internal fun <T : Any> DropdownItemsList(
 
             Box(
                 Modifier
-                    // Slide non-dragged rows to their new slot instead of jumping. The dragged row
-                    // is excluded — it's positioned by the finger-follow translation above.
-                    .then(if (isDragging) Modifier else Modifier.animateItem())
+
+                    .then(
+                        if (canReorder && !isDragging)
+                            Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
+                        else Modifier
+                    )
                     .zIndex(if (isDragging) 1f else 0f)
                     .graphicsLayer {
                         if (isDragging) {
-                            // Follow the finger, but keep the original grab point under it (rather
-                            // than snapping the row center to the finger) so there's no initial jump.
+
                             val info = listState.layoutInfo.visibleItemsInfo
                                 .firstOrNull { it.index == draggingIndex.value }
                             translationY =
@@ -258,8 +226,7 @@ internal fun <T : Any> DropdownItemsList(
                     )
                     .then(clickModifier)
             ) {
-                // Row background/tint fills the full width above; the content is inset here so it
-                // keeps the configured horizontal padding.
+
                 Box(Modifier.padding(horizontal = dropdownConfig.horizontalPadding)) {
                     when (itemContentConfig) {
                         is SingleItemContentConfig ->

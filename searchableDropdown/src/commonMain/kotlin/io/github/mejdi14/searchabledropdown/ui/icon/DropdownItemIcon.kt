@@ -24,8 +24,6 @@ fun RoundInitialsIcon(
     size: Dp = 28.dp
 ) {
 
-    // Derive a stable color from the name so the same item always gets the same
-    // avatar color across recompositions (instead of re-rolling a random one).
     val backgroundColor = remember(fullName) {
         val hash = fullName.hashCode()
         Color(
@@ -35,13 +33,12 @@ fun RoundInitialsIcon(
         )
     }
 
-
     val initials = remember(fullName) {
         val words = fullName.split(" ").filter { it.isNotBlank() }
         if (words.size >= 2) {
             "${words[0].firstOrNull()?.uppercase() ?: ""}${words[1].firstOrNull()?.uppercase() ?: ""}"
         } else {
-            // Fallback if only one word or none
+
             words.firstOrNull()?.take(1)?.uppercase() ?: "?"
         }
     }

@@ -17,7 +17,7 @@ internal fun <T : Any> CustomMultipleItemComposable(
     bodyContent: @Composable () -> Unit
 ) {
     Row(
-        modifier = Modifier.padding(vertical = 6.dp, horizontal = 6.dp),
+        modifier = Modifier.padding(vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (options.defaultSelectorPosition == DefaultSelectorPosition.START)

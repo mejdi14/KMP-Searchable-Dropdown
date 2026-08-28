@@ -1,6 +1,5 @@
 package io.github.mejdi14.sample.data
 
-
 data class Student(
     val name: String,
     val age: Int,
