@@ -8,10 +8,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
-/**
- * A classic 2x3 dot "drag handle" indicator, drawn with a Canvas so it needs no drawable
- * resource. Used as the default indicator for the row being dragged during reordering.
- */
 @Composable
 fun DragHandleIcon(
     modifier: Modifier = Modifier,

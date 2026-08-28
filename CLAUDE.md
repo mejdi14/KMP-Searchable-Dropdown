@@ -62,6 +62,7 @@ The dropdown content renders inside a Compose `Popup`, so it overlays and does n
 
 ## Conventions / gotchas
 
+- **Do not add code comments.** No explanatory comments, no KDoc, no "why" notes in new or edited code. Write self-explanatory names instead. Only exception: a comment the user explicitly asks for.
 - Keep the library's public API in `io.github.mejdi14.searchabledropdown`; the module directory must mirror the package path.
 - Publishing coordinates live in `gradle.properties` (`GROUP`, `POM_ARTIFACT_ID`); signing is gated behind `RELEASE_SIGNING_ENABLED`.
 - When changing the demo app's `applicationId`, uninstall the old package from the device first (`adb uninstall <old-id>`) — a stale install causes "Activity class does not exist" launch errors.

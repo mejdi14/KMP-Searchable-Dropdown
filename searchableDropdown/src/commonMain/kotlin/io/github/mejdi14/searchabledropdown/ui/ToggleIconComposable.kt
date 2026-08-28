@@ -29,7 +29,7 @@ internal fun ToggleIconComposable(
         if (isFirstComposition.value) {
             isFirstComposition.value = false
         } else {
-            // Pulse the icon on every toggle, regardless of direction.
+
             scale.animateTo(0.5f, animationSpec = TweenSpec(durationMillis = 300))
             scale.animateTo(1f, animationSpec = TweenSpec(durationMillis = 300))
         }

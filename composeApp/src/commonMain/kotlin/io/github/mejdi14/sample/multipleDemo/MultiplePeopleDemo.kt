@@ -65,7 +65,7 @@ fun MultiplePeopleDemo() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(58.dp)
-                        // No ripple: it would sit on top of the drag tint while holding.
+
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null

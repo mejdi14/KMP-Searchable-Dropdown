@@ -37,7 +37,6 @@ import io.github.mejdi14.sample.data.people
 import io.github.mejdi14.searchabledropdown.ui.SearchableDropdown
 import org.jetbrains.compose.resources.painterResource
 
-
 @Composable
 fun MultipleAgentDemo() {
     SearchableDropdown(
@@ -46,12 +45,12 @@ fun MultipleAgentDemo() {
             searchProperties = listOf(
                 Agent::name,
             ),
-            // Show the search field in the header itself while the popup is open.
+
             searchLocation = SearchLocation.HEADER,
         ),
         dropdownConfig = DropdownConfig(shape = RoundedCornerShape(18.dp),
             horizontalPadding = 12.dp,
-            // A clearly visible gap between the header and the popup (this is the "defined space").
+
             separationSpace = 45,
             headerPlaceholder = {
                 Text(
@@ -91,7 +90,6 @@ fun MultipleAgentDemo() {
 
                     }
                     Spacer(Modifier.width(12.dp))
-
 
                 }
 

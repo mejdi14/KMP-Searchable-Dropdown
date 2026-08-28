@@ -24,7 +24,6 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import kotlin.reflect.KProperty1
 
-
 @Composable
 fun <T> DefaultItemHeaderComposable(
     backgroundColor: Color = Color(0xFFF5F6F8),

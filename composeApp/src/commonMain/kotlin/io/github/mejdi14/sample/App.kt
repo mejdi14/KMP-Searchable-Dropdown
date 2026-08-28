@@ -28,7 +28,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.github.mejdi14.searchabledropdown.ui.DropdownDebug
 import io.github.mejdi14.sample.multipleDemo.MultipleAgentDemo
 import io.github.mejdi14.sample.multipleDemo.MultipleCountryDemo
 import io.github.mejdi14.sample.multipleDemo.MultiplePeopleDemo
@@ -48,21 +47,7 @@ fun App() {
             modifier = Modifier.fillMaxSize(),
             color = Background
         ) {
-            Box(Modifier.fillMaxSize()) {
-                DemoScreen()
-                // TEMPORARY debug banner — shows which tap path fires and the popup placement.
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .fillMaxWidth()
-                        .background(Color(0xCC101010))
-                        .systemBarsPadding()
-                        .padding(horizontal = 12.dp, vertical = 6.dp)
-                ) {
-                    Text("EVENTS  " + DropdownDebug.events.value, color = Color.White, fontSize = 11.sp)
-                    Text("POS  " + DropdownDebug.position.value, color = Color(0xFF7FE0FF), fontSize = 11.sp)
-                }
-            }
+            DemoScreen()
         }
     }
 }
@@ -72,11 +57,10 @@ private fun DemoScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            // Keep content clear of the system bars (we draw edge-to-edge) and, crucially, above
-            // the keyboard so the in-header search field scrolls into view when the IME opens.
+
             .systemBarsPadding()
             .imePadding()
-            // Small gap so the header/search field never sits flush against the keyboard.
+
             .padding(bottom = 16.dp)
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 28.dp)

@@ -10,7 +10,6 @@ import io.github.mejdi14.searchabledropdown.data.DefaultDropdownItem
 import io.github.mejdi14.searchabledropdown.data.enum.DefaultSelectorPosition
 import io.github.mejdi14.searchabledropdown.ui.DefaultCheckboxComposable
 
-
 @Composable
 internal fun <T : Any> DefaultMultipleItemComposable(
     item: T,
@@ -29,6 +28,3 @@ internal fun <T : Any> DefaultMultipleItemComposable(
             DefaultCheckboxComposable(selectedItemsList, item, options)
     }
 }
-
-
-

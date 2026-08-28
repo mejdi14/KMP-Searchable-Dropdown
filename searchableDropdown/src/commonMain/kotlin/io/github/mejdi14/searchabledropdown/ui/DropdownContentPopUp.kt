@@ -1,28 +1,25 @@
 package io.github.mejdi14.searchabledropdown.ui
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.layout.LayoutCoordinates
-import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntRect
@@ -39,10 +36,9 @@ import io.github.mejdi14.searchabledropdown.data.selection.ItemContentConfig
 import io.github.mejdi14.searchabledropdown.helper.filterOperation
 import io.github.mejdi14.searchabledropdown.ui.search.SearchArea
 
-
 @Composable
 internal fun <T : Any> DropdownContentPopUp(
-    parentCoordinates: MutableState<LayoutCoordinates?>,
+    anchorBounds: IntRect,
     dropdownConfig: DropdownConfig<T>,
     expanded: MutableState<Boolean>,
     searchSettings: SearchSettings<T>,
@@ -53,59 +49,99 @@ internal fun <T : Any> DropdownContentPopUp(
     onMove: (Int, Int) -> Unit,
     searchQuery: MutableState<String>,
 ) {
-    val coordinates = parentCoordinates.value
-    val anchorLeft = coordinates?.positionInWindow()?.x?.toInt() ?: 0
-    val anchorTop = coordinates?.positionInWindow()?.y?.toInt() ?: 0
-    val anchorHeight = coordinates?.size?.height ?: 0
+    val anchorLeft = anchorBounds.left
+    val anchorTop = anchorBounds.top
+    val anchorHeight = anchorBounds.height
 
-    // When the search field is hosted in the header (outside this popup), the popup must not be
-    // focusable — a focusable popup treats a tap on the header as an outside tap and dismisses,
-    // which would close it the moment you tap the search field. Non-focusable keeps the header
-    // field reachable, and we additionally ignore dismiss requests in this mode so no outside-tap
-    // path can close it; it is closed via the toggle chevron instead.
     val searchInHeader =
         searchSettings.searchEnabled && searchSettings.searchLocation == SearchLocation.HEADER
 
-    // The current keyboard height (0 when closed). When it opens, the popup's "fits below" check
-    // shrinks accordingly and the list flips above the header instead of hiding behind the keyboard.
     val density = LocalDensity.current
-    val imeBottomPx = WindowInsets.ime.getBottom(density)
-    val windowHeightPx = remember { mutableStateOf(0) }
-    val positionProvider =
-        remember(anchorLeft, anchorTop, anchorHeight, dropdownConfig.separationSpace, imeBottomPx) {
-            DropdownPopupPositionProvider(
-                anchorLeftPx = anchorLeft,
-                anchorTopPx = anchorTop,
-                anchorHeightPx = anchorHeight,
-                separationPx = dropdownConfig.separationSpace,
-                bottomInsetPx = imeBottomPx,
-                onMeasureWindow = { h -> if (windowHeightPx.value != h) windowHeightPx.value = h },
-            )
-        }
 
-    // Cap the popup height to whichever side (above/below the header, minus the keyboard) has more
-    // room, so it never has to overlap the header — keeping the configured separation intact even
-    // when it flips above with the keyboard open.
-    val maxContentHeight: androidx.compose.ui.unit.Dp = run {
-        val sep = dropdownConfig.separationSpace
-        val spaceAbove = (anchorTop - sep).coerceAtLeast(0)
-        val wh = windowHeightPx.value
-        when {
-            wh > 0 -> {
-                val spaceBelow = (wh - imeBottomPx) - (anchorTop + anchorHeight + sep)
-                val availablePx = maxOf(spaceBelow, spaceAbove).coerceAtLeast(0)
-                minOf(dropdownConfig.maxHeight, with(density) { availablePx.toDp() })
+    val imeInsets = WindowInsets.ime
+    val imeVisibleState = remember(imeInsets, density) {
+        derivedStateOf { imeInsets.getBottom(density) > 0 }
+    }
+    val imeVisible = imeVisibleState.value
+
+    val spaceAbovePx = (anchorTop - dropdownConfig.separationSpace).coerceAtLeast(0)
+    val maxContentHeight = if (imeVisible) {
+        minOf(dropdownConfig.maxHeight, with(density) { spaceAbovePx.toDp() })
+    } else {
+        dropdownConfig.maxHeight
+    }
+
+    val fixedAboveHeightPx = with(density) { maxContentHeight.roundToPx() }
+    val positionProvider = remember(
+        anchorLeft, anchorTop, anchorHeight, dropdownConfig.separationSpace, imeVisible,
+        fixedAboveHeightPx,
+    ) {
+        DropdownPopupPositionProvider(
+            anchorLeftPx = anchorLeft,
+            anchorTopPx = anchorTop,
+            anchorHeightPx = anchorHeight,
+            separationPx = dropdownConfig.separationSpace,
+            openAbove = imeVisible,
+            fixedAboveHeightPx = fixedAboveHeightPx,
+        )
+    }
+
+    val popupWidth = with(density) {
+        if (anchorBounds.width > 0) anchorBounds.width.toDp() else 300.dp
+    }
+
+    val card: @Composable () -> Unit = {
+        Column(
+            Modifier
+                .heightIn(max = maxContentHeight)
+                .width(popupWidth)
+                .then(
+                    if (dropdownConfig.dropdownShadow.showShadow) {
+                        Modifier.shadow(
+                            elevation = dropdownConfig.dropdownShadow.elevation,
+                            shape = dropdownConfig.dropdownShadow.shape
+                        )
+                    } else Modifier
+                )
+                .background(dropdownConfig.contentBackgroundColor, dropdownConfig.shape)
+                .animateContentSize()
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                ) {}
+        ) {
+
+            if (searchSettings.searchEnabled &&
+                searchSettings.searchLocation == SearchLocation.POPUP
+            ) {
+                Column(Modifier.padding(horizontal = dropdownConfig.horizontalPadding)) {
+                    SearchArea(searchQuery, searchSettings)
+                    searchSettings.separator
+                }
             }
-            // Window height not measured yet, but the keyboard is open: the popup flips above the
-            // header, so cap it to the room above so it can't overlap and eat the separation gap.
-            imeBottomPx > 0 -> minOf(dropdownConfig.maxHeight, with(density) { spaceAbove.toDp() })
-            else -> dropdownConfig.maxHeight
+            val filteredItems = filterOperation(searchQuery, items, searchSettings)
+
+            val canReorder = dropdownConfig.reorderEnabled && searchQuery.value.isEmpty()
+            if (filteredItems.isEmpty())
+                dropdownConfig.emptySearchPlaceholder()
+            else
+                DropdownItemsList(
+                    searchSettings,
+                    filteredItems,
+                    selectedItem,
+                    expanded,
+                    itemContentConfig,
+                    dropdownConfig,
+                    selectedItemsList,
+                    canReorder,
+                    onMove,
+                )
         }
     }
+
     Popup(
         popupPositionProvider = positionProvider,
         onDismissRequest = {
-            DropdownDebug.emit("onDismissRequest (searchInHeader=" + searchInHeader + ")")
             if (!searchInHeader) expanded.value = false
         },
         properties = PopupProperties(
@@ -113,85 +149,35 @@ internal fun <T : Any> DropdownContentPopUp(
             dismissOnClickOutside = !searchInHeader,
         )
     ) {
-        AnimatedContent(
-            targetState = expanded.value,
-            transitionSpec = {
-                fadeIn(animationSpec = tween(500)) + expandVertically(
-                    animationSpec = tween(1000),
-                    expandFrom = Alignment.Top
-                ) togetherWith fadeOut(animationSpec = tween(300))
+        if (imeVisible) {
+
+            Box(
+                modifier = Modifier
+                    .width(popupWidth)
+                    .height(maxContentHeight)
+
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                    ) { expanded.value = false },
+                contentAlignment = Alignment.BottomStart,
+            ) {
+                card()
             }
-        ) { isExpanded ->
-            if (isExpanded) {
-                Column(
-                    Modifier
-                        .heightIn(max = maxContentHeight)
-                        .width(with(LocalDensity.current) {
-                            parentCoordinates.value?.size?.width?.toDp() ?: 300.dp
-                        })
-                        .then(
-                            if (dropdownConfig.dropdownShadow.showShadow) {
-                                Modifier.shadow(
-                                    elevation = dropdownConfig.dropdownShadow.elevation,
-                                    shape = dropdownConfig.dropdownShadow.shape
-                                )
-                            } else Modifier
-                        )
-                        .background(dropdownConfig.contentBackgroundColor, dropdownConfig.shape)
-                ) {
-                    // Horizontal padding lives on the search area and on each row's content (not on
-                    // the whole column) so the rows — and the drag tint — span the full popup width.
-                    // The search field is only shown here when it is not being hosted in the header.
-                    if (searchSettings.searchEnabled &&
-                        searchSettings.searchLocation == SearchLocation.POPUP
-                    ) {
-                        Column(Modifier.padding(horizontal = dropdownConfig.horizontalPadding)) {
-                            SearchArea(searchQuery, searchSettings)
-                            searchSettings.separator
-                        }
-                    }
-                    val filteredItems = filterOperation(searchQuery, items, searchSettings)
-                    // Reordering only makes sense on the full, unfiltered list.
-                    val canReorder = dropdownConfig.reorderEnabled && searchQuery.value.isEmpty()
-                    if (filteredItems.isEmpty())
-                        dropdownConfig.emptySearchPlaceholder()
-                    else
-                        DropdownItemsList(
-                            searchSettings,
-                            filteredItems,
-                            selectedItem,
-                            expanded,
-                            itemContentConfig,
-                            dropdownConfig,
-                            selectedItemsList,
-                            canReorder,
-                            onMove,
-                        )
-                }
-            }
+        } else {
+
+            card()
         }
     }
 }
 
-/**
- * Positions the dropdown popup directly next to its anchor (the header):
- *
- * - If the popup fits below the anchor within the window, it opens below with
- *   [separationPx] of spacing.
- * - Otherwise it opens above the anchor (still with [separationPx] of spacing),
- *   growing upward — so it is never pushed far away from the header.
- *
- * Coordinates are absolute within the popup window. Horizontal placement matches
- * the anchor's left edge so the popup lines up with the header (the popup is sized
- * to the header width, so their content padding lines up too).
- */
 private class DropdownPopupPositionProvider(
     private val anchorLeftPx: Int,
     private val anchorTopPx: Int,
     private val anchorHeightPx: Int,
     private val separationPx: Int,
-    private val bottomInsetPx: Int = 0,
-    private val onMeasureWindow: (Int) -> Unit = {},
+    private val openAbove: Boolean = false,
+    private val fixedAboveHeightPx: Int = 0,
 ) : PopupPositionProvider {
     override fun calculatePosition(
         anchorBounds: IntRect,
@@ -199,27 +185,18 @@ private class DropdownPopupPositionProvider(
         layoutDirection: LayoutDirection,
         popupContentSize: IntSize,
     ): IntOffset {
-        onMeasureWindow(windowSize.height)
-        // Exclude the bottom inset (the on-screen keyboard) from the usable height, so once the
-        // keyboard is open the popup no longer "fits below" and flips above the header — keeping
-        // both the header (kept above the keyboard by imePadding) and the list visible.
-        val usableBottom = windowSize.height - bottomInsetPx
-        val belowY = anchorTopPx + anchorHeightPx + separationPx
-        val fitsBelow = belowY + popupContentSize.height <= usableBottom
+        if (openAbove) {
+            val y = (anchorTopPx - separationPx - fixedAboveHeightPx).coerceAtLeast(0)
+            return IntOffset(x = anchorLeftPx, y = y)
+        }
 
+        val belowY = anchorTopPx + anchorHeightPx + separationPx
+        val fitsBelow = belowY + popupContentSize.height <= windowSize.height
         val y = if (fitsBelow) {
             belowY
         } else {
             (anchorTopPx - separationPx - popupContentSize.height).coerceAtLeast(0)
         }
-        val gap = if (fitsBelow) belowY - (anchorTopPx + anchorHeightPx)
-        else anchorTopPx - (y + popupContentSize.height)
-        DropdownDebug.setPosition(
-            (if (fitsBelow) "BELOW" else "ABOVE") +
-                " gap=" + gap + " sep=" + separationPx +
-                " y=" + y + " anchorTop=" + anchorTopPx + " popupH=" + popupContentSize.height +
-                " ime=" + bottomInsetPx + " winH=" + windowSize.height
-        )
         return IntOffset(x = anchorLeftPx, y = y)
     }
 }

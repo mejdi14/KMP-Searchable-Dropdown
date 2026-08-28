@@ -29,8 +29,9 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.dp
 import io.github.mejdi14.searchabledropdown.data.DropdownConfig
 import io.github.mejdi14.searchabledropdown.data.listener.MultipleRemoveItemListener
@@ -42,7 +43,7 @@ import io.github.mejdi14.searchabledropdown.data.selection.SingleItemContentConf
 import io.github.mejdi14.searchabledropdown.ui.item.DefaultSingleItemComposable
 import io.github.mejdi14.searchabledropdown.ui.search.SearchArea
 import org.jetbrains.compose.resources.painterResource
-
+import kotlin.math.roundToInt
 
 @Composable
 fun <T : Any> SearchableDropdown(
@@ -56,11 +57,8 @@ fun <T : Any> SearchableDropdown(
     val rotationAngle by animateDpAsState(targetValue = if (expanded.value) 0.dp else 180.dp)
     val selectedItemsList = remember { mutableStateListOf<T>() }
 
-    val parentCoordinates = remember { mutableStateOf<LayoutCoordinates?>(null) }
+    val anchorBounds = remember { mutableStateOf(IntRect.Zero) }
 
-    // A reorderable copy of the items, used only when drag-to-reorder is enabled. It is
-    // reseeded whenever the caller passes a new source list, but a reorder (which does not
-    // change [items]) is preserved.
     val orderedItems = remember { mutableStateListOf<T>().apply { addAll(items) } }
     LaunchedEffect(items) {
         orderedItems.clear()
@@ -74,15 +72,12 @@ fun <T : Any> SearchableDropdown(
         }
     }
 
-    // Search query lifted here so it can be shared between the header (when the search field lives
-    // there) and the popup's filtering. Cleared on close so each open starts fresh.
     val searchQuery = remember { mutableStateOf("") }
     LaunchedEffect(expanded.value) {
         if (!expanded.value) searchQuery.value = ""
     }
     val showHeaderSearch = searchSettings.searchEnabled &&
             searchSettings.searchLocation == SearchLocation.HEADER && expanded.value
-
 
     Row(
         Modifier
@@ -97,14 +92,21 @@ fun <T : Any> SearchableDropdown(
                 color = dropdownConfig.headerBackgroundColor,
                 shape = dropdownConfig.shape
             )
-            // Capture the full header box (before padding) so the popup can match
-            // its left edge and width exactly.
+
             .onGloballyPositioned { coordinates ->
-                parentCoordinates.value = coordinates
+                val position = coordinates.positionInWindow()
+                val left = position.x.roundToInt()
+                val top = position.y.roundToInt()
+                val bounds = IntRect(
+                    left = left,
+                    top = top,
+                    right = left + coordinates.size.width,
+                    bottom = top + coordinates.size.height,
+                )
+                if (anchorBounds.value != bounds) anchorBounds.value = bounds
             }
             .padding(horizontal = dropdownConfig.horizontalPadding)
-            // Tapping the header toggles the popup — except while it is acting as the search field,
-            // where taps should reach the text field instead of closing the popup.
+
             .then(
                 if (showHeaderSearch) Modifier
                 else Modifier.clickable(
@@ -131,9 +133,6 @@ fun <T : Any> SearchableDropdown(
         }
         Spacer(Modifier.width(5.dp))
 
-        // In header-search mode, once there is a query the chevron becomes a clear ("x") button
-        // that ONLY wipes the search (its own clickable, so it can never toggle/close the popup);
-        // otherwise it stays the expand/collapse chevron.
         val showClearInsteadOfChevron = showHeaderSearch && searchQuery.value.isNotEmpty()
         if (showClearInsteadOfChevron) {
             Box(
@@ -141,7 +140,6 @@ fun <T : Any> SearchableDropdown(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
                 ) {
-                    DropdownDebug.emit("CLEAR tapped (query='" + searchQuery.value + "')")
                     searchQuery.value = ""
                 },
                 contentAlignment = Alignment.Center,
@@ -149,7 +147,6 @@ fun <T : Any> SearchableDropdown(
                 Icon(
                     painter = painterResource(searchSettings.clearSearchIcon.iconDrawable),
                     contentDescription = "Clear search",
-                    // Match the chevron it replaces, so it looks like the same control.
                     tint = dropdownConfig.toggleIcon.iconTintColor,
                     modifier = Modifier.size(dropdownConfig.toggleIcon.iconSize),
                 )
@@ -160,7 +157,6 @@ fun <T : Any> SearchableDropdown(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
                 ) {
-                    DropdownDebug.emit("CHEVRON tapped (toggle)")
                     expanded.value = !expanded.value
                 },
                 contentAlignment = Alignment.Center,
@@ -173,20 +169,17 @@ fun <T : Any> SearchableDropdown(
     }
 
     if (expanded.value) {
-        // In header-search mode the popup is non-focusable (so the header field stays usable), so
-        // it can't dismiss on outside taps by itself. These scrims restore that — they cover the
-        // screen around the header (leaving the header strip free) and close on tap. Declared
-        // before the content popup so the list stays on top of them.
+
         if (searchSettings.searchEnabled &&
             searchSettings.searchLocation == SearchLocation.HEADER
         ) {
             HeaderSearchDismissScrims(
-                headerCoordinates = parentCoordinates.value,
-                onDismiss = { DropdownDebug.emit("SCRIM dismiss"); expanded.value = false },
+                anchorBounds = anchorBounds.value,
+                onDismiss = { expanded.value = false },
             )
         }
         DropdownContentPopUp(
-            parentCoordinates,
+            anchorBounds.value,
             dropdownConfig,
             expanded,
             searchSettings,
@@ -201,13 +194,6 @@ fun <T : Any> SearchableDropdown(
     Spacer(modifier = Modifier.height(10.dp))
 }
 
-/**
- * Renders the header preview of the current selection.
- *
- * - Single selection: shows [selectedItem] when set, otherwise the [placeholder].
- * - Multiple selection: shows a horizontally scrolling list of [selectedItemsList],
- *   otherwise the [placeholder].
- */
 @Composable
 private fun <T : Any> RowScope.DropdownHeaderContent(
     itemContentConfig: ItemContentConfig<T>,
@@ -265,6 +251,3 @@ private fun <T : Any> RowScope.DropdownHeaderContent(
         }
     }
 }
-
-
-

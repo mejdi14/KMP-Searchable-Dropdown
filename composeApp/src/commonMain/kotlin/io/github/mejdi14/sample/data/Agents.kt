@@ -18,7 +18,6 @@ import kmp_searchable_dropdown.composeapp.generated.resources.student4
 import kmp_searchable_dropdown.composeapp.generated.resources.student5
 import org.jetbrains.compose.resources.DrawableResource
 
-
 data class Agent(
     val name: String,
     val photo: DrawableResource,

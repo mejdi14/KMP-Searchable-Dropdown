@@ -11,7 +11,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-/** Shown inside the popup when a search matches no items. */
 @Composable
 fun EmptySearchPlaceholder() {
     Box(

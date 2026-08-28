@@ -20,11 +20,6 @@ import io.github.mejdi14.searchabledropdown.data.search.SearchIcon
 import io.github.mejdi14.searchabledropdown.data.search.SearchSettings
 import org.jetbrains.compose.resources.painterResource
 
-/**
- * The search field. The leading search icon and the trailing clear button live in the text field's
- * own icon slots, so it reads like a proper search bar. The clear button only appears once there is
- * text; [showInlineClear] hides it when the clear action is hosted elsewhere (e.g. the header).
- */
 @Composable
 internal fun <T : Any> SearchArea(
     searchQuery: MutableState<String>,
@@ -58,7 +53,6 @@ internal fun <T : Any> SearchArea(
     )
 }
 
-/** A round, tappable clear ("x") button used to wipe the whole query. */
 @Composable
 internal fun ClearSearchButton(icon: SearchIcon, onClear: () -> Unit) {
     Box(
