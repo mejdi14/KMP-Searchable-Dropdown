@@ -25,36 +25,45 @@ import kmp_searchable_dropdown.composeapp.generated.resources.Res
 import kmp_searchable_dropdown.composeapp.generated.resources.cross_icon
 import kmp_searchable_dropdown.composeapp.generated.resources.green_check
 import io.github.mejdi14.searchabledropdown.data.DropdownConfig
+import io.github.mejdi14.searchabledropdown.data.ToggleIcon
+import io.github.mejdi14.searchabledropdown.data.search.SearchIcon
+import io.github.mejdi14.searchabledropdown.data.search.SearchInput
 import io.github.mejdi14.searchabledropdown.data.search.SearchLocation
 import io.github.mejdi14.searchabledropdown.data.search.SearchSettings
 import io.github.mejdi14.searchabledropdown.data.selection.CheckboxParams
 import io.github.mejdi14.searchabledropdown.data.selection.MultipleItemContentConfig
 import io.github.mejdi14.searchabledropdown.ui.item.MultipleItemOptions
+import io.github.mejdi14.sample.LocalDemoColors
 import io.github.mejdi14.sample.data.Agent
-import io.github.mejdi14.sample.data.People
 import io.github.mejdi14.sample.data.agents
-import io.github.mejdi14.sample.data.people
 import io.github.mejdi14.searchabledropdown.ui.SearchableDropdown
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun MultipleAgentDemo() {
+    val c = LocalDemoColors.current
     SearchableDropdown(
         items = agents,
         searchSettings = SearchSettings(
             searchProperties = listOf(
                 Agent::name,
             ),
-
+            searchIcon = SearchIcon(iconTintColor = c.muted),
+            searchInput = SearchInput(
+                placeholder = { Text("Search team…", color = c.muted) },
+                inputTextColor = c.onSurface,
+            ),
             searchLocation = SearchLocation.HEADER,
         ),
         dropdownConfig = DropdownConfig(shape = RoundedCornerShape(18.dp),
             horizontalPadding = 12.dp,
-
+            headerBackgroundColor = c.surface,
+            contentBackgroundColor = c.surface,
+            toggleIcon = ToggleIcon(iconTintColor = c.muted),
             separationSpace = 45,
             headerPlaceholder = {
                 Text(
-                    "Agency Team", color = Color.Black,
+                    "Agency Team", color = c.onSurface,
                     modifier = Modifier
                         .padding(vertical = 16.dp)
                 )
@@ -71,7 +80,7 @@ fun MultipleAgentDemo() {
                                 multipleSelectActionListener.onSelect(agent)
                         }
                         .height(58.dp)
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                        .padding(vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
@@ -86,6 +95,7 @@ fun MultipleAgentDemo() {
                     ) {
                         Text(
                             text = agent.name,
+                            color = c.onSurface,
                         )
 
                     }
@@ -124,7 +134,7 @@ fun MultipleAgentDemo() {
             options = MultipleItemOptions(
                 useDefaultSelector = true,
                 defaultCheckboxParams = CheckboxParams(
-                    checkedColor = Color.Black,
+                    checkedColor = c.accent,
                     checkmarkColor = Color.White
                 )
             )
