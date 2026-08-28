@@ -15,19 +15,21 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
 
 /**
- * Provides tap-outside-to-dismiss for the header-search popup, which must be non-focusable (so the
- * header search field stays interactive) and therefore can't use the built-in dismiss-on-click.
+ * Tap-outside-to-dismiss for the header-search popup (which is non-focusable, so it can't use the
+ * built-in dismiss-on-click). Two transparent scrims are placed *around* the header — one above,
+ * one below — leaving the header strip itself free so its search field and clear button stay
+ * tappable. The list popup draws on top of the scrims.
  *
- * A single full-screen scrim would cover the header and block the field, so instead two scrims are
- * placed *around* the header — one above it, one below — leaving the header strip itself free. The
- * list popup is drawn on top of these, so taps land as expected:
- * - on the header (search field) or the list -> nothing closes;
- * - anywhere else (the scrims) -> [onDismiss].
+ * Crucially, each scrim reads the header's position **inside its position provider** (i.e. at
+ * layout time, every layout pass), NOT during composition. The header moves when the keyboard
+ * scrolls it, and a composition-time read lags behind — which used to leave the "above" scrim
+ * covering the header and swallowing taps meant for the clear button.
  */
 @Composable
 internal fun HeaderSearchDismissScrims(
@@ -35,59 +37,54 @@ internal fun HeaderSearchDismissScrims(
     onDismiss: () -> Unit,
 ) {
     if (headerCoordinates == null) return
-    val headerTop = headerCoordinates.positionInWindow().y.toInt()
-    val headerBottom = headerTop + headerCoordinates.size.height
-
-    // Above the header.
-    if (headerTop > 0) {
-        ScrimPopup(y = 0, fixedHeightPx = headerTop, onDismiss = onDismiss)
-    }
-    // Below the header, down to the bottom of the window.
-    ScrimPopup(y = headerBottom, fixedHeightPx = null, onDismiss = onDismiss)
+    ScrimPopup(headerCoordinates, above = true, onDismiss = onDismiss)
+    ScrimPopup(headerCoordinates, above = false, onDismiss = onDismiss)
 }
 
-/**
- * A transparent, non-focusable popup that covers the window width starting at [y].
- *
- * [fixedHeightPx] sets an explicit height; null means "extend to the bottom of the window". The
- * window size is learned from the position provider, so the scrim is sized exactly rather than
- * being made arbitrarily large (an oversized popup window risks exceeding platform surface limits).
- */
 @Composable
-private fun ScrimPopup(y: Int, fixedHeightPx: Int?, onDismiss: () -> Unit) {
+private fun ScrimPopup(headerCoordinates: LayoutCoordinates, above: Boolean, onDismiss: () -> Unit) {
     val density = LocalDensity.current
-    val windowSize = remember { mutableStateOf(IntSize.Zero) }
-    val positionProvider = remember(y) {
+    val marginPx = with(density) { 8.dp.roundToPx() }
+    // Size is produced by the provider (which has the window size + live header position) and read
+    // back here for the Box. One-frame lag on the (invisible) size is harmless.
+    val sizeState = remember { mutableStateOf(IntSize.Zero) }
+
+    val positionProvider = remember(headerCoordinates, above, marginPx) {
         object : PopupPositionProvider {
             override fun calculatePosition(
                 anchorBounds: IntRect,
-                windowSize1: IntSize,
+                windowSize: IntSize,
                 layoutDirection: LayoutDirection,
                 popupContentSize: IntSize,
             ): IntOffset {
-                if (windowSize.value != windowSize1) windowSize.value = windowSize1
-                return IntOffset(0, y)
+                val top = headerCoordinates.positionInWindow().y.toInt()
+                val bottom = top + headerCoordinates.size.height
+                val offset: IntOffset
+                val size: IntSize
+                if (above) {
+                    offset = IntOffset(0, 0)
+                    size = IntSize(windowSize.width, (top - marginPx).coerceAtLeast(0))
+                } else {
+                    val y = bottom + marginPx
+                    offset = IntOffset(0, y)
+                    size = IntSize(windowSize.width, (windowSize.height - y).coerceAtLeast(0))
+                }
+                if (sizeState.value != size) sizeState.value = size
+                return offset
             }
         }
     }
 
-    val widthPx = windowSize.value.width
-    val heightPx = fixedHeightPx ?: (windowSize.value.height - y).coerceAtLeast(0)
-
     Popup(
         popupPositionProvider = positionProvider,
-        properties = PopupProperties(
-            focusable = false,
-            // With clipping enabled the platform nudges a popup back on-screen; that would drag the
-            // below-header scrim up over the header and swallow taps meant for the search field.
-            clippingEnabled = false,
-        ),
+        properties = PopupProperties(focusable = false, clippingEnabled = false),
     ) {
+        val s = sizeState.value
         Box(
             Modifier
                 .size(
-                    width = with(density) { widthPx.toDp() },
-                    height = with(density) { heightPx.toDp() },
+                    width = with(density) { s.width.toDp() },
+                    height = with(density) { s.height.toDp() },
                 )
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },

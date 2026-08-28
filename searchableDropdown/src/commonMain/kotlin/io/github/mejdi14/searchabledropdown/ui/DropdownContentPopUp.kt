@@ -1,7 +1,6 @@
 package io.github.mejdi14.searchabledropdown.ui
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -88,19 +87,25 @@ internal fun <T : Any> DropdownContentPopUp(
     // room, so it never has to overlap the header — keeping the configured separation intact even
     // when it flips above with the keyboard open.
     val maxContentHeight: androidx.compose.ui.unit.Dp = run {
+        val sep = dropdownConfig.separationSpace
+        val spaceAbove = (anchorTop - sep).coerceAtLeast(0)
         val wh = windowHeightPx.value
-        if (wh == 0) dropdownConfig.maxHeight
-        else {
-            val sep = dropdownConfig.separationSpace
-            val spaceBelow = (wh - imeBottomPx) - (anchorTop + anchorHeight + sep)
-            val spaceAbove = anchorTop - sep
-            val availablePx = maxOf(spaceBelow, spaceAbove).coerceAtLeast(0)
-            minOf(dropdownConfig.maxHeight, with(density) { availablePx.toDp() })
+        when {
+            wh > 0 -> {
+                val spaceBelow = (wh - imeBottomPx) - (anchorTop + anchorHeight + sep)
+                val availablePx = maxOf(spaceBelow, spaceAbove).coerceAtLeast(0)
+                minOf(dropdownConfig.maxHeight, with(density) { availablePx.toDp() })
+            }
+            // Window height not measured yet, but the keyboard is open: the popup flips above the
+            // header, so cap it to the room above so it can't overlap and eat the separation gap.
+            imeBottomPx > 0 -> minOf(dropdownConfig.maxHeight, with(density) { spaceAbove.toDp() })
+            else -> dropdownConfig.maxHeight
         }
     }
     Popup(
         popupPositionProvider = positionProvider,
         onDismissRequest = {
+            DropdownDebug.emit("onDismissRequest (searchInHeader=" + searchInHeader + ")")
             if (!searchInHeader) expanded.value = false
         },
         properties = PopupProperties(
@@ -133,7 +138,6 @@ internal fun <T : Any> DropdownContentPopUp(
                             } else Modifier
                         )
                         .background(dropdownConfig.contentBackgroundColor, dropdownConfig.shape)
-                        .animateContentSize()
                 ) {
                     // Horizontal padding lives on the search area and on each row's content (not on
                     // the whole column) so the rows — and the drag tint — span the full popup width.
@@ -150,7 +154,7 @@ internal fun <T : Any> DropdownContentPopUp(
                     // Reordering only makes sense on the full, unfiltered list.
                     val canReorder = dropdownConfig.reorderEnabled && searchQuery.value.isEmpty()
                     if (filteredItems.isEmpty())
-                        dropdownConfig.emptySearchPlaceholder
+                        dropdownConfig.emptySearchPlaceholder()
                     else
                         DropdownItemsList(
                             searchSettings,
@@ -208,6 +212,14 @@ private class DropdownPopupPositionProvider(
         } else {
             (anchorTopPx - separationPx - popupContentSize.height).coerceAtLeast(0)
         }
+        val gap = if (fitsBelow) belowY - (anchorTopPx + anchorHeightPx)
+        else anchorTopPx - (y + popupContentSize.height)
+        DropdownDebug.setPosition(
+            (if (fitsBelow) "BELOW" else "ABOVE") +
+                " gap=" + gap + " sep=" + separationPx +
+                " y=" + y + " anchorTop=" + anchorTopPx + " popupH=" + popupContentSize.height +
+                " ime=" + bottomInsetPx + " winH=" + windowSize.height
+        )
         return IntOffset(x = anchorLeftPx, y = y)
     }
 }

@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.github.mejdi14.searchabledropdown.ui.DropdownDebug
 import io.github.mejdi14.sample.multipleDemo.MultipleAgentDemo
 import io.github.mejdi14.sample.multipleDemo.MultipleCountryDemo
 import io.github.mejdi14.sample.multipleDemo.MultiplePeopleDemo
@@ -47,7 +48,21 @@ fun App() {
             modifier = Modifier.fillMaxSize(),
             color = Background
         ) {
-            DemoScreen()
+            Box(Modifier.fillMaxSize()) {
+                DemoScreen()
+                // TEMPORARY debug banner — shows which tap path fires and the popup placement.
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .fillMaxWidth()
+                        .background(Color(0xCC101010))
+                        .systemBarsPadding()
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                ) {
+                    Text("EVENTS  " + DropdownDebug.events.value, color = Color.White, fontSize = 11.sp)
+                    Text("POS  " + DropdownDebug.position.value, color = Color(0xFF7FE0FF), fontSize = 11.sp)
+                }
+            }
         }
     }
 }

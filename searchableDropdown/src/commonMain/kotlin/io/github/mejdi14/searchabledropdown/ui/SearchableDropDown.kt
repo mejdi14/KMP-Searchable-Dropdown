@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -40,6 +41,7 @@ import io.github.mejdi14.searchabledropdown.data.selection.MultipleItemContentCo
 import io.github.mejdi14.searchabledropdown.data.selection.SingleItemContentConfig
 import io.github.mejdi14.searchabledropdown.ui.item.DefaultSingleItemComposable
 import io.github.mejdi14.searchabledropdown.ui.search.SearchArea
+import org.jetbrains.compose.resources.painterResource
 
 
 @Composable
@@ -117,7 +119,7 @@ fun <T : Any> SearchableDropdown(
     ) {
         if (showHeaderSearch) {
             Box(Modifier.weight(1f)) {
-                SearchArea(searchQuery, searchSettings)
+                SearchArea(searchQuery, searchSettings, showInlineClear = false)
             }
         } else {
             DropdownHeaderContent(
@@ -129,19 +131,44 @@ fun <T : Any> SearchableDropdown(
         }
         Spacer(Modifier.width(5.dp))
 
-        Box(
-            modifier = Modifier.size(20.dp).clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
+        // In header-search mode, once there is a query the chevron becomes a clear ("x") button
+        // that ONLY wipes the search (its own clickable, so it can never toggle/close the popup);
+        // otherwise it stays the expand/collapse chevron.
+        val showClearInsteadOfChevron = showHeaderSearch && searchQuery.value.isNotEmpty()
+        if (showClearInsteadOfChevron) {
+            Box(
+                modifier = Modifier.size(20.dp).clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) {
+                    DropdownDebug.emit("CLEAR tapped (query='" + searchQuery.value + "')")
+                    searchQuery.value = ""
+                },
+                contentAlignment = Alignment.Center,
             ) {
-                expanded.value = !expanded.value
-            }
-        ) {
-            ToggleIconComposable(
-                rotationAngle, expanded.value, dropdownConfig.toggleIcon, Modifier.align(
-                    Alignment.Center
+                Icon(
+                    painter = painterResource(searchSettings.clearSearchIcon.iconDrawable),
+                    contentDescription = "Clear search",
+                    // Match the chevron it replaces, so it looks like the same control.
+                    tint = dropdownConfig.toggleIcon.iconTintColor,
+                    modifier = Modifier.size(dropdownConfig.toggleIcon.iconSize),
                 )
-            )
+            }
+        } else {
+            Box(
+                modifier = Modifier.size(20.dp).clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) {
+                    DropdownDebug.emit("CHEVRON tapped (toggle)")
+                    expanded.value = !expanded.value
+                },
+                contentAlignment = Alignment.Center,
+            ) {
+                ToggleIconComposable(
+                    rotationAngle, expanded.value, dropdownConfig.toggleIcon, Modifier
+                )
+            }
         }
     }
 
@@ -155,7 +182,7 @@ fun <T : Any> SearchableDropdown(
         ) {
             HeaderSearchDismissScrims(
                 headerCoordinates = parentCoordinates.value,
-                onDismiss = { expanded.value = false },
+                onDismiss = { DropdownDebug.emit("SCRIM dismiss"); expanded.value = false },
             )
         }
         DropdownContentPopUp(

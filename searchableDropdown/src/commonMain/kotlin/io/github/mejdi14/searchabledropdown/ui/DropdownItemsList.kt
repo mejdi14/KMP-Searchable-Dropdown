@@ -232,7 +232,7 @@ internal fun <T : Any> DropdownItemsList(
                 Modifier
                     // Slide non-dragged rows to their new slot instead of jumping. The dragged row
                     // is excluded — it's positioned by the finger-follow translation above.
-                    .then(if (isDragging) Modifier else Modifier.animateItem())
+                    .then(if (isDragging) Modifier else Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null))
                     .zIndex(if (isDragging) 1f else 0f)
                     .graphicsLayer {
                         if (isDragging) {

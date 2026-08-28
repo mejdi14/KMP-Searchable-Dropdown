@@ -51,6 +51,8 @@ fun MultipleAgentDemo() {
         ),
         dropdownConfig = DropdownConfig(shape = RoundedCornerShape(18.dp),
             horizontalPadding = 12.dp,
+            // A clearly visible gap between the header and the popup (this is the "defined space").
+            separationSpace = 45,
             headerPlaceholder = {
                 Text(
                     "Agency Team", color = Color.Black,

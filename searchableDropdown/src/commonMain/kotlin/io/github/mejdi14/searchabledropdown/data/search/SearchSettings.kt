@@ -14,7 +14,7 @@ data class SearchSettings<T : Any>(
     val searchProperties: List<KProperty1<T, *>> = emptyList(),
     val separator : @Composable () -> Unit = { SearchSeparator() },
     val searchIcon : SearchIcon = SearchIcon(),
-    val clearSearchIcon : SearchIcon = SearchIcon(Res.drawable.cross_icon, Color.White),
+    val clearSearchIcon : SearchIcon = SearchIcon(Res.drawable.cross_icon, Color(0xFF9E9E9E)),
     val searchInput: SearchInput = SearchInput(),
     val searchType: SearchType = SearchType.CONTAINS,
     val ignoreCase: Boolean = true,
