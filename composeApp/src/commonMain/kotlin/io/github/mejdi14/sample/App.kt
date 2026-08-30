@@ -1,7 +1,6 @@
 package io.github.mejdi14.sample
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -17,10 +16,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -31,19 +30,49 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.mejdi14.sample.multipleDemo.MultipleAgentDemo
 import io.github.mejdi14.sample.multipleDemo.MultipleCountryDemo
 import io.github.mejdi14.sample.multipleDemo.MultiplePeopleDemo
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
+
+private data class DemoPageInfo(
+    val index: String,
+    val title: String,
+    val description: String,
+    val content: @Composable () -> Unit,
+)
+
+private val demoPages: List<DemoPageInfo> = listOf(
+    DemoPageInfo(
+        index = "01",
+        title = "Reorderable multi-select",
+        description = "Search people by name or role, then long-press any result to drag it into the order you want.",
+        content = { MultiplePeopleDemo() },
+    ),
+    DemoPageInfo(
+        index = "02",
+        title = "Command-palette search",
+        description = "A search-first picker: type to filter, esc lives inside the field, and a keyboard-style footer sits below.",
+        content = { MultipleCountryDemo() },
+    ),
+    DemoPageInfo(
+        index = "03",
+        title = "Search inside the header",
+        description = "The search field is hosted in the header itself, pairing soft checkbox rows with removable chips.",
+        content = { MultipleAgentDemo() },
+    ),
+)
 
 @Composable
 @Preview
@@ -70,98 +99,70 @@ fun App() {
     MaterialTheme(colors = materialColors) {
         CompositionLocalProvider(LocalDemoColors provides colors) {
             Surface(modifier = Modifier.fillMaxSize(), color = colors.background) {
-                DemoScreen(dark = dark, onToggleTheme = { dark = !dark })
+                DemoPager(dark = dark, onToggleTheme = { dark = !dark })
             }
         }
     }
 }
 
 @Composable
-private fun DemoScreen(dark: Boolean, onToggleTheme: () -> Unit) {
+private fun DemoPager(dark: Boolean, onToggleTheme: () -> Unit) {
+    val colors = LocalDemoColors.current
+    val pagerState = rememberPagerState(pageCount = { demoPages.size })
+    val scope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .systemBarsPadding()
-            .imePadding()
-            .padding(bottom = 16.dp)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 28.dp)
+            .imePadding(),
     ) {
-        Spacer(Modifier.height(56.dp))
-        DemoHeader(dark = dark, onToggleTheme = onToggleTheme)
-        Spacer(Modifier.height(44.dp))
+        Masthead(dark = dark, onToggleTheme = onToggleTheme)
 
-        DemoSection(
-            index = 1,
-            title = "People picker",
-            description = "Multi-select with avatars, roles and live search across name and job.",
-        ) {
-            MultiplePeopleDemo()
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+        ) { page ->
+            DemoPage(demoPages[page])
         }
-        Spacer(Modifier.height(44.dp))
 
-        DemoSection(
-            index = 2,
-            title = "Country code",
-            description = "Flags and built-in checkbox selectors, following the current theme.",
-        ) {
-            MultipleCountryDemo()
-        }
-        Spacer(Modifier.height(44.dp))
-
-        DemoSection(
-            index = 3,
-            title = "Agency team",
-            description = "Colorful removable chips, plus the search field hosted in the header itself.",
-        ) {
-            MultipleAgentDemo()
-        }
-        Spacer(Modifier.height(56.dp))
+        PagerFooter(
+            count = demoPages.size,
+            current = pagerState.currentPage,
+            onSelect = { scope.launch { pagerState.animateScrollToPage(it) } },
+        )
     }
 }
 
 @Composable
-private fun DemoHeader(dark: Boolean, onToggleTheme: () -> Unit) {
+private fun Masthead(dark: Boolean, onToggleTheme: () -> Unit) {
     val colors = LocalDemoColors.current
-    Column {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 32.dp, end = 24.dp, top = 28.dp, bottom = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Top,
+    ) {
+        Column {
             Text(
-                text = "COMPOSE MULTIPLATFORM",
-                color = colors.accent,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 2.5.sp,
+                text = "Searchable Dropdown",
+                color = colors.onSurface,
+                fontFamily = FontFamily.Serif,
+                fontSize = 26.sp,
+                letterSpacing = (-0.3).sp,
             )
-            ThemeToggle(dark = dark, onToggle = onToggleTheme)
+            Spacer(Modifier.height(6.dp))
+            Text(
+                text = "COMPOSE MULTIPLATFORM · ANDROID · IOS · DESKTOP · WEB",
+                color = colors.muted,
+                fontSize = 10.sp,
+                letterSpacing = 1.5.sp,
+            )
         }
-        Spacer(Modifier.height(10.dp))
-        Text(
-            text = "Searchable Dropdown",
-            color = colors.onSurface,
-            fontSize = 34.sp,
-            fontWeight = FontWeight.Bold,
-            letterSpacing = (-0.5).sp,
-            lineHeight = 38.sp,
-        )
-        Spacer(Modifier.height(12.dp))
-        Text(
-            text = "One configurable, searchable multi-select component — running the same code on Android, iOS, Desktop and Web.",
-            color = colors.muted,
-            fontSize = 15.sp,
-            lineHeight = 22.sp,
-        )
-        Spacer(Modifier.height(20.dp))
-        Box(
-            modifier = Modifier
-                .height(4.dp)
-                .width(52.dp)
-                .clip(RoundedCornerShape(2.dp))
-                .background(Brush.horizontalGradient(listOf(colors.accent, Color(0xFFA855F7))))
-        )
+        ThemeToggle(dark = dark, onToggle = onToggleTheme)
     }
 }
 
@@ -171,67 +172,95 @@ private fun ThemeToggle(dark: Boolean, onToggle: () -> Unit) {
     Row(
         modifier = Modifier
             .clip(CircleShape)
-            .background(colors.accentSoft)
-            .border(1.dp, colors.outline, CircleShape)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
             ) { onToggle() }
-            .padding(horizontal = 12.dp, vertical = 7.dp),
+            .padding(horizontal = 8.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        Text(text = if (dark) "☾" else "☀", color = colors.accent, fontSize = 13.sp)
+        Text(text = if (dark) "☾" else "☀", color = colors.muted, fontSize = 13.sp)
         Text(
             text = if (dark) "Dark" else "Light",
-            color = colors.onSurface,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.SemiBold,
+            color = colors.muted,
+            fontSize = 11.sp,
+            letterSpacing = 0.5.sp,
         )
     }
 }
 
 @Composable
-private fun DemoSection(
-    index: Int,
-    title: String,
-    description: String,
-    content: @Composable () -> Unit,
-) {
+private fun DemoPage(info: DemoPageInfo) {
     val colors = LocalDemoColors.current
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(
-                modifier = Modifier
-                    .size(30.dp)
-                    .clip(RoundedCornerShape(9.dp))
-                    .background(colors.accentSoft),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = index.toString(),
-                    color = colors.accent,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 32.dp),
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Box(modifier = Modifier.widthIn(max = 520.dp)) {
+            info.content()
+        }
+        Spacer(Modifier.height(44.dp))
+        Text(
+            text = "${info.index} — ${demoPages.size.toString().padStart(2, '0')}",
+            color = colors.muted,
+            fontFamily = FontFamily.Monospace,
+            fontSize = 12.sp,
+            letterSpacing = 2.sp,
+        )
+        Spacer(Modifier.height(16.dp))
+        Text(
+            text = info.title,
+            color = colors.onSurface,
+            fontFamily = FontFamily.Serif,
+            fontSize = 30.sp,
+            letterSpacing = (-0.4).sp,
+            lineHeight = 34.sp,
+        )
+        Spacer(Modifier.height(14.dp))
+        Text(
+            text = info.description,
+            color = colors.muted,
+            fontSize = 15.sp,
+            lineHeight = 23.sp,
+            modifier = Modifier.widthIn(max = 420.dp),
+        )
+    }
+}
+
+@Composable
+private fun PagerFooter(count: Int, current: Int, onSelect: (Int) -> Unit) {
+    val colors = LocalDemoColors.current
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 32.dp, vertical = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            repeat(count) { i ->
+                val active = i == current
+                Box(
+                    modifier = Modifier
+                        .size(if (active) 7.dp else 6.dp)
+                        .clip(CircleShape)
+                        .background(if (active) colors.onSurface else colors.outline)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                        ) { onSelect(i) },
                 )
             }
-            Spacer(Modifier.width(12.dp))
-            Text(
-                text = title,
-                color = colors.onSurface,
-                fontSize = 19.sp,
-                fontWeight = FontWeight.SemiBold,
-                letterSpacing = (-0.2).sp,
-            )
         }
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(16.dp))
         Text(
-            text = description,
+            text = "Swipe to explore what the component can do.",
             color = colors.muted,
-            fontSize = 13.5.sp,
-            lineHeight = 19.sp,
+            fontFamily = FontFamily.Serif,
+            fontStyle = FontStyle.Italic,
+            fontSize = 13.sp,
         )
-        Spacer(Modifier.height(18.dp))
-        content()
     }
 }

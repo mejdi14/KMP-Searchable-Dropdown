@@ -133,6 +133,12 @@ fun <T : Any> SearchableDropdown(
         }
         Spacer(Modifier.width(5.dp))
 
+        val headerTrailing = dropdownConfig.headerTrailing
+        if (headerTrailing != null) {
+            headerTrailing(expanded.value) { expanded.value = !expanded.value }
+            return@Row
+        }
+
         val showClearInsteadOfChevron = showHeaderSearch && searchQuery.value.isNotEmpty()
         if (showClearInsteadOfChevron) {
             Box(

@@ -37,6 +37,8 @@ data class DropdownConfig<T>(
     val emptySearchPlaceholder: @Composable () -> Unit = {
         EmptySearchPlaceholder()
     },
+    val footer: @Composable () -> Unit = {},
+    val headerTrailing: (@Composable (expanded: Boolean, onToggle: () -> Unit) -> Unit)? = null,
     val dropdownActionListener: DropdownActionListener = defaultDropdownActionListener,
 
     val reorderEnabled: Boolean = false,

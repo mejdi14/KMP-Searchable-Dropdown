@@ -122,20 +122,23 @@ internal fun <T : Any> DropdownContentPopUp(
             val filteredItems = filterOperation(searchQuery, items, searchSettings)
 
             val canReorder = dropdownConfig.reorderEnabled && searchQuery.value.isEmpty()
-            if (filteredItems.isEmpty())
-                dropdownConfig.emptySearchPlaceholder()
-            else
-                DropdownItemsList(
-                    searchSettings,
-                    filteredItems,
-                    selectedItem,
-                    expanded,
-                    itemContentConfig,
-                    dropdownConfig,
-                    selectedItemsList,
-                    canReorder,
-                    onMove,
-                )
+            Box(Modifier.weight(1f, fill = false)) {
+                if (filteredItems.isEmpty())
+                    dropdownConfig.emptySearchPlaceholder()
+                else
+                    DropdownItemsList(
+                        searchSettings,
+                        filteredItems,
+                        selectedItem,
+                        expanded,
+                        itemContentConfig,
+                        dropdownConfig,
+                        selectedItemsList,
+                        canReorder,
+                        onMove,
+                    )
+            }
+            dropdownConfig.footer()
         }
     }
 

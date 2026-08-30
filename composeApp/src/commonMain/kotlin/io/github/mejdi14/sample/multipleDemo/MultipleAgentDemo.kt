@@ -2,37 +2,35 @@ package io.github.mejdi14.sample.multipleDemo
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kmp_searchable_dropdown.composeapp.generated.resources.Res
-import kmp_searchable_dropdown.composeapp.generated.resources.cross_icon
-import kmp_searchable_dropdown.composeapp.generated.resources.green_check
 import io.github.mejdi14.searchabledropdown.data.DropdownConfig
 import io.github.mejdi14.searchabledropdown.data.ToggleIcon
 import io.github.mejdi14.searchabledropdown.data.search.SearchIcon
 import io.github.mejdi14.searchabledropdown.data.search.SearchInput
 import io.github.mejdi14.searchabledropdown.data.search.SearchLocation
 import io.github.mejdi14.searchabledropdown.data.search.SearchSettings
-import io.github.mejdi14.searchabledropdown.data.selection.CheckboxParams
 import io.github.mejdi14.searchabledropdown.data.selection.MultipleItemContentConfig
-import io.github.mejdi14.searchabledropdown.ui.item.MultipleItemOptions
+import io.github.mejdi14.sample.DemoColors
 import io.github.mejdi14.sample.LocalDemoColors
 import io.github.mejdi14.sample.data.Agent
 import io.github.mejdi14.sample.data.agents
@@ -73,71 +71,85 @@ fun MultipleAgentDemo() {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable {
+                        .padding(vertical = 4.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(if (isSelected) c.accentSoft else c.background)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                        ) {
                             if (isSelected)
                                 multipleSelectActionListener.onDeselect(agent)
                             else
                                 multipleSelectActionListener.onSelect(agent)
                         }
-                        .height(58.dp)
-                        .padding(vertical = 8.dp),
+                        .padding(horizontal = 12.dp, vertical = 10.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    SoftCheckbox(isSelected, c)
+                    Spacer(Modifier.width(16.dp))
                     Image(
                         painterResource(agent.photo),
                         modifier = Modifier.size(32.dp),
                         contentDescription = "",
                     )
                     Spacer(Modifier.width(12.dp))
-                    Column(
+                    Text(
+                        text = agent.name,
+                        color = c.onSurface,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
                         modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.Center,
-                    ) {
-                        Text(
-                            text = agent.name,
-                            color = c.onSurface,
-                        )
-
-                    }
-                    Spacer(Modifier.width(12.dp))
-
+                    )
                 }
-
             },
             header = { agent, selectedPerson, removeItemListener ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.background(
-                        color = agent.backgroundColor,
-                        shape = RoundedCornerShape(10.dp)
-                    )
-                        .padding(horizontal = 8.dp, vertical = 2.dp)
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(c.accentSoft)
+                        .padding(start = 8.dp, end = 6.dp, top = 3.dp, bottom = 3.dp),
                 ) {
                     Image(
                         painterResource(agent.photo),
-                        modifier = Modifier.size(22.dp),
+                        modifier = Modifier.size(18.dp),
                         contentDescription = "",
                     )
-                    Spacer(Modifier.width(3.dp))
-                    Text(agent.name, color = agent.textColor)
-                    Spacer(Modifier.width(5.dp))
-                    Icon(
-                        painter = painterResource(Res.drawable.cross_icon), contentDescription = "",
-                        tint = agent.textColor,
-                        modifier = Modifier.padding(2.dp)
-                            .clickable {
-                                removeItemListener.onRemove(agent)
-                            }
+                    Spacer(Modifier.width(6.dp))
+                    Text(agent.name, color = c.onSurface, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        "×",
+                        color = c.muted,
+                        fontSize = 16.sp,
+                        modifier = Modifier.clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                        ) { removeItemListener.onRemove(agent) },
                     )
                 }
             },
-            options = MultipleItemOptions(
-                useDefaultSelector = true,
-                defaultCheckboxParams = CheckboxParams(
-                    checkedColor = c.accent,
-                    checkmarkColor = Color.White
-                )
-            )
         ),
     )
+}
+
+@Composable
+private fun SoftCheckbox(checked: Boolean, c: DemoColors) {
+    Box(
+        modifier = Modifier
+            .size(22.dp)
+            .clip(RoundedCornerShape(7.dp))
+            .background(if (checked) c.accent else Color.Transparent)
+            .border(
+                width = 1.5.dp,
+                color = if (checked) c.accent else c.outline,
+                shape = RoundedCornerShape(7.dp),
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
+        if (checked) {
+            Text("✓", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+        }
+    }
 }
