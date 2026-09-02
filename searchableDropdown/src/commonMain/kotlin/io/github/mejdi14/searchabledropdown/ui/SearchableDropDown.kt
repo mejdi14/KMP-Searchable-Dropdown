@@ -1,6 +1,7 @@
 package io.github.mejdi14.searchabledropdown.ui
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -10,17 +11,22 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -29,11 +35,16 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.layout.findRootCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntRect
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import io.github.mejdi14.searchabledropdown.data.DropdownConfig
+import io.github.mejdi14.searchabledropdown.data.PopupPlacement
 import io.github.mejdi14.searchabledropdown.data.listener.MultipleRemoveItemListener
 import io.github.mejdi14.searchabledropdown.data.search.SearchLocation
 import io.github.mejdi14.searchabledropdown.data.search.SearchSettings
@@ -45,6 +56,7 @@ import io.github.mejdi14.searchabledropdown.ui.search.SearchArea
 import org.jetbrains.compose.resources.painterResource
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun <T : Any> SearchableDropdown(
     items: List<T>,
@@ -58,6 +70,48 @@ fun <T : Any> SearchableDropdown(
     val selectedItemsList = remember { mutableStateListOf<T>() }
 
     val anchorBounds = remember { mutableStateOf(IntRect.Zero) }
+    val rootSize = remember { mutableStateOf(IntSize.Zero) }
+
+    val density = LocalDensity.current
+    val imeInsets = WindowInsets.ime
+    val keyboardOpen by remember(imeInsets, density) {
+        derivedStateOf { imeInsets.getBottom(density) > 0 }
+    }
+    val bringIntoViewRequester = remember { BringIntoViewRequester() }
+
+    LaunchedEffect(expanded.value, keyboardOpen) {
+        if (!expanded.value || !dropdownConfig.autoScrollToFit) return@LaunchedEffect
+        val anchor = anchorBounds.value
+        if (anchor.width == 0) return@LaunchedEffect
+
+        val popupExtentPx =
+            with(density) { dropdownConfig.maxHeight.roundToPx() } + dropdownConfig.separationSpace
+        val widthPx = anchor.width.toFloat()
+        val headerHeightPx = anchor.height.toFloat()
+
+        val imeBottomPx = imeInsets.getBottom(density)
+        val usableBottom = (rootSize.value.height - imeBottomPx).coerceAtLeast(0)
+        val spaceBelow = usableBottom - anchor.bottom
+        val spaceAbove = anchor.top
+
+        val placeBelow = when (dropdownConfig.popupPlacement) {
+            PopupPlacement.BELOW -> true
+            PopupPlacement.ABOVE -> false
+            PopupPlacement.AUTO -> when {
+                imeBottomPx > 0 -> true
+                spaceBelow >= popupExtentPx -> true
+                spaceAbove >= popupExtentPx -> false
+                else -> spaceAbove <= spaceBelow
+            }
+        }
+
+        val revealRect = if (placeBelow) {
+            Rect(0f, 0f, widthPx, headerHeightPx + popupExtentPx)
+        } else {
+            Rect(0f, -popupExtentPx.toFloat(), widthPx, headerHeightPx)
+        }
+        bringIntoViewRequester.bringIntoView(revealRect)
+    }
 
     val orderedItems = remember { mutableStateListOf<T>().apply { addAll(items) } }
     LaunchedEffect(items) {
@@ -93,6 +147,8 @@ fun <T : Any> SearchableDropdown(
                 shape = dropdownConfig.shape
             )
 
+            .bringIntoViewRequester(bringIntoViewRequester)
+
             .onGloballyPositioned { coordinates ->
                 val position = coordinates.positionInWindow()
                 val left = position.x.roundToInt()
@@ -104,6 +160,8 @@ fun <T : Any> SearchableDropdown(
                     bottom = top + coordinates.size.height,
                 )
                 if (anchorBounds.value != bounds) anchorBounds.value = bounds
+                val root = coordinates.findRootCoordinates().size
+                if (rootSize.value != root) rootSize.value = root
             }
             .padding(horizontal = dropdownConfig.horizontalPadding)
 
@@ -195,6 +253,7 @@ fun <T : Any> SearchableDropdown(
             selectedItemsList,
             onMove,
             searchQuery,
+            rootSize.value.height,
         )
     }
     Spacer(modifier = Modifier.height(10.dp))

@@ -107,8 +107,8 @@ fun App() {
 
 @Composable
 private fun DemoPager(dark: Boolean, onToggleTheme: () -> Unit) {
-    val colors = LocalDemoColors.current
-    val pagerState = rememberPagerState(pageCount = { demoPages.size })
+    val pageCount = demoPages.size + 1
+    val pagerState = rememberPagerState(pageCount = { pageCount })
     val scope = rememberCoroutineScope()
 
     Column(
@@ -125,11 +125,18 @@ private fun DemoPager(dark: Boolean, onToggleTheme: () -> Unit) {
                 .weight(1f)
                 .fillMaxWidth(),
         ) { page ->
-            DemoPage(demoPages[page])
+            if (page < demoPages.size) {
+                DemoPage(demoPages[page], total = pageCount)
+            } else {
+                PlaygroundPage(
+                    index = pageCount.toString().padStart(2, '0'),
+                    total = pageCount,
+                )
+            }
         }
 
         PagerFooter(
-            count = demoPages.size,
+            count = pageCount,
             current = pagerState.currentPage,
             onSelect = { scope.launch { pagerState.animateScrollToPage(it) } },
         )
@@ -191,7 +198,7 @@ private fun ThemeToggle(dark: Boolean, onToggle: () -> Unit) {
 }
 
 @Composable
-private fun DemoPage(info: DemoPageInfo) {
+private fun DemoPage(info: DemoPageInfo, total: Int) {
     val colors = LocalDemoColors.current
     Column(
         modifier = Modifier
@@ -204,7 +211,7 @@ private fun DemoPage(info: DemoPageInfo) {
         }
         Spacer(Modifier.height(44.dp))
         Text(
-            text = "${info.index} — ${demoPages.size.toString().padStart(2, '0')}",
+            text = "${info.index} — ${total.toString().padStart(2, '0')}",
             color = colors.muted,
             fontFamily = FontFamily.Monospace,
             fontSize = 12.sp,

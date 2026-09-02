@@ -32,6 +32,8 @@ data class DropdownConfig<T>(
     },
     val withItemSelection: Boolean = true,
     val separationSpace: Int = 20,
+    val popupPlacement: PopupPlacement = PopupPlacement.AUTO,
+    val autoScrollToFit: Boolean = true,
     val toggleIcon: ToggleIcon = ToggleIcon(),
     val itemSeparator: DropdownItemSeparator = DropdownItemSeparator(),
     val emptySearchPlaceholder: @Composable () -> Unit = {

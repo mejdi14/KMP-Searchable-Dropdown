@@ -1,6 +1,8 @@
 package io.github.mejdi14.searchabledropdown.ui
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -14,11 +16,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
@@ -30,6 +33,7 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
 import io.github.mejdi14.searchabledropdown.data.DropdownConfig
+import io.github.mejdi14.searchabledropdown.data.PopupPlacement
 import io.github.mejdi14.searchabledropdown.data.search.SearchLocation
 import io.github.mejdi14.searchabledropdown.data.search.SearchSettings
 import io.github.mejdi14.searchabledropdown.data.selection.ItemContentConfig
@@ -48,41 +52,61 @@ internal fun <T : Any> DropdownContentPopUp(
     selectedItemsList: SnapshotStateList<T>,
     onMove: (Int, Int) -> Unit,
     searchQuery: MutableState<String>,
+    windowHeightPx: Int,
 ) {
     val anchorLeft = anchorBounds.left
     val anchorTop = anchorBounds.top
+    val anchorBottom = anchorBounds.bottom
     val anchorHeight = anchorBounds.height
+    val sep = dropdownConfig.separationSpace
 
     val searchInHeader =
         searchSettings.searchEnabled && searchSettings.searchLocation == SearchLocation.HEADER
 
     val density = LocalDensity.current
 
-    val imeInsets = WindowInsets.ime
-    val imeVisibleState = remember(imeInsets, density) {
-        derivedStateOf { imeInsets.getBottom(density) > 0 }
-    }
-    val imeVisible = imeVisibleState.value
+    val imeBottomPx = WindowInsets.ime.getBottom(density)
+    val imeVisible = imeBottomPx > 0
 
-    val spaceAbovePx = (anchorTop - dropdownConfig.separationSpace).coerceAtLeast(0)
-    val maxContentHeight = if (imeVisible) {
-        minOf(dropdownConfig.maxHeight, with(density) { spaceAbovePx.toDp() })
+    val maxHeightPx = with(density) { dropdownConfig.maxHeight.roundToPx() }
+    val spaceAbovePx = (anchorTop - sep).coerceAtLeast(0)
+    val spaceBelowPx = if (windowHeightPx > 0) {
+        (windowHeightPx - imeBottomPx - anchorBottom - sep).coerceAtLeast(0)
     } else {
-        dropdownConfig.maxHeight
+        maxHeightPx
     }
 
-    val fixedAboveHeightPx = with(density) { maxContentHeight.roundToPx() }
+    val minUsablePx = with(density) { 120.dp.roundToPx() }
+    val openAbove = imeVisible && when (dropdownConfig.popupPlacement) {
+        PopupPlacement.ABOVE -> true
+        PopupPlacement.BELOW -> false
+        PopupPlacement.AUTO -> spaceBelowPx < minUsablePx && spaceAbovePx > spaceBelowPx
+    }
+    val availablePx = when {
+        !imeVisible -> maxHeightPx
+        openAbove -> spaceAbovePx
+        else -> spaceBelowPx
+    }
+    val fixedWindowHeightPx = if (imeVisible) availablePx else minOf(maxHeightPx, availablePx)
+    val animatedHeightPx by animateIntAsState(
+        targetValue = fixedWindowHeightPx,
+        animationSpec = tween(durationMillis = 160),
+        label = "popupHeight",
+    )
+    val maxContentHeight = with(density) { animatedHeightPx.toDp() }
+
     val positionProvider = remember(
-        anchorLeft, anchorTop, anchorHeight, dropdownConfig.separationSpace, imeVisible,
-        fixedAboveHeightPx,
+        anchorLeft, anchorTop, anchorBottom, anchorHeight, sep, imeVisible, openAbove,
+        animatedHeightPx,
     ) {
         DropdownPopupPositionProvider(
             anchorLeftPx = anchorLeft,
             anchorTopPx = anchorTop,
             anchorHeightPx = anchorHeight,
-            separationPx = dropdownConfig.separationSpace,
-            openAbove = imeVisible,
-            fixedAboveHeightPx = fixedAboveHeightPx,
+            separationPx = sep,
+            openAbove = openAbove,
+            fixedAboveHeightPx = animatedHeightPx,
+            forcePlacement = imeVisible,
         )
     }
 
@@ -104,6 +128,7 @@ internal fun <T : Any> DropdownContentPopUp(
                     } else Modifier
                 )
                 .background(dropdownConfig.contentBackgroundColor, dropdownConfig.shape)
+                .clip(dropdownConfig.shape)
                 .animateContentSize()
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
@@ -152,23 +177,22 @@ internal fun <T : Any> DropdownContentPopUp(
             dismissOnClickOutside = !searchInHeader,
         )
     ) {
-        if (imeVisible) {
-
-            Box(
-                modifier = Modifier
-                    .width(popupWidth)
-                    .height(maxContentHeight)
-
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                    ) { expanded.value = false },
-                contentAlignment = Alignment.BottomStart,
-            ) {
-                card()
-            }
-        } else {
-
+        val dismissInteraction = remember { MutableInteractionSource() }
+        Box(
+            modifier = Modifier
+                .width(popupWidth)
+                .then(
+                    if (imeVisible) {
+                        Modifier
+                            .height(maxContentHeight)
+                            .clickable(
+                                interactionSource = dismissInteraction,
+                                indication = null,
+                            ) { expanded.value = false }
+                    } else Modifier
+                ),
+            contentAlignment = if (imeVisible && openAbove) Alignment.BottomStart else Alignment.TopStart,
+        ) {
             card()
         }
     }
@@ -181,6 +205,7 @@ private class DropdownPopupPositionProvider(
     private val separationPx: Int,
     private val openAbove: Boolean = false,
     private val fixedAboveHeightPx: Int = 0,
+    private val forcePlacement: Boolean = false,
 ) : PopupPositionProvider {
     override fun calculatePosition(
         anchorBounds: IntRect,
@@ -188,12 +213,22 @@ private class DropdownPopupPositionProvider(
         layoutDirection: LayoutDirection,
         popupContentSize: IntSize,
     ): IntOffset {
+        val belowY = anchorTopPx + anchorHeightPx + separationPx
+
+        if (forcePlacement) {
+            val y = if (openAbove) {
+                (anchorTopPx - separationPx - fixedAboveHeightPx).coerceAtLeast(0)
+            } else {
+                belowY
+            }
+            return IntOffset(x = anchorLeftPx, y = y)
+        }
+
         if (openAbove) {
             val y = (anchorTopPx - separationPx - fixedAboveHeightPx).coerceAtLeast(0)
             return IntOffset(x = anchorLeftPx, y = y)
         }
 
-        val belowY = anchorTopPx + anchorHeightPx + separationPx
         val fitsBelow = belowY + popupContentSize.height <= windowSize.height
         val y = if (fitsBelow) {
             belowY
